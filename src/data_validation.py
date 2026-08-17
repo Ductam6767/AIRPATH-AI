@@ -145,7 +145,11 @@ def pairwise_correlations(df: pd.DataFrame) -> pd.DataFrame:
                 "paired_observations": len(pairs),
                 "pearson_correlation": (
                     pairs["PM2.5"].corr(pairs[variable])
-                    if len(pairs) >= 2
+                    if (
+                        len(pairs) >= 2
+                        and pairs["PM2.5"].nunique() > 1
+                        and pairs[variable].nunique() > 1
+                    )
                     else float("nan")
                 ),
             }
@@ -163,8 +167,13 @@ def audit_dataset(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any]]:
     stats = pm25_statistics(clean)
     correlations = pairwise_correlations(clean)
 
-    duplicate_keys = (
+    duplicate_key_rows = (
         int(clean.duplicated(["Station_No", "date"], keep=False).sum())
+        if {"Station_No", "date"}.issubset(clean.columns)
+        else None
+    )
+    duplicate_key_additional = (
+        int(clean.duplicated(["Station_No", "date"]).sum())
         if {"Station_No", "date"}.issubset(clean.columns)
         else None
     )
@@ -186,8 +195,10 @@ def audit_dataset(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any]]:
         "schema": schema,
         "source_dtypes": {str(k): str(v) for k, v in df.dtypes.items()},
         "parse_issues": [asdict(issue) for issue in parse_issues],
-        "complete_duplicate_rows": int(df.duplicated(keep=False).sum()),
-        "duplicate_station_timestamp_rows": duplicate_keys,
+        "complete_duplicate_additional_rows": int(df.duplicated().sum()),
+        "complete_duplicate_group_rows": int(df.duplicated(keep=False).sum()),
+        "duplicate_station_timestamp_additional_rows": duplicate_key_additional,
+        "duplicate_station_timestamp_group_rows": duplicate_key_rows,
         "invalid_timestamps": next(
             (issue.count for issue in parse_issues if issue.column == "date"), 0
         ),
@@ -251,8 +262,10 @@ def render_report(audit: dict[str, Any]) -> str:
 - Missing expected columns: {missing_expected}
 - Unexpected columns: {unexpected}
 - Source data types: {audit["source_dtypes"]}
-- Complete duplicate rows (all copies counted): {audit["complete_duplicate_rows"]}
-- Duplicate `(Station_No, date)` rows (all copies counted): {audit["duplicate_station_timestamp_rows"]}
+- Additional complete duplicate rows beyond the first copy: {audit["complete_duplicate_additional_rows"]}
+- Rows belonging to complete-duplicate groups (all copies counted): {audit["complete_duplicate_group_rows"]}
+- Additional duplicate `(Station_No, date)` rows beyond the first: {audit["duplicate_station_timestamp_additional_rows"]}
+- Rows in duplicate `(Station_No, date)` groups (all copies counted): {audit["duplicate_station_timestamp_group_rows"]}
 - Invalid timestamp values: {audit["invalid_timestamps"]}
 
 Parse failures were converted to missing values only after being counted:

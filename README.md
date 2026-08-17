@@ -35,7 +35,7 @@ installed. From the repository root:
 mkdir -p data/raw
 # Copy the unmodified source file to:
 # data/raw/Air Quality Ho Chi Minh City.csv
-python -m src.data_validation
+python3 -m src.data_validation
 ```
 
 The command fails clearly if the input is absent or if required columns differ
@@ -52,7 +52,7 @@ The equivalent interactive workflow is in
 Run the automated checks with:
 
 ```bash
-python -m pytest
+python3 -m pytest
 ```
 
 ## Current limitations and leakage safeguards

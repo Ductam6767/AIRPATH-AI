@@ -45,7 +45,8 @@ def test_audit_reports_parse_failures_and_retains_rows() -> None:
     global_stats = audit["pm25_statistics"][0]
     assert global_stats["negative"] == 1
     assert global_stats["zero"] == 1
-    assert audit["duplicate_station_timestamp_rows"] == 2
+    assert audit["duplicate_station_timestamp_group_rows"] == 2
+    assert audit["duplicate_station_timestamp_additional_rows"] == 1
     assert audit["coverage"][0]["gaps_gt_1h"] == 1
 
 

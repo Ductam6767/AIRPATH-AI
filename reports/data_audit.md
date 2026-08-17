@@ -4,7 +4,7 @@ Audit status: **not executed — source dataset unavailable**.
 
 The repository supplied for this milestone did not contain
 `Air Quality Ho Chi Minh City.csv`. The sections below intentionally contain no
-fabricated values. Run `python -m src.data_validation` after placing the
+fabricated values. Run `python3 -m src.data_validation` after placing the
 unmodified file at `data/raw/Air Quality Ho Chi Minh City.csv`; this report will
 then be replaced with the observed results.
 
