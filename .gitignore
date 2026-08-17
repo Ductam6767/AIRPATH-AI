@@ -1,0 +1,9 @@
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Research data and generated audit artifacts
+data/raw/*.csv
+data/processed/*.csv
+reports/figures/*.png
+reports/tables/*.csv
