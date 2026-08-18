@@ -22,6 +22,9 @@ _Not available._
 
 - Earliest timestamp: 2021-02-23 21:00:00
 - Latest timestamp: 2022-06-21 17:00:00
+- Unique observed timestamps: 10452
+- Modal positive interval between unique timestamps: 0 days 01:00:00
+- Overall gaps greater than one hour in the union of station timestamps: 47
 
 ## 3. Station coverage
 
@@ -54,6 +57,15 @@ Variable-level missingness:
 Station-by-variable missingness is saved in `reports/tables/missingness_by_station.csv`.
 Rows are retained when secondary pollutants are missing.
 
+|   Station_No |   date_missing_count |   date_missing_percent |   Station_No_missing_count |   Station_No_missing_percent |   TSP_missing_count |   TSP_missing_percent |   PM2.5_missing_count |   PM2.5_missing_percent |   O3_missing_count |   O3_missing_percent |   CO_missing_count |   CO_missing_percent |   NO2_missing_count |   NO2_missing_percent |   SO2_missing_count |   SO2_missing_percent |   Temperature_missing_count |   Temperature_missing_percent |   Humidity_missing_count |   Humidity_missing_percent |
+|-------------:|---------------------:|-----------------------:|---------------------------:|-----------------------------:|--------------------:|----------------------:|----------------------:|------------------------:|-------------------:|---------------------:|-------------------:|---------------------:|--------------------:|----------------------:|--------------------:|----------------------:|----------------------------:|------------------------------:|-------------------------:|---------------------------:|
+|            1 |                    0 |                      0 |                          0 |                            0 |                  60 |              0.760264 |                     0 |                       0 |               5665 |           71.7816    |                 65 |            0.823619  |                5665 |            71.7816    |                5709 |            72.3391    |                           0 |                        0      |                        0 |                      0     |
+|            2 |                    0 |                      0 |                          0 |                            0 |                   0 |              0        |                     0 |                       0 |                  0 |            0         |               8999 |           96.174     |                   0 |             0         |                   9 |             0.0961847 |                           0 |                        0      |                        0 |                      0     |
+|            3 |                    0 |                      0 |                          0 |                            0 |                   0 |              0        |                     0 |                       0 |                  1 |            0.0118793 |                  1 |            0.0118793 |                   0 |             0         |                  28 |             0.332621  |                           0 |                        0      |                        0 |                      0     |
+|            4 |                    0 |                      0 |                          0 |                            0 |                   0 |              0        |                     0 |                       0 |                 36 |            0.361773  |                  0 |            0         |                   0 |             0         |                  12 |             0.120591  |                           0 |                        0      |                        0 |                      0     |
+|            5 |                    0 |                      0 |                          0 |                            0 |                   0 |              0        |                     0 |                       0 |               4908 |           66.0476    |                  0 |            0         |                   1 |             0.0134571 |                4945 |            66.5456    |                        4437 |                       59.7093 |                     4432 |                     59.642 |
+|            6 |                    0 |                      0 |                          0 |                            0 |                   0 |              0        |                     0 |                       0 |                  0 |            0         |                  0 |            0         |                   0 |             0         |                 303 |             3.18981   |                           0 |                        0      |                        0 |                      0     |
+
 ## 5. PM2.5 statistics
 
 | station   |   observations |   non_missing |   missing |   negative |   zero |     min |       q1 |   median |      q3 |     max |    mean |      std |   global_iqr_flags |   station_iqr_flags |
@@ -69,6 +81,18 @@ Rows are retained when secondary pollutants are missing.
 Standard deviation uses the sample definition (`ddof=1`). Quartiles use pandas'
 default linear quantile method. Values are reported as observed, including zero,
 negative, and extreme values.
+
+Pairwise-complete Pearson correlations (descriptive only):
+
+| variable    |   paired_observations |   pearson_correlation |
+|:------------|----------------------:|----------------------:|
+| TSP         |                 52488 |              0.661845 |
+| O3          |                 41938 |              0.108628 |
+| CO          |                 43483 |              0.297432 |
+| NO2         |                 46882 |             -0.125261 |
+| SO2         |                 41542 |              0.165897 |
+| Temperature |                 48111 |             -0.165926 |
+| Humidity    |                 48116 |             -0.16293  |
 
 ## 6. Temporal gaps
 
@@ -108,11 +132,11 @@ in `reports/tables/pm25_flagged_observations.csv`.
 
 ## 8. Recommended train/validation/test split
 
-| partition   |   rows | start               | end                 |
-|:------------|-------:|:--------------------|:--------------------|
-| train       |  35601 | 2021-02-23 21:00:00 | 2022-01-31 02:00:00 |
-| validation  |   8740 | 2022-01-31 03:00:00 | 2022-04-08 00:00:00 |
-| test        |   8207 | 2022-04-08 01:00:00 | 2022-06-21 17:00:00 |
+| partition   |   rows |   unique_timestamps | start               | end                 |
+|:------------|-------:|--------------------:|:--------------------|:--------------------|
+| train       |  35601 |                7316 | 2021-02-23 21:00:00 | 2022-01-31 02:00:00 |
+| validation  |   8740 |                1568 | 2022-01-31 03:00:00 | 2022-04-08 00:00:00 |
+| test        |   8207 |                1568 | 2022-04-08 01:00:00 | 2022-06-21 17:00:00 |
 
 The boundaries approximate 70%/15%/15% of unique observed timestamps while
 keeping equal timestamps in one partition. They should be reviewed against
