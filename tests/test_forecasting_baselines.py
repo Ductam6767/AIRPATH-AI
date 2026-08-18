@@ -28,16 +28,16 @@ def test_exact_horizons_lags_and_no_future_leakage() -> None:
     clean = _continuous_clean()
     samples, _ = build_forecasting_samples(clean)
     row = samples.loc[
-        samples["origin_time"].eq(pd.Timestamp("2024-01-01 05:00"))
+        samples["origin_time"].eq(pd.Timestamp("2024-01-01 04:00"))
         & samples["horizon_hours"].eq(2)
     ].iloc[0]
 
-    assert row["target_time"] == pd.Timestamp("2024-01-01 07:00")
-    assert row["target_pm25"] == 7.0
-    assert row["pm25_current"] == 5.0
-    assert row["pm25_lag_1h"] == 4.0
-    assert row["pm25_lag_2h"] == 3.0
-    assert row["pm25_lag_3h"] == 2.0
+    assert row["target_time"] == pd.Timestamp("2024-01-01 06:00")
+    assert row["target_pm25"] == 6.0
+    assert row["pm25_current"] == 4.0
+    assert row["pm25_lag_1h"] == 3.0
+    assert row["pm25_lag_2h"] == 2.0
+    assert row["pm25_lag_3h"] == 1.0
     assert max(
         row["origin_time"] - pd.Timedelta(hours=lag) for lag in (1, 2, 3)
     ) < row["target_time"]
