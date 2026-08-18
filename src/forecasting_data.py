@@ -81,6 +81,16 @@ def build_forecasting_samples(
     indexed = prepared.set_index(["Station_No", "date"])
     pm25_lookup = indexed["PM2.5"]
     split_lookup = indexed["temporal_split"]
+    target_flag_lookups = {
+        flag: indexed[flag]
+        for flag in (
+            "pm25_iqr_flag",
+            "pm25_station_iqr_flag",
+            "pm25_negative_flag",
+            "pm25_zero_flag",
+        )
+        if flag in indexed
+    }
 
     base_columns = ["Station_No", "date", "PM2.5"]
     for flag in (
@@ -122,6 +132,10 @@ def build_forecasting_samples(
         candidate["target_pm25"] = _exact_lookup(
             pm25_lookup, candidate["Station_No"], candidate["target_time"]
         )
+        for flag, lookup in target_flag_lookups.items():
+            candidate[f"target_{flag}"] = _exact_lookup(
+                lookup, candidate["Station_No"], candidate["target_time"]
+            ).astype("boolean")
         candidate["target_split"] = _exact_lookup(
             split_lookup, candidate["Station_No"], candidate["target_time"]
         ).astype("string")

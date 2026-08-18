@@ -206,6 +206,14 @@ def render_baseline_report(
         .agg(
             samples=("target_pm25", "size"),
             zero_targets=("target_pm25", lambda values: int(values.eq(0).sum())),
+            global_iqr_target_flags=(
+                "target_pm25_iqr_flag",
+                lambda values: int(values.sum()),
+            ),
+            station_iqr_target_flags=(
+                "target_pm25_station_iqr_flag",
+                lambda values: int(values.sum()),
+            ),
         )
         .reset_index()
     )
@@ -275,8 +283,11 @@ mean. It is undefined if the observed target is constant.
 
 {_markdown_table(target_quality)}
 
-No zero or IQR-flagged source observation was removed. IQR flags remain in the
-saved sample data for later sensitivity analysis; they are not model features.
+No zero or IQR-flagged source observation was removed. Origin and target flags
+remain in the saved sample data for later sensitivity analysis; they are
+metadata, not model features. Because the Milestone 1 IQR flags were descriptive
+full-dataset audit flags, any future model-based filtering threshold must instead
+be estimated from training data only.
 
 ## Methodological limitations
 

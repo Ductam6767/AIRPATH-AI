@@ -38,6 +38,7 @@ def test_exact_horizons_lags_and_no_future_leakage() -> None:
     assert row["pm25_lag_1h"] == 3.0
     assert row["pm25_lag_2h"] == 2.0
     assert row["pm25_lag_3h"] == 1.0
+    assert not row["target_pm25_iqr_flag"]
     assert max(
         row["origin_time"] - pd.Timedelta(hours=lag) for lag in (1, 2, 3)
     ) < row["target_time"]
