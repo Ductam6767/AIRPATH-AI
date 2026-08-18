@@ -150,20 +150,23 @@ mean. It is undefined if the observed target is constant.
 
 ## Retained target-quality flags
 
-| split      |   horizon_hours |   samples |   zero_targets |
-|:-----------|----------------:|----------:|---------------:|
-| test       |               1 |      7929 |            205 |
-| test       |               2 |      7883 |            205 |
-| test       |               3 |      7843 |            205 |
-| train      |               1 |     34235 |              2 |
-| train      |               2 |     33994 |              2 |
-| train      |               3 |     33772 |              2 |
-| validation |               1 |      8603 |              0 |
-| validation |               2 |      8580 |              0 |
-| validation |               3 |      8561 |              0 |
+| split      |   horizon_hours |   samples |   zero_targets |   global_iqr_target_flags |   station_iqr_target_flags |
+|:-----------|----------------:|----------:|---------------:|--------------------------:|---------------------------:|
+| test       |               1 |      7929 |            205 |                       206 |                        212 |
+| test       |               2 |      7883 |            205 |                       200 |                        211 |
+| test       |               3 |      7843 |            205 |                       197 |                        210 |
+| train      |               1 |     34235 |              2 |                      2167 |                       2196 |
+| train      |               2 |     33994 |              2 |                      2153 |                       2179 |
+| train      |               3 |     33772 |              2 |                      2137 |                       2161 |
+| validation |               1 |      8603 |              0 |                       290 |                        270 |
+| validation |               2 |      8580 |              0 |                       289 |                        270 |
+| validation |               3 |      8561 |              0 |                       289 |                        270 |
 
-No zero or IQR-flagged source observation was removed. IQR flags remain in the
-saved sample data for later sensitivity analysis; they are not model features.
+No zero or IQR-flagged source observation was removed. Origin and target flags
+remain in the saved sample data for later sensitivity analysis; they are
+metadata, not model features. Because the Milestone 1 IQR flags were descriptive
+full-dataset audit flags, any future model-based filtering threshold must instead
+be estimated from training data only.
 
 ## Methodological limitations
 
