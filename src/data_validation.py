@@ -178,12 +178,30 @@ def audit_dataset(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any]]:
         else None
     )
     split = {}
+    valid_unique_times = pd.Series(dtype="datetime64[ns]")
+    overall_interval = pd.NaT
+    overall_gaps_gt_1h = None
     if "date" in clean and clean["date"].notna().any():
+        valid_unique_times = pd.Series(clean["date"].dropna().unique()).sort_values()
+        unique_differences = valid_unique_times.diff()
+        positive_unique_differences = unique_differences[
+            unique_differences.gt(pd.Timedelta(0))
+        ]
+        interval_modes = positive_unique_differences.mode()
+        overall_interval = (
+            interval_modes.iloc[0] if not interval_modes.empty else pd.NaT
+        )
+        overall_gaps_gt_1h = int(
+            unique_differences.gt(pd.Timedelta(hours=1)).sum()
+        )
         labels = chronological_split_labels(clean["date"])
         clean["temporal_split"] = labels
         split = {
             label: {
                 "rows": int(labels.eq(label).sum()),
+                "unique_timestamps": int(
+                    clean.loc[labels.eq(label), "date"].nunique()
+                ),
                 "start": clean.loc[labels.eq(label), "date"].min(),
                 "end": clean.loc[labels.eq(label), "date"].max(),
             }
@@ -204,6 +222,9 @@ def audit_dataset(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any]]:
         ),
         "timestamp_min": clean["date"].min() if "date" in clean else None,
         "timestamp_max": clean["date"].max() if "date" in clean else None,
+        "unique_timestamps": int(len(valid_unique_times)),
+        "modal_positive_timestamp_interval": overall_interval,
+        "overall_gaps_gt_1h": overall_gaps_gt_1h,
         "coverage": _records(coverage),
         "gaps": _records(gaps),
         "missingness_by_variable": _records(variable_missing.reset_index(names="variable")),
@@ -276,6 +297,9 @@ Parse failures were converted to missing values only after being counted:
 
 - Earliest timestamp: {audit["timestamp_min"]}
 - Latest timestamp: {audit["timestamp_max"]}
+- Unique observed timestamps: {audit["unique_timestamps"]}
+- Modal positive interval between unique timestamps: {audit["modal_positive_timestamp_interval"]}
+- Overall gaps greater than one hour in the union of station timestamps: {audit["overall_gaps_gt_1h"]}
 
 ## 3. Station coverage
 
@@ -290,6 +314,8 @@ Variable-level missingness:
 Station-by-variable missingness is saved in `reports/tables/missingness_by_station.csv`.
 Rows are retained when secondary pollutants are missing.
 
+{_markdown_table(audit["missingness_by_station"])}
+
 ## 5. PM2.5 statistics
 
 {_markdown_table(audit["pm25_statistics"])}
@@ -297,6 +323,10 @@ Rows are retained when secondary pollutants are missing.
 Standard deviation uses the sample definition (`ddof=1`). Quartiles use pandas'
 default linear quantile method. Values are reported as observed, including zero,
 negative, and extreme values.
+
+Pairwise-complete Pearson correlations (descriptive only):
+
+{_markdown_table(audit["correlations"])}
 
 ## 6. Temporal gaps
 

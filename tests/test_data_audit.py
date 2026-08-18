@@ -17,10 +17,10 @@ def test_audit_reports_parse_failures_and_retains_rows() -> None:
     raw = pd.DataFrame(
         {
             "date": [
-                "2024-01-01 00:00:00",
+                "01-01-2024 00:00",
                 "invalid",
-                "2024-01-01 03:00:00",
-                "2024-01-01 03:00:00",
+                "01-01-2024 03:00",
+                "01-01-2024 03:00",
             ],
             "Station_No": ["A", "A", "A", "A"],
             "TSP": [10, 20, None, 40],

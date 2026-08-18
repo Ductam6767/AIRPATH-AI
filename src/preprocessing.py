@@ -18,6 +18,7 @@ NUMERIC_COLUMNS: Final[tuple[str, ...]] = (
     "Temperature",
     "Humidity",
 )
+SOURCE_TIMESTAMP_FORMAT: Final[str] = "%d-%m-%Y %H:%M"
 
 
 @dataclass(frozen=True)
@@ -50,7 +51,9 @@ def parse_and_flag(
     issues: list[ParseIssue] = []
 
     if "date" in clean:
-        parsed_date = pd.to_datetime(clean["date"], errors="coerce")
+        parsed_date = pd.to_datetime(
+            clean["date"], format=SOURCE_TIMESTAMP_FORMAT, errors="coerce"
+        )
         issues.append(_parse_issue(clean["date"], parsed_date, "date"))
         clean["date"] = parsed_date
 
