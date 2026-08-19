@@ -425,6 +425,26 @@ class HourlyStationForecaster:
     version: str
     station_ids: tuple[str, ...]
 
+    def save(self, path: str | Path) -> None:
+        """Serialize portable state without pickling this wrapper's module name."""
+        joblib.dump(
+            {
+                "models": self.models,
+                "version": self.version,
+                "station_ids": self.station_ids,
+            },
+            path,
+        )
+
+    @classmethod
+    def load(cls, path: str | Path) -> "HourlyStationForecaster":
+        state = joblib.load(path)
+        return cls(
+            models=state["models"],
+            version=state["version"],
+            station_ids=tuple(state["station_ids"]),
+        )
+
     def predict_pm25(
         self,
         station_or_location: str | int,
@@ -899,7 +919,7 @@ def run_xgboost_experiment(
             sorted(samples["Station_No"].astype(str).unique().tolist())
         ),
     )
-    joblib.dump(forecaster, models_directory / "hourly_station_forecaster.joblib")
+    forecaster.save(models_directory / "hourly_station_forecaster.joblib")
     metadata = {
         "selected_version": selected_version,
         "horizons_hours": list(HORIZONS),

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pandas as pd
 import pytest
 
@@ -138,12 +140,15 @@ class _ConstantModel:
         return [12.5] * len(features)
 
 
-def test_target_time_interface_enforces_hourly_station_scope() -> None:
+def test_target_time_interface_enforces_hourly_station_scope(tmp_path: Path) -> None:
     forecaster = HourlyStationForecaster(
         models={1: _ConstantModel(), 2: _ConstantModel(), 3: _ConstantModel()},
         version="v1",
         station_ids=("1",),
     )
+    artifact = tmp_path / "forecaster.joblib"
+    forecaster.save(artifact)
+    forecaster = HourlyStationForecaster.load(artifact)
     prediction = forecaster.predict_pm25(
         1,
         "2024-01-01 03:00",
