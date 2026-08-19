@@ -670,6 +670,21 @@ when baseline R² can be zero or negative.
 
 {_table(aggregate_improvement)}
 
+### Scientific interpretation of baseline comparison
+
+The selected V1 configuration does **not** uniformly outperform persistence.
+On the locked test set its pooled MAE is higher by 0.8565 (19.84% worse), while
+its pooled RMSE is lower by 0.4602 (5.26% better) and R² is higher by 0.0597.
+Persistence is stronger at t+1h on all three metrics. At t+2h and t+3h, V1 has
+lower RMSE and higher R² but still higher MAE. Thus the evidence depends on the
+error functional; AIRPATH should not claim that V1 supersedes persistence.
+
+V1 is materially better than the historical-time baseline on the locked test
+set. However, V1 deliberately follows the requested feature contract and omits
+PM2.5(t), whereas persistence uses PM2.5(t). The recency mismatch is an important
+methodological limitation and plausibly contributes to persistence's MAE
+advantage. It was not changed after observing test results.
+
 ## E. Locked-test station-level results
 
 {_table(station_test)}
@@ -681,6 +696,11 @@ when baseline R² can be zero or negative.
 ## G. V2 weather ablation
 
 {_table(v2_results)}
+
+V2 did not improve pooled validation performance: MAE increased from 5.5771
+(V1) to 5.5951 and RMSE increased from 8.9357 to 9.0573. V1 was therefore frozen
+as the selected configuration before test access. The one-shot test evaluation
+also showed higher error for V2, but that result was not used for selection.
 
 Temperature and humidity are exact origin-time observations. Missing values are
 median-imputed separately inside each horizon pipeline; medians are learned
@@ -702,6 +722,11 @@ interpretation only and were not used to revise model selection.
 {_table(top_shap)}
 
 Importance and SHAP describe model behavior, not causal effects.
+
+Across all horizons, PM2.5(t-1h) is the dominant feature. Its gain importance and
+mean absolute SHAP contribution decrease with horizon, while calendar and
+station contributions become relatively more prominent. This is consistent with
+weakening short-term persistence, but it does not establish causal effects.
 
 ## I. Limitations of hourly HealthyAir data
 
