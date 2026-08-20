@@ -1,5 +1,5 @@
-pipeline_mode,travel_mode,route_id,segments,mapped_target_hours,pm25_min,pm25_mean,pm25_max,supported_reliability_segments,moderate_reliability_segments,weak_spatial_support_segments
-oracle,walking,walking-1,121,1,15.669956554631236,27.666541659617916,33.258038435330874,113,8,0
-oracle,motorbike,motorbike-1,133,1,15.669956554631236,26.954337193945292,33.258038435330874,130,3,0
-deployment,walking,walking-1,121,1,15.673202097949801,21.75760596399415,25.102569564032116,113,8,0
-deployment,motorbike,motorbike-1,133,1,15.673202097949801,21.38975557485133,25.102569564032116,130,3,0
+pipeline_mode,travel_mode,route_id,segments,mapped_target_hours,pm25_min,pm25_max,supported_reliability_segments,moderate_reliability_segments,weak_spatial_support_segments
+oracle,walking,walking-1,121,1,15.669956554631236,33.258038435330874,113,8,0
+oracle,motorbike,motorbike-1,133,1,15.669956554631236,33.258038435330874,130,3,0
+deployment,walking,walking-1,121,1,15.673202097949801,25.102569564032116,113,8,0
+deployment,motorbike,motorbike-1,133,1,15.673202097949801,25.102569564032116,130,3,0

@@ -35,12 +35,15 @@ selection or an untouched final evaluation.
 
 ## D–E. Oracle and deployment results
 
-| pipeline_mode   | travel_mode   | route_id    |   segments |   mapped_target_hours |   pm25_min |   pm25_mean |   pm25_max |   supported_reliability_segments |   moderate_reliability_segments |   weak_spatial_support_segments |
-|:----------------|:--------------|:------------|-----------:|----------------------:|-----------:|------------:|-----------:|---------------------------------:|--------------------------------:|--------------------------------:|
-| oracle          | walking       | walking-1   |        121 |                     1 |    15.67   |     27.6665 |    33.258  |                              113 |                               8 |                               0 |
-| oracle          | motorbike     | motorbike-1 |        133 |                     1 |    15.67   |     26.9543 |    33.258  |                              130 |                               3 |                               0 |
-| deployment      | walking       | walking-1   |        121 |                     1 |    15.6732 |     21.7576 |    25.1026 |                              113 |                               8 |                               0 |
-| deployment      | motorbike     | motorbike-1 |        133 |                     1 |    15.6732 |     21.3898 |    25.1026 |                              130 |                               3 |                               0 |
+| pipeline_mode   | travel_mode   | route_id    |   segments |   mapped_target_hours |   pm25_min |   pm25_max |   supported_reliability_segments |   moderate_reliability_segments |   weak_spatial_support_segments |
+|:----------------|:--------------|:------------|-----------:|----------------------:|-----------:|-----------:|---------------------------------:|--------------------------------:|--------------------------------:|
+| oracle          | walking       | walking-1   |        121 |                     1 |    15.67   |    33.258  |                              113 |                               8 |                               0 |
+| oracle          | motorbike     | motorbike-1 |        133 |                     1 |    15.67   |    33.258  |                              130 |                               3 |                               0 |
+| deployment      | walking       | walking-1   |        121 |                     1 |    15.6732 |    25.1026 |                              113 |                               8 |                               0 |
+| deployment      | motorbike     | motorbike-1 |        133 |                     1 |    15.6732 |    25.1026 |                              130 |                               3 |                               0 |
+
+The min/max values are descriptive segment-output ranges only. No segment
+duration weighting, dose, inhalation, or route-level exposure is calculated.
 
 Station values at mapped target 2022-02-28 07:00:00:
 
