@@ -1,0 +1,72 @@
+{
+  "coordinate_system": "WGS84 geographic coordinates (EPSG:4326)",
+  "directed_edges": 142930,
+  "filter_note": "Segments require endpoints and midpoint inside the stations 2\u20136 convex hull. access/foot/motorcycle/motor_vehicle/vehicle and mode-specific oneway tags are applied. Turn restrictions and conditional restrictions are not interpreted.",
+  "license": "OpenStreetMap contributors, ODbL 1.0",
+  "motorbike_highway_types": [
+    "living_street",
+    "motorway",
+    "motorway_link",
+    "primary",
+    "primary_link",
+    "residential",
+    "secondary",
+    "secondary_link",
+    "service",
+    "tertiary",
+    "tertiary_link",
+    "trunk",
+    "trunk_link",
+    "unclassified"
+  ],
+  "nodes": 63013,
+  "osm_snapshot_timestamp": "2026-08-20T07:56:51Z",
+  "overpass_endpoint": "https://overpass-api.de/api/interpreter",
+  "pilot_polygon_lat_lon": [
+    [
+      10.74097081,
+      106.6171323
+    ],
+    [
+      10.81621227,
+      106.6204143
+    ],
+    [
+      10.81584553,
+      106.7174282
+    ],
+    [
+      10.77636612,
+      106.6878094
+    ]
+  ],
+  "pilot_station_ids": [
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "query": "[out:json][timeout:180];\nway[\"highway\"~\"^(cycleway|footway|living_street|motorway|motorway_link|path|pedestrian|primary|primary_link|residential|secondary|secondary_link|service|steps|tertiary|tertiary_link|trunk|trunk_link|unclassified)$\"](poly:\"10.74097081 106.61713230 10.81621227 106.62041430 10.81584553 106.71742820 10.77636612 106.68780940\");\n(._;>;);\nout body;",
+  "retained_osm_ways": 19460,
+  "retrieval_method": "Overpass API, bounded Overpass QL highway query",
+  "retrieved_at_utc": "2026-08-20T07:58:17.442705+00:00",
+  "source": "https://www.openstreetmap.org",
+  "walking_highway_types": [
+    "cycleway",
+    "footway",
+    "living_street",
+    "path",
+    "pedestrian",
+    "primary",
+    "primary_link",
+    "residential",
+    "secondary",
+    "secondary_link",
+    "service",
+    "steps",
+    "tertiary",
+    "tertiary_link",
+    "unclassified"
+  ]
+}
