@@ -350,7 +350,8 @@ def overpass_query() -> str:
     return (
         '[out:json][timeout:180];\n'
         f'way["highway"~"^({highway_pattern})$"](poly:"{polygon}");\n'
-        "out body geom;"
+        "(._;>;);\n"
+        "out body;"
     )
 
 
@@ -401,6 +402,14 @@ def build_network_from_overpass(
     nodes: dict[int, RoadNode] = {}
     edges: dict[str, RoadEdge] = {}
     retained_way_ids: set[int] = set()
+    coordinate_by_node_id = {
+        int(element["id"]): (float(element["lat"]), float(element["lon"]))
+        for element in elements
+        if isinstance(element, dict)
+        and element.get("type") == "node"
+        and "lat" in element
+        and "lon" in element
+    }
 
     for element in elements:
         if not isinstance(element, dict) or element.get("type") != "way":
@@ -422,8 +431,17 @@ def build_network_from_overpass(
             continue
         node_ids = element.get("nodes")
         geometry = element.get("geometry")
-        if not isinstance(node_ids, list) or not isinstance(geometry, list):
+        if not isinstance(node_ids, list):
             continue
+        if not isinstance(geometry, list):
+            try:
+                geometry = [
+                    {"lat": coordinate_by_node_id[int(node_id)][0],
+                     "lon": coordinate_by_node_id[int(node_id)][1]}
+                    for node_id in node_ids
+                ]
+            except KeyError:
+                continue
         if len(node_ids) != len(geometry) or len(node_ids) < 2:
             continue
         way_id = int(element["id"])
