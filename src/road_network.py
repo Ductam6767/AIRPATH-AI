@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import io
 import json
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -547,8 +548,20 @@ def build_network_from_overpass(
 def save_network(network: RoadNetwork, path: str | Path) -> None:
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    opener = gzip.open if output_path.suffix == ".gz" else open
-    with opener(output_path, "wt", encoding="utf-8") as handle:
+    if output_path.suffix == ".gz":
+        with output_path.open("wb") as raw_handle:
+            with gzip.GzipFile(
+                filename="", mode="wb", fileobj=raw_handle, mtime=0
+            ) as compressed:
+                with io.TextIOWrapper(compressed, encoding="utf-8") as handle:
+                    json.dump(
+                        network.to_dict(),
+                        handle,
+                        separators=(",", ":"),
+                        sort_keys=True,
+                    )
+        return
+    with output_path.open("w", encoding="utf-8") as handle:
         json.dump(network.to_dict(), handle, separators=(",", ":"), sort_keys=True)
 
 

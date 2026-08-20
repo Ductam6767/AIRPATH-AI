@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import heapq
 import gzip
+import io
 import json
 from dataclasses import asdict, dataclass
 from itertools import count
@@ -349,8 +350,14 @@ EXAMPLE_DEPARTURE_TIME = pd.Timestamp("2026-08-20 08:00:00+07:00")
 
 def _save_json_gzip(payload: object, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with gzip.open(path, "wt", encoding="utf-8") as handle:
-        json.dump(payload, handle, separators=(",", ":"), sort_keys=True)
+    with path.open("wb") as raw_handle:
+        with gzip.GzipFile(
+            filename="", mode="wb", fileobj=raw_handle, mtime=0
+        ) as compressed:
+            with io.TextIOWrapper(compressed, encoding="utf-8") as handle:
+                json.dump(
+                    payload, handle, separators=(",", ":"), sort_keys=True
+                )
 
 
 def _plot_network_overview(network: RoadNetwork, output_path: Path) -> None:
