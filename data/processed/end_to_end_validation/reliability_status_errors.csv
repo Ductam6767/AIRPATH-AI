@@ -1,0 +1,5 @@
+mode,reliability_status,segments,mae_vs_oracle_spatial,rmse_vs_oracle_spatial
+motorbike,moderate reliability,3,4.211239819545796,4.410141550707853
+motorbike,supported,130,4.030396122143412,4.525203861957919
+walking,moderate reliability,8,3.57007570951107,3.6925966432444857
+walking,supported,113,4.430483935143736,4.8220748639249305

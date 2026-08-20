@@ -1,0 +1,13 @@
+{
+  "classification": "B. READY WITH RESTRICTIONS",
+  "rationale": "Combined error meets pooled usability criteria and generalizes positively at at least four stations, but not every strict criterion.",
+  "criteria": {
+    "pooled_mae_le_10": true,
+    "pooled_r2_positive": true,
+    "at_least_four_of_six_station_r2_positive": true,
+    "positive_station_r2_count": 5,
+    "ready_strict_pooled_mae_le_5": false,
+    "ready_strict_pooled_r2_ge_0_5": false,
+    "ready_strict_all_station_r2_nonnegative": false
+  }
+}
