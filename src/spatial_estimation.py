@@ -721,10 +721,6 @@ def _write_report(
 ) -> None:
     pooled = metrics.loc[metrics["held_out_station"].eq("ALL")].copy()
     held_out = metrics.loc[~metrics["held_out_station"].eq("ALL")].copy()
-    nearest_by_station = (
-        distances.groupby("station_a")["distance_km"].min().to_dict()
-    )
-    # The preceding grouped view misses pairs where a station appears as station_b.
     nearest_distances: dict[int, float] = {}
     for station_id in STATION_BY_ID:
         related = distances.loc[
@@ -807,7 +803,7 @@ station 1 is a relatively isolated north-eastern point.
 
 Nearest-neighbour support by station:
 
-{_markdown_table(pd.DataFrame([{{"station_id": key, "nearest_other_station_km": value}} for key, value in nearest_distances.items()]), 3)}
+{_markdown_table(pd.DataFrame([{"station_id": key, "nearest_other_station_km": value} for key, value in nearest_distances.items()]), 3)}
 
 The geometry samples traffic, residential, industrial, and mixed contexts, but
 six points are not sufficient for city-wide road-scale interpolation. The
@@ -933,8 +929,9 @@ spatial estimates, never direct road-level measurements.
 3. Complete-case LOSO can overrepresent periods with better network uptime.
 4. Oracle metrics isolate spatial error and understate end-to-end deployment
    error, which will also contain station forecast error.
-5. The forecasting test set was previously exposed in Milestone 2C and was
-   deliberately not reused here; no untouched final spatial test is claimed.
+5. The forecasting test set was previously exposed during the forecasting
+   milestones and was deliberately not reused here; no untouched final spatial
+   test is claimed.
 6. IDW/nearest use distance only and cannot resolve road-scale or source-specific
    gradients.
 7. Reliability indicators are geometry proxies, not probabilistic uncertainty.
