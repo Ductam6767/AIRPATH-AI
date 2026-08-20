@@ -201,6 +201,24 @@ def test_reliability_analysis_returns_proxy_correlations_and_status_errors() -> 
 def test_readiness_decision_uses_explicit_observed_criteria() -> None:
     rows = [
         {
+            "pipeline": "forecast_only",
+            "aggregation": "pooled",
+            "held_out_station": "ALL",
+            "horizon_hours": "ALL",
+            "mae": 5.5,
+            "rmse": 8.0,
+            "r2": 0.45,
+        },
+        {
+            "pipeline": "oracle_spatial",
+            "aggregation": "pooled",
+            "held_out_station": "ALL",
+            "horizon_hours": "ALL",
+            "mae": 5.4,
+            "rmse": 8.1,
+            "r2": 0.44,
+        },
+        {
             "pipeline": "forecast_spatial",
             "aggregation": "pooled",
             "held_out_station": "ALL",
@@ -227,3 +245,4 @@ def test_readiness_decision_uses_explicit_observed_criteria() -> None:
 
     assert decision.classification == "B. READY WITH RESTRICTIONS"
     assert decision.criteria["positive_station_r2_count"] == 4
+    assert decision.criteria["combined_mae_degradation_le_50_percent"]

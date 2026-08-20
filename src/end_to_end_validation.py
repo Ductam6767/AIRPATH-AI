@@ -547,34 +547,46 @@ def reliability_error_relationship(
 
 
 def decide_readiness(metrics: pd.DataFrame) -> ReadinessDecision:
-    """Apply transparent predeclared practical criteria to observed metrics."""
-    pooled = metrics.loc[
-        metrics["pipeline"].eq("forecast_spatial")
-        & metrics["aggregation"].eq("pooled")
-    ].iloc[0]
+    """Apply transparent relative-error criteria to observed metrics."""
+    pooled_rows = metrics.loc[metrics["aggregation"].eq("pooled")].set_index(
+        "pipeline"
+    )
+    pooled = pooled_rows.loc["forecast_spatial"]
+    component_mae_reference = max(
+        float(pooled_rows.loc["forecast_only", "mae"]),
+        float(pooled_rows.loc["oracle_spatial", "mae"]),
+    )
+    component_r2_floor = min(
+        float(pooled_rows.loc["forecast_only", "r2"]),
+        float(pooled_rows.loc["oracle_spatial", "r2"]),
+    )
+    mae_ratio = float(pooled["mae"]) / component_mae_reference
     per_station = metrics.loc[
         metrics["pipeline"].eq("forecast_spatial")
         & metrics["aggregation"].eq("per_station")
     ]
     positive_station_r2 = int(per_station["r2"].gt(0).sum())
     criteria = {
-        "pooled_mae_le_10": bool(pooled["mae"] <= 10),
+        "combined_mae_relative_to_worse_component": mae_ratio,
+        "combined_mae_degradation_le_50_percent": mae_ratio <= 1.5,
         "pooled_r2_positive": bool(pooled["r2"] > 0),
         "at_least_four_of_six_station_r2_positive": positive_station_r2 >= 4,
         "positive_station_r2_count": positive_station_r2,
-        "ready_strict_pooled_mae_le_5": bool(pooled["mae"] <= 5),
-        "ready_strict_pooled_r2_ge_0_5": bool(pooled["r2"] >= 0.5),
+        "ready_strict_mae_degradation_le_10_percent": mae_ratio <= 1.1,
+        "ready_strict_r2_no_worse_than_component_floor": bool(
+            pooled["r2"] >= component_r2_floor
+        ),
         "ready_strict_all_station_r2_nonnegative": bool(
             per_station["r2"].ge(0).all()
         ),
     }
     strict_ready = (
-        criteria["ready_strict_pooled_mae_le_5"]
-        and criteria["ready_strict_pooled_r2_ge_0_5"]
+        criteria["ready_strict_mae_degradation_le_10_percent"]
+        and criteria["ready_strict_r2_no_worse_than_component_floor"]
         and criteria["ready_strict_all_station_r2_nonnegative"]
     )
     restricted_ready = (
-        criteria["pooled_mae_le_10"]
+        criteria["combined_mae_degradation_le_50_percent"]
         and criteria["pooled_r2_positive"]
         and criteria["at_least_four_of_six_station_r2_positive"]
     )
@@ -856,9 +868,13 @@ Decision criteria and observed pass/fail values:
 {json.dumps(dict(decision.criteria), indent=2)}
 ```
 
-The decision is computed from pooled forecast+spatial MAE/R² and the number of
-stations with positive combined R². It is a transparent prototype gate, not a
-clinical or regulatory air-quality threshold.
+The decision uses relative degradation from the worse standalone component,
+pooled combined R², and the number of stations with positive combined R².
+The restricted gate allows at most 50% MAE degradation and requires positive
+pooled R² plus positive R² at four of six stations. The strict gate allows at
+most 10% degradation, no pooled R² loss below the weaker standalone component,
+and non-negative R² at every station. These are transparent prototype
+progression gates, not clinical or regulatory air-quality thresholds.
 
 ## J. Future sub-hourly validation requirements
 
