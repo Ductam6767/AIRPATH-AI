@@ -1,0 +1,18 @@
+{
+  "classification": "B. READY WITH RESTRICTIONS",
+  "rationale": "Exposure ranking is sufficiently stable for further offline work, but one or more strict agreement/error gates fail.",
+  "criteria": {
+    "top_1_agreement_rate": 1.0,
+    "mean_spearman_rank_correlation": 0.8749999999999999,
+    "minimum_scenario_spearman": 0.6,
+    "maximum_mode_mape_percent": 24.2594617350267,
+    "strict_top_1_agreement_all": true,
+    "strict_mean_spearman_ge_0_9": false,
+    "strict_minimum_spearman_ge_0_8": false,
+    "strict_maximum_mode_mape_le_10": false,
+    "restricted_top_1_agreement_ge_half": true,
+    "restricted_mean_spearman_ge_0_6": true,
+    "restricted_no_negative_scenario_spearman": true,
+    "restricted_maximum_mode_mape_le_25": true
+  }
+}

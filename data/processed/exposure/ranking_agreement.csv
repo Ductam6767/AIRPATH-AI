@@ -1,0 +1,5 @@
+scenario_id,mode,route_count,spearman_rank_correlation,kendall_tau_a,oracle_top_1_route,predicted_top_1_route,top_1_agreement,top_2_overlap_count,top_2_overlap_fraction
+s2_to_s6,motorbike,5,0.6,0.4,motorbike-1,motorbike-1,True,1,0.5
+s2_to_s6,walking,5,0.8999999999999998,0.8,walking-1,walking-1,True,2,1.0
+s6_to_s5,motorbike,5,0.9999999999999999,1.0,motorbike-1,motorbike-1,True,2,1.0
+s6_to_s5,walking,5,0.9999999999999999,1.0,walking-1,walking-1,True,2,1.0
