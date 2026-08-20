@@ -163,6 +163,86 @@ def test_overpass_conversion_applies_mode_and_oneway_rules() -> None:
     assert not any(edge.osm_way_id == 300 for edge in network.edges.values())
 
 
+def test_restricted_conditional_directional_and_barrier_access_is_conservative() -> None:
+    payload = {
+        "elements": [
+            {
+                "type": "node",
+                "id": 5,
+                "lat": 10.78,
+                "lon": 106.68,
+                "tags": {"barrier": "bollard"},
+            },
+            {
+                "type": "way",
+                "id": 400,
+                "nodes": [1, 2],
+                "geometry": [
+                    {"lat": 10.78, "lon": 106.64},
+                    {"lat": 10.78, "lon": 106.65},
+                ],
+                "tags": {"highway": "service", "access": "destination"},
+            },
+            {
+                "type": "way",
+                "id": 500,
+                "nodes": [2, 3],
+                "geometry": [
+                    {"lat": 10.78, "lon": 106.65},
+                    {"lat": 10.78, "lon": 106.66},
+                ],
+                "tags": {
+                    "highway": "residential",
+                    "motorcycle:conditional": "no @ (Mo-Fr)",
+                },
+            },
+            {
+                "type": "way",
+                "id": 600,
+                "nodes": [3, 4],
+                "geometry": [
+                    {"lat": 10.78, "lon": 106.66},
+                    {"lat": 10.78, "lon": 106.67},
+                ],
+                "tags": {
+                    "highway": "residential",
+                    "motorcycle:backward": "no",
+                },
+            },
+            {
+                "type": "way",
+                "id": 700,
+                "nodes": [4, 5],
+                "geometry": [
+                    {"lat": 10.78, "lon": 106.67},
+                    {"lat": 10.78, "lon": 106.68},
+                ],
+                "tags": {"highway": "residential"},
+            },
+        ]
+    }
+    network = build_network_from_overpass(payload)
+
+    assert not any(edge.osm_way_id == 400 for edge in network.edges.values())
+    conditional = [
+        edge for edge in network.edges.values() if edge.osm_way_id == 500
+    ]
+    assert conditional and all(edge.walking_allowed for edge in conditional)
+    assert not any(edge.motorbike_allowed for edge in conditional)
+    directional = {
+        edge.direction: edge
+        for edge in network.edges.values()
+        if edge.osm_way_id == 600
+    }
+    assert directional["forward"].motorbike_allowed
+    assert not directional["reverse"].motorbike_allowed
+    barrier = [
+        edge for edge in network.edges.values() if edge.osm_way_id == 700
+    ]
+    assert barrier and all(edge.walking_allowed for edge in barrier)
+    assert not any(edge.motorbike_allowed for edge in barrier)
+
+
 def test_network_round_trip_preserves_edges(tmp_path) -> None:
     network, _, _ = _five_route_network()
     path = tmp_path / "network.json.gz"

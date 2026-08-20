@@ -539,12 +539,20 @@ traversability. The graph is not collapsed to one route polyline.
 - Retrieval timestamp: **{metadata.get("retrieved_at_utc")}**.
 - CRS: **WGS84 geographic coordinates, EPSG:4326**.
 - Retained ways: **{int(metadata.get("retained_osm_ways", 0)):,}**.
+- Filter profile: **{metadata.get("filter_rule_version")}**.
+- AOI checksum: `{metadata.get("pilot_polygon_sha256")}`.
+- Canonical Overpass-response checksum:
+  `{metadata.get("overpass_response_sha256")}`.
 - Reproducible query and polygon are saved in
   `data/processed/road_network/metadata.json`.
 
-Only segments whose endpoints and midpoint lie in the validated polygon are
-retained. General and mode-specific `access`, `foot`, `vehicle`,
-`motor_vehicle`, and `motorcycle` restrictions are applied. Vehicle oneway
+The query uses the polygon's enclosing bounding box to avoid missing ways that
+cross its boundary; local filtering then retains only segments whose endpoints
+and midpoint lie in the validated polygon. General, directional, and
+mode-specific `access`, `foot`, `vehicle`, `motor_vehicle`, and `motorcycle`
+restrictions are applied. Restricted/end-access and unknown explicit values are
+excluded from through-routing. Ways with unevaluated conditional access are
+excluded conservatively. Barrier nodes are applied by mode. Vehicle oneway
 direction is respected for motorbikes; ordinary vehicle oneway tags do not
 restrict walking unless a specific pedestrian-direction tag says so.
 
@@ -556,7 +564,8 @@ Walking excludes motorways/trunks and honors explicit pedestrian prohibitions.
 Motorbike excludes footways, paths, pedestrian ways, cycleways, and steps and
 honors explicit motorcycle/motor-vehicle prohibitions. OSM tagging is incomplete,
 so “allowed” means not clearly prohibited by the retained tags; it is not a
-guarantee of current legal or physical access.
+guarantee of current legal or physical access. The declared allow-list is a
+conservative research profile, not a complete Vietnam legal-access model.
 
 ## D–E. Baseline travel-time assumptions
 
@@ -627,8 +636,8 @@ observed journeys.
 ## J. Known limitations
 
 1. OSM is volunteered and changes over time; tags can be incomplete or stale.
-2. Turn-restriction relations and conditional/time-dependent access are not yet
-   interpreted.
+2. Turn-restriction relations are not yet interpreted; ways with relevant
+   unevaluated conditional access are excluded rather than guessed.
 3. Endpoints are snapped to road nodes; connector walking/riding time is
    reported as snap distance but not added to route duration.
 4. Constant speeds omit traffic, signals, turns, slope, surface effects, and

@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import hashlib
 import io
 import json
+import platform
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,6 +22,7 @@ OSM_SOURCE_URL: Final[str] = "https://www.openstreetmap.org"
 DEFAULT_OVERPASS_URL: Final[str] = "https://overpass-api.de/api/interpreter"
 OSM_LICENSE: Final[str] = "OpenStreetMap contributors, ODbL 1.0"
 MODES: Final[tuple[str, str]] = ("walking", "motorbike")
+FILTER_RULE_VERSION: Final[str] = "airpath-osm-filter-v2"
 
 # The validated Milestone 3A support polygon is the convex hull of stations 2–6.
 # Station 6 lies inside the hull, so the boundary vertices are 2, 3, 4, and 5.
@@ -70,8 +73,21 @@ MOTORBIKE_HIGHWAYS: Final[frozenset[str]] = frozenset(
 )
 QUERY_HIGHWAYS: Final[frozenset[str]] = WALKING_HIGHWAYS | MOTORBIKE_HIGHWAYS
 DENIED_ACCESS: Final[frozenset[str]] = frozenset({"no", "private"})
+RESTRICTED_ACCESS: Final[frozenset[str]] = frozenset(
+    {
+        "agricultural",
+        "customers",
+        "delivery",
+        "destination",
+        "forestry",
+        "permit",
+    }
+)
 ALLOWED_ACCESS: Final[frozenset[str]] = frozenset(
     {"yes", "designated", "permissive", "official"}
+)
+WALKING_PASSABLE_BARRIERS: Final[frozenset[str]] = frozenset(
+    {"bollard", "block", "bus_trap", "cycle_barrier"}
 )
 
 
@@ -294,6 +310,37 @@ def ensure_supported_location(latitude: float, longitude: float) -> None:
         )
 
 
+def _classify_explicit_access(value: str) -> bool:
+    normalised = value.lower()
+    if normalised in ALLOWED_ACCESS:
+        return True
+    if normalised in DENIED_ACCESS or normalised in RESTRICTED_ACCESS:
+        return False
+    # Through-routing excludes restricted/end-access and unknown explicit values.
+    return False
+
+
+def _has_unevaluated_condition(tags: Mapping[str, str], mode: str) -> bool:
+    prefixes = (
+        ("access", "foot", "oneway:foot")
+        if mode == "walking"
+        else (
+            "access",
+            "vehicle",
+            "motor_vehicle",
+            "motorcycle",
+            "oneway",
+            "oneway:motor_vehicle",
+            "oneway:motorcycle",
+        )
+    )
+    return any(
+        key.endswith(":conditional")
+        and any(key.startswith(prefix) for prefix in prefixes)
+        for key in tags
+    )
+
+
 def _mode_access(tags: Mapping[str, str], mode: str) -> bool:
     validate_mode(mode)
     highway = tags.get("highway", "")
@@ -301,6 +348,8 @@ def _mode_access(tags: Mapping[str, str], mode: str) -> bool:
         WALKING_HIGHWAYS if mode == "walking" else MOTORBIKE_HIGHWAYS
     )
     if highway not in allowed_highways:
+        return False
+    if _has_unevaluated_condition(tags, mode):
         return False
 
     mode_keys = (
@@ -310,11 +359,51 @@ def _mode_access(tags: Mapping[str, str], mode: str) -> bool:
     )
     for key in mode_keys:
         value = tags.get(key)
-        if value in DENIED_ACCESS:
-            return False
-        if value in ALLOWED_ACCESS:
-            return True
-    return tags.get("access") not in DENIED_ACCESS
+        if value is not None:
+            return _classify_explicit_access(value)
+    general_access = tags.get("access")
+    if general_access is not None:
+        return _classify_explicit_access(general_access)
+    return True
+
+
+def _directional_mode_access(
+    tags: Mapping[str, str],
+    mode: str,
+    direction: str,
+    default: bool,
+) -> bool:
+    if not default:
+        return False
+    keys = (
+        (f"foot:{direction}",)
+        if mode == "walking"
+        else (
+            f"motorcycle:{direction}",
+            f"motor_vehicle:{direction}",
+            f"vehicle:{direction}",
+        )
+    )
+    for key in keys:
+        if key in tags:
+            return _classify_explicit_access(tags[key])
+    return default
+
+
+def _barrier_access(tags: Mapping[str, str], mode: str) -> bool:
+    if "barrier" not in tags:
+        return True
+    mode_keys = (
+        ("foot",)
+        if mode == "walking"
+        else ("motorcycle", "motor_vehicle", "vehicle")
+    )
+    for key in mode_keys:
+        if key in tags:
+            return _classify_explicit_access(tags[key])
+    if "access" in tags:
+        return _classify_explicit_access(tags["access"])
+    return mode == "walking" and tags["barrier"] in WALKING_PASSABLE_BARRIERS
 
 
 def _oneway_value(tags: Mapping[str, str], mode: str) -> str:
@@ -339,18 +428,28 @@ def _direction_access(tags: Mapping[str, str], mode: str) -> tuple[bool, bool]:
         return False, False
     oneway = _oneway_value(tags, mode)
     if oneway in {"yes", "true", "1"}:
-        return True, False
-    if oneway == "-1":
-        return False, True
-    return True, True
-
-
-def overpass_query() -> str:
-    polygon = " ".join(f"{lat:.8f} {lon:.8f}" for lat, lon in PILOT_POLYGON)
-    highway_pattern = "|".join(sorted(QUERY_HIGHWAYS))
+        forward, reverse = True, False
+    elif oneway == "-1":
+        forward, reverse = False, True
+    else:
+        forward, reverse = True, True
     return (
-        '[out:json][timeout:180];\n'
-        f'way["highway"~"^({highway_pattern})$"](poly:"{polygon}");\n'
+        _directional_mode_access(tags, mode, "forward", forward),
+        _directional_mode_access(tags, mode, "backward", reverse),
+    )
+
+
+def overpass_query(snapshot_date: str | None = None) -> str:
+    south = min(point[0] for point in PILOT_POLYGON)
+    west = min(point[1] for point in PILOT_POLYGON)
+    north = max(point[0] for point in PILOT_POLYGON)
+    east = max(point[1] for point in PILOT_POLYGON)
+    highway_pattern = "|".join(sorted(QUERY_HIGHWAYS))
+    date_clause = "" if snapshot_date is None else f'[date:"{snapshot_date}"]'
+    return (
+        f"[out:json][timeout:180]{date_clause};\n"
+        f'way["highway"~"^({highway_pattern})$"]'
+        f"({south:.8f},{west:.8f},{north:.8f},{east:.8f});\n"
         "(._;>;);\n"
         "out body;"
     )
@@ -359,10 +458,11 @@ def overpass_query() -> str:
 def retrieve_overpass(
     endpoint: str = DEFAULT_OVERPASS_URL,
     *,
+    query_text: str | None = None,
     timeout_seconds: int = 240,
 ) -> dict[str, object]:
     """Retrieve a small bounded OSM highway extract through Overpass QL."""
-    query = overpass_query()
+    query = overpass_query() if query_text is None else query_text
     request = Request(
         endpoint,
         data=urlencode({"data": query}).encode("utf-8"),
@@ -395,6 +495,7 @@ def build_network_from_overpass(
     payload: Mapping[str, object],
     *,
     retrieval_time: datetime | None = None,
+    query_text: str | None = None,
 ) -> RoadNetwork:
     """Convert Overpass ways into directed, mode-labelled OSM segments."""
     elements = payload.get("elements")
@@ -410,6 +511,14 @@ def build_network_from_overpass(
         and element.get("type") == "node"
         and "lat" in element
         and "lon" in element
+    }
+    tags_by_node_id = {
+        int(element["id"]): {
+            str(key): str(value)
+            for key, value in dict(element.get("tags", {})).items()
+        }
+        for element in elements
+        if isinstance(element, dict) and element.get("type") == "node"
     }
 
     for element in elements:
@@ -462,6 +571,35 @@ def build_network_from_overpass(
             end = (float(end_geometry["lat"]), float(end_geometry["lon"]))
             if start_id == end_id or start == end or not _segment_supported(start, end):
                 continue
+            walking_segment_forward = (
+                walking_forward
+                and _barrier_access(tags_by_node_id.get(start_id, {}), "walking")
+                and _barrier_access(tags_by_node_id.get(end_id, {}), "walking")
+            )
+            walking_segment_reverse = (
+                walking_reverse
+                and _barrier_access(tags_by_node_id.get(start_id, {}), "walking")
+                and _barrier_access(tags_by_node_id.get(end_id, {}), "walking")
+            )
+            motorbike_segment_forward = (
+                motorbike_forward
+                and _barrier_access(tags_by_node_id.get(start_id, {}), "motorbike")
+                and _barrier_access(tags_by_node_id.get(end_id, {}), "motorbike")
+            )
+            motorbike_segment_reverse = (
+                motorbike_reverse
+                and _barrier_access(tags_by_node_id.get(start_id, {}), "motorbike")
+                and _barrier_access(tags_by_node_id.get(end_id, {}), "motorbike")
+            )
+            if not any(
+                (
+                    walking_segment_forward,
+                    walking_segment_reverse,
+                    motorbike_segment_forward,
+                    motorbike_segment_reverse,
+                )
+            ):
+                continue
             length_m = 1000 * haversine_distance_km(*start, *end)
             if length_m <= 0:
                 continue
@@ -476,7 +614,7 @@ def build_network_from_overpass(
                 "surface": tags.get("surface"),
                 "maxspeed": tags.get("maxspeed"),
             }
-            if walking_forward or motorbike_forward:
+            if walking_segment_forward or motorbike_segment_forward:
                 edge_id = f"{way_id}:{segment_index}:f"
                 edges[edge_id] = RoadEdge(
                     edge_id=edge_id,
@@ -484,11 +622,11 @@ def build_network_from_overpass(
                     end_node=end_id,
                     geometry=(start, end),
                     direction="forward",
-                    walking_allowed=walking_forward,
-                    motorbike_allowed=motorbike_forward,
+                    walking_allowed=walking_segment_forward,
+                    motorbike_allowed=motorbike_segment_forward,
                     **common,
                 )
-            if walking_reverse or motorbike_reverse:
+            if walking_segment_reverse or motorbike_segment_reverse:
                 edge_id = f"{way_id}:{segment_index}:r"
                 edges[edge_id] = RoadEdge(
                     edge_id=edge_id,
@@ -496,8 +634,8 @@ def build_network_from_overpass(
                     end_node=start_id,
                     geometry=(end, start),
                     direction="reverse",
-                    walking_allowed=walking_reverse,
-                    motorbike_allowed=motorbike_reverse,
+                    walking_allowed=walking_segment_reverse,
+                    motorbike_allowed=motorbike_segment_reverse,
                     **common,
                 )
             retained_way_ids.add(way_id)
@@ -519,6 +657,13 @@ def build_network_from_overpass(
         else None
     )
     retrieved_at = retrieval_time or datetime.now(timezone.utc)
+    effective_query = overpass_query() if query_text is None else query_text
+    canonical_payload = json.dumps(
+        payload, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    polygon_bytes = json.dumps(
+        PILOT_POLYGON, separators=(",", ":")
+    ).encode("utf-8")
     metadata: dict[str, object] = {
         "source": OSM_SOURCE_URL,
         "license": OSM_LICENSE,
@@ -529,7 +674,11 @@ def build_network_from_overpass(
         "coordinate_system": "WGS84 geographic coordinates (EPSG:4326)",
         "pilot_station_ids": list(PILOT_STATION_IDS),
         "pilot_polygon_lat_lon": [list(point) for point in PILOT_POLYGON],
-        "query": overpass_query(),
+        "pilot_polygon_sha256": hashlib.sha256(polygon_bytes).hexdigest(),
+        "query": effective_query,
+        "overpass_response_sha256": hashlib.sha256(canonical_payload).hexdigest(),
+        "filter_rule_version": FILTER_RULE_VERSION,
+        "python_version": platform.python_version(),
         "retained_osm_ways": len(retained_way_ids),
         "nodes": len(nodes),
         "directed_edges": len(edges),
@@ -537,9 +686,10 @@ def build_network_from_overpass(
         "motorbike_highway_types": sorted(MOTORBIKE_HIGHWAYS),
         "filter_note": (
             "Segments require endpoints and midpoint inside the stations 2–6 "
-            "convex hull. access/foot/motorcycle/motor_vehicle/vehicle and "
-            "mode-specific oneway tags are applied. Turn restrictions and "
-            "conditional restrictions are not interpreted."
+            "convex hull. Mode-specific access hierarchy, directional access, "
+            "oneway tags, and barrier nodes are applied. Restricted/end-access, "
+            "unknown explicit access, and unevaluated conditional-access ways "
+            "are excluded. Turn-restriction relations are not interpreted."
         ),
     }
     return RoadNetwork(nodes=nodes, edges=edges, metadata=metadata)
@@ -585,10 +735,12 @@ def download_and_process_network(
     output_directory: str | Path = "data/processed/road_network",
     *,
     endpoint: str = DEFAULT_OVERPASS_URL,
+    snapshot_date: str | None = None,
 ) -> RoadNetwork:
     output_directory = Path(output_directory)
-    payload = retrieve_overpass(endpoint)
-    network = build_network_from_overpass(payload)
+    query_text = overpass_query(snapshot_date)
+    payload = retrieve_overpass(endpoint, query_text=query_text)
+    network = build_network_from_overpass(payload, query_text=query_text)
     network.metadata["overpass_endpoint"] = endpoint
     save_network(network, output_directory / "healthyair_pilot_osm.json.gz")
     save_metadata(network, output_directory / "metadata.json")
@@ -610,13 +762,20 @@ def _parse_arguments() -> argparse.Namespace:
         "--output-directory", default="data/processed/road_network"
     )
     parser.add_argument("--overpass-url", default=DEFAULT_OVERPASS_URL)
+    parser.add_argument(
+        "--snapshot-date",
+        default=None,
+        help="Optional ISO-8601 OSM snapshot timestamp for reproducible retrieval.",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     arguments = _parse_arguments()
     network = download_and_process_network(
-        arguments.output_directory, endpoint=arguments.overpass_url
+        arguments.output_directory,
+        endpoint=arguments.overpass_url,
+        snapshot_date=arguments.snapshot_date,
     )
     print(
         json.dumps(
