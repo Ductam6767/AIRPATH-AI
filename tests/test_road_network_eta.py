@@ -75,10 +75,18 @@ def _five_route_network() -> tuple[RoadNetwork, tuple[float, float], tuple[float
     for intermediate in range(2, 7):
         first = _edge(f"{edge_number}-a", nodes[1], nodes[intermediate])
         edge_number += 1
+        first_reverse = _edge(
+            f"{edge_number}-ar", nodes[intermediate], nodes[1]
+        )
+        edge_number += 1
         second = _edge(f"{edge_number}-b", nodes[intermediate], nodes[7])
         edge_number += 1
-        edges[first.edge_id] = first
-        edges[second.edge_id] = second
+        second_reverse = _edge(
+            f"{edge_number}-br", nodes[7], nodes[intermediate]
+        )
+        edge_number += 1
+        for edge in (first, first_reverse, second, second_reverse):
+            edges[edge.edge_id] = edge
     network = RoadNetwork(nodes, edges, {"fixture": True})
     origin = (nodes[1].latitude, nodes[1].longitude)
     destination = (nodes[7].latitude, nodes[7].longitude)
