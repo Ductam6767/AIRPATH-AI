@@ -585,7 +585,6 @@ def _summary(records: Sequence[SegmentPM25Record], pipeline_mode: str) -> dict[s
             {record.supported_target_time for record in records}
         ),
         "pm25_min": float(values.min()),
-        "pm25_mean": float(values.mean()),
         "pm25_max": float(values.max()),
         "supported_reliability_segments": sum(
             record.reliability_status == "supported" for record in records
@@ -675,6 +674,9 @@ selection or an untouched final evaluation.
 ## D–E. Oracle and deployment results
 
 {_markdown_table(summary, 4)}
+
+The min/max values are descriptive segment-output ranges only. No segment
+duration weighting, dose, inhalation, or route-level exposure is calculated.
 
 Station values at mapped target {forecast_values.target_time}:
 
