@@ -475,7 +475,15 @@ def _render_report(
 ) -> str:
     metadata = network.metadata
     mode_count_rows = [
-        {"mode": mode, **network.mode_counts(mode)}
+        {
+            "mode": mode,
+            "all_mode_nodes": network.mode_counts(mode)["nodes"],
+            "all_mode_directed_edges": network.mode_counts(mode)["directed_edges"],
+            "routing_component_nodes": network.routing_component_counts(mode)["nodes"],
+            "routing_component_directed_edges": network.routing_component_counts(mode)[
+                "directed_edges"
+            ],
+        }
         for mode in MODES
     ]
     road_rows = [
@@ -528,7 +536,10 @@ and **{len(network.edges):,} directed segment records** before selecting a mode.
 Nodes are OSM road vertices. Directed edges are consecutive OSM way-node
 segments and retain geometry, haversine length, `highway` type, way ID, name,
 surface, maxspeed text when available, OSM direction, and walking/motorbike
-traversability. The graph is not collapsed to one route polyline.
+traversability. The graph is not collapsed to one route polyline. Endpoint
+snapping uses each mode's largest strongly connected component, preventing
+routes from starting on disconnected islands; all retained components remain in
+the serialized research graph.
 
 ## Data source and reproducibility
 

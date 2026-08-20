@@ -145,6 +145,68 @@ class RoadNetwork:
         for mode in MODES:
             for edge_ids in self._adjacency[mode].values():
                 edge_ids.sort()
+        self._routing_nodes = {
+            mode: self._largest_strong_component_nodes(mode) for mode in MODES
+        }
+
+    def _largest_strong_component_nodes(self, mode: str) -> frozenset[int]:
+        """Return the deterministic largest directed routing component."""
+        adjacency: dict[int, list[int]] = {}
+        reverse: dict[int, list[int]] = {}
+        all_nodes: set[int] = set()
+        for edge_ids in self._adjacency[mode].values():
+            for edge_id in edge_ids:
+                edge = self.edges[edge_id]
+                adjacency.setdefault(edge.start_node, []).append(edge.end_node)
+                reverse.setdefault(edge.end_node, []).append(edge.start_node)
+                all_nodes.update((edge.start_node, edge.end_node))
+        for neighbours in adjacency.values():
+            neighbours.sort()
+        for neighbours in reverse.values():
+            neighbours.sort()
+
+        visited: set[int] = set()
+        finishing_order: list[int] = []
+        for start in sorted(all_nodes):
+            if start in visited:
+                continue
+            stack: list[tuple[int, bool]] = [(start, False)]
+            while stack:
+                node, expanded = stack.pop()
+                if expanded:
+                    finishing_order.append(node)
+                    continue
+                if node in visited:
+                    continue
+                visited.add(node)
+                stack.append((node, True))
+                for neighbour in reversed(adjacency.get(node, [])):
+                    if neighbour not in visited:
+                        stack.append((neighbour, False))
+
+        assigned: set[int] = set()
+        largest: set[int] = set()
+        for start in reversed(finishing_order):
+            if start in assigned:
+                continue
+            component: set[int] = set()
+            stack = [(start, False)]
+            while stack:
+                node, _ = stack.pop()
+                if node in assigned:
+                    continue
+                assigned.add(node)
+                component.add(node)
+                for neighbour in reverse.get(node, []):
+                    if neighbour not in assigned:
+                        stack.append((neighbour, False))
+            if len(component) > len(largest) or (
+                len(component) == len(largest)
+                and component
+                and (not largest or min(component) < min(largest))
+            ):
+                largest = component
+        return frozenset(largest)
 
     def outgoing_edges(self, node_id: int, mode: str) -> tuple[RoadEdge, ...]:
         validate_mode(mode)
@@ -157,12 +219,7 @@ class RoadNetwork:
         """Snap an in-polygon location to the nearest mode-traversable node."""
         validate_mode(mode)
         ensure_supported_location(latitude, longitude)
-        routable_nodes = set(self._adjacency[mode])
-        routable_nodes.update(
-            self.edges[edge_id].end_node
-            for edge_ids in self._adjacency[mode].values()
-            for edge_id in edge_ids
-        )
+        routable_nodes = self._routing_nodes[mode]
         if not routable_nodes:
             raise ValueError(f"Road network has no traversable nodes for {mode}.")
         return min(
@@ -187,6 +244,17 @@ class RoadNetwork:
             for node_id in (edge.start_node, edge.end_node)
         }
         return {"nodes": len(mode_nodes), "directed_edges": len(mode_edges)}
+
+    def routing_component_counts(self, mode: str) -> dict[str, int]:
+        """Count nodes/edges in the component used for endpoint snapping."""
+        validate_mode(mode)
+        component = self._routing_nodes[mode]
+        edge_count = sum(
+            edge.start_node in component and edge.end_node in component
+            for edge in self.edges.values()
+            if edge.allows(mode)
+        )
+        return {"nodes": len(component), "directed_edges": int(edge_count)}
 
     def to_dict(self) -> dict[str, object]:
         return {
