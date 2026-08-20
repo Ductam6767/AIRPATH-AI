@@ -21,9 +21,9 @@
     "unclassified"
   ],
   "nodes": 62463,
-  "osm_snapshot_timestamp": "2026-08-20T08:08:01Z",
+  "osm_snapshot_timestamp": "2026-08-20T10:52:56Z",
   "overpass_endpoint": "https://overpass-api.de/api/interpreter",
-  "overpass_response_sha256": "cfeb8ec01e2179af75dbb7c0915470f486a46066e3757e6da3d50df17f45f2ab",
+  "overpass_response_sha256": "85aafd5f043dc01b2bd1e1e73ca75ffc12386e3b815a2ad9647c3020d0f8595f",
   "pilot_polygon_lat_lon": [
     [
       10.74097081,
@@ -55,7 +55,7 @@
   "requested_snapshot_date": "2026-08-20T07:56:51Z",
   "retained_osm_ways": 19279,
   "retrieval_method": "Overpass API, bounded Overpass QL highway query",
-  "retrieved_at_utc": "2026-08-20T08:09:17.516309+00:00",
+  "retrieved_at_utc": "2026-08-20T10:55:07.806418+00:00",
   "source": "https://www.openstreetmap.org",
   "walking_highway_types": [
     "cycleway",

@@ -36,7 +36,7 @@ from .exposure import (
     summarize_route_exposure,
 )
 from .road_network import PILOT_POLYGON, RoadNetwork, load_network, point_in_pilot_area
-from .route_candidates import CandidateRoute
+from .route_candidates import CandidateRoute, generate_candidate_routes
 from .spatial_estimation import haversine_distance_km
 
 
@@ -276,6 +276,44 @@ def generate_diverse_candidates(
             candidates.append(candidate)
             seen.add(edge_ids)
         edge_usage.update(edge_ids)
+    if len(candidates) < target_count:
+        for route in generate_candidate_routes(
+            network,
+            origin,
+            destination,
+            mode,
+            k=target_count + 5,
+        ):
+            if route.edge_ids in seen:
+                continue
+            duration_minutes = route.total_travel_time_seconds / 60
+            if fastest_minutes is None:
+                fastest_minutes = duration_minutes
+            if (
+                duration_minutes <= MAX_ROUTE_DURATION_MINUTES
+                and duration_minutes
+                <= fastest_minutes + MAX_ADDITIONAL_CANDIDATE_MINUTES
+            ):
+                candidates.append(
+                    CandidateRoute(
+                        route_id=f"{mode}-{len(candidates) + 1}",
+                        mode=route.mode,
+                        origin=route.origin,
+                        destination=route.destination,
+                        origin_node=route.origin_node,
+                        destination_node=route.destination_node,
+                        origin_snap_distance_m=route.origin_snap_distance_m,
+                        destination_snap_distance_m=route.destination_snap_distance_m,
+                        node_ids=route.node_ids,
+                        edge_ids=route.edge_ids,
+                        geometry=route.geometry,
+                        total_distance_m=route.total_distance_m,
+                        total_travel_time_seconds=route.total_travel_time_seconds,
+                    )
+                )
+                seen.add(route.edge_ids)
+            if len(candidates) >= target_count:
+                break
     if len(candidates) < MINIMUM_CANDIDATES:
         raise ValueError(
             f"Only {len(candidates)} diverse {mode} routes were generated."
