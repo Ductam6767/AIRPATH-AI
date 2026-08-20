@@ -184,19 +184,24 @@ Decision criteria and observed pass/fail values:
 
 ```json
 {
-  "pooled_mae_le_10": true,
+  "combined_mae_relative_to_worse_component": 1.2653444956096038,
+  "combined_mae_degradation_le_50_percent": true,
   "pooled_r2_positive": true,
   "at_least_four_of_six_station_r2_positive": true,
   "positive_station_r2_count": 5,
-  "ready_strict_pooled_mae_le_5": false,
-  "ready_strict_pooled_r2_ge_0_5": false,
+  "ready_strict_mae_degradation_le_10_percent": false,
+  "ready_strict_r2_no_worse_than_component_floor": false,
   "ready_strict_all_station_r2_nonnegative": false
 }
 ```
 
-The decision is computed from pooled forecast+spatial MAE/R² and the number of
-stations with positive combined R². It is a transparent prototype gate, not a
-clinical or regulatory air-quality threshold.
+The decision uses relative degradation from the worse standalone component,
+pooled combined R², and the number of stations with positive combined R².
+The restricted gate allows at most 50% MAE degradation and requires positive
+pooled R² plus positive R² at four of six stations. The strict gate allows at
+most 10% degradation, no pooled R² loss below the weaker standalone component,
+and non-negative R² at every station. These are transparent prototype
+progression gates, not clinical or regulatory air-quality thresholds.
 
 ## J. Future sub-hourly validation requirements
 
