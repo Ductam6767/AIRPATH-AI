@@ -564,6 +564,7 @@ def build_network_from_overpass(
     *,
     retrieval_time: datetime | None = None,
     query_text: str | None = None,
+    requested_snapshot_date: str | None = None,
 ) -> RoadNetwork:
     """Convert Overpass ways into directed, mode-labelled OSM segments."""
     elements = payload.get("elements")
@@ -737,6 +738,7 @@ def build_network_from_overpass(
         "license": OSM_LICENSE,
         "retrieval_method": "Overpass API, bounded Overpass QL highway query",
         "overpass_endpoint": DEFAULT_OVERPASS_URL,
+        "requested_snapshot_date": requested_snapshot_date,
         "osm_snapshot_timestamp": osm_timestamp,
         "retrieved_at_utc": retrieved_at.isoformat(),
         "coordinate_system": "WGS84 geographic coordinates (EPSG:4326)",
@@ -808,7 +810,11 @@ def download_and_process_network(
     output_directory = Path(output_directory)
     query_text = overpass_query(snapshot_date)
     payload = retrieve_overpass(endpoint, query_text=query_text)
-    network = build_network_from_overpass(payload, query_text=query_text)
+    network = build_network_from_overpass(
+        payload,
+        query_text=query_text,
+        requested_snapshot_date=snapshot_date,
+    )
     network.metadata["overpass_endpoint"] = endpoint
     save_network(network, output_directory / "healthyair_pilot_osm.json.gz")
     save_metadata(network, output_directory / "metadata.json")

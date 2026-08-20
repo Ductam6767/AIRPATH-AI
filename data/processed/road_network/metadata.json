@@ -1,7 +1,8 @@
 {
   "coordinate_system": "WGS84 geographic coordinates (EPSG:4326)",
-  "directed_edges": 142930,
-  "filter_note": "Segments require endpoints and midpoint inside the stations 2\u20136 convex hull. access/foot/motorcycle/motor_vehicle/vehicle and mode-specific oneway tags are applied. Turn restrictions and conditional restrictions are not interpreted.",
+  "directed_edges": 141161,
+  "filter_note": "Segments require endpoints and midpoint inside the stations 2\u20136 convex hull. Mode-specific access hierarchy, directional access, oneway tags, and barrier nodes are applied. Restricted/end-access, unknown explicit access, and unevaluated conditional-access ways are excluded. Turn-restriction relations are not interpreted.",
+  "filter_rule_version": "airpath-osm-filter-v2",
   "license": "OpenStreetMap contributors, ODbL 1.0",
   "motorbike_highway_types": [
     "living_street",
@@ -19,9 +20,10 @@
     "trunk_link",
     "unclassified"
   ],
-  "nodes": 63013,
-  "osm_snapshot_timestamp": "2026-08-20T07:56:51Z",
+  "nodes": 62463,
+  "osm_snapshot_timestamp": "2026-08-20T08:08:01Z",
   "overpass_endpoint": "https://overpass-api.de/api/interpreter",
+  "overpass_response_sha256": "cfeb8ec01e2179af75dbb7c0915470f486a46066e3757e6da3d50df17f45f2ab",
   "pilot_polygon_lat_lon": [
     [
       10.74097081,
@@ -40,6 +42,7 @@
       106.6878094
     ]
   ],
+  "pilot_polygon_sha256": "1ce2426ff477c23c62ea665adc61aa3fab0561ca8903adb77a4eba4e943bb3b6",
   "pilot_station_ids": [
     2,
     3,
@@ -47,10 +50,12 @@
     5,
     6
   ],
-  "query": "[out:json][timeout:180];\nway[\"highway\"~\"^(cycleway|footway|living_street|motorway|motorway_link|path|pedestrian|primary|primary_link|residential|secondary|secondary_link|service|steps|tertiary|tertiary_link|trunk|trunk_link|unclassified)$\"](poly:\"10.74097081 106.61713230 10.81621227 106.62041430 10.81584553 106.71742820 10.77636612 106.68780940\");\n(._;>;);\nout body;",
-  "retained_osm_ways": 19460,
+  "python_version": "3.12.3",
+  "query": "[out:json][timeout:180][date:\"2026-08-20T07:56:51Z\"];\nway[\"highway\"~\"^(cycleway|footway|living_street|motorway|motorway_link|path|pedestrian|primary|primary_link|residential|secondary|secondary_link|service|steps|tertiary|tertiary_link|trunk|trunk_link|unclassified)$\"](10.74097081,106.61713230,10.81621227,106.71742820);\n(._;>;);\nout body;",
+  "requested_snapshot_date": "2026-08-20T07:56:51Z",
+  "retained_osm_ways": 19279,
   "retrieval_method": "Overpass API, bounded Overpass QL highway query",
-  "retrieved_at_utc": "2026-08-20T07:58:17.442705+00:00",
+  "retrieved_at_utc": "2026-08-20T08:09:17.516309+00:00",
   "source": "https://www.openstreetmap.org",
   "walking_highway_types": [
     "cycleway",

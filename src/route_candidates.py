@@ -546,7 +546,9 @@ the serialized research graph.
 - Source: [OpenStreetMap](https://www.openstreetmap.org), © OpenStreetMap
   contributors, ODbL 1.0.
 - Retrieval: bounded Overpass QL query through `{metadata.get("overpass_endpoint")}`.
-- OSM database timestamp: **{metadata.get("osm_snapshot_timestamp")}**.
+- Requested historical snapshot: **{metadata.get("requested_snapshot_date")}**.
+- Overpass server base timestamp reported with the response:
+  **{metadata.get("osm_snapshot_timestamp")}**.
 - Retrieval timestamp: **{metadata.get("retrieved_at_utc")}**.
 - CRS: **WGS84 geographic coordinates, EPSG:4326**.
 - Retained ways: **{int(metadata.get("retained_osm_ways", 0)):,}**.
