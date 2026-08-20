@@ -18,22 +18,25 @@ from src.eta_engine import SegmentETA
 
 def _synthetic_predictions(include_test: bool = False) -> pd.DataFrame:
     rows = []
-    for horizon in (1, 2, 3):
-        target = ROUTE_FORECAST_ORIGIN + pd.Timedelta(hours=horizon)
-        for station in range(1, 7):
-            actual = float(10 * station + horizon)
-            rows.append(
-                {
-                    "Station_No": station,
-                    "origin_time": ROUTE_FORECAST_ORIGIN,
-                    "target_time": target,
-                    "horizon_hours": horizon,
-                    "target_pm25": actual,
-                    "prediction": actual + station / 2,
-                    "split": "validation",
-                    "model": "xgboost_v1",
-                }
-            )
+    for day_offset, origin in enumerate(
+        (ROUTE_FORECAST_ORIGIN, ROUTE_FORECAST_ORIGIN + pd.Timedelta(days=1))
+    ):
+        for horizon in (1, 2, 3):
+            target = origin + pd.Timedelta(hours=horizon)
+            for station in range(1, 7):
+                actual = float(10 * station + horizon + day_offset)
+                rows.append(
+                    {
+                        "Station_No": station,
+                        "origin_time": origin,
+                        "target_time": target,
+                        "horizon_hours": horizon,
+                        "target_pm25": actual,
+                        "prediction": actual + station / 2,
+                        "split": "validation",
+                        "model": "xgboost_v1",
+                    }
+                )
     if include_test:
         for station in range(1, 7):
             rows.append(
@@ -77,7 +80,7 @@ def _segment(index: int, minute: int) -> SegmentETA:
 def test_heldout_evaluation_has_three_distinct_pathways() -> None:
     evaluation = evaluate_heldout_stations(_synthetic_predictions())
 
-    assert len(evaluation) == 3 * 6
+    assert len(evaluation) == 2 * 3 * 6
     assert set(evaluation["horizon_hours"]) == {1, 2, 3}
     assert set(evaluation["held_out_station"]) == set(range(1, 7))
     assert evaluation[
