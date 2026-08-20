@@ -578,7 +578,7 @@ def download_and_process_network(
     network = build_network_from_overpass(payload)
     network.metadata["overpass_endpoint"] = endpoint
     save_network(network, output_directory / "healthyair_pilot_osm.json.gz")
-    save_metadata(output_directory / "metadata.json", network)
+    save_metadata(network, output_directory / "metadata.json")
     return network
 
 
