@@ -696,6 +696,23 @@ def _render_report(
         "exposure_contribution",
         "contribution_fraction",
     ]
+    representative_top_segments = (
+        top_segments.sort_values(
+            [
+                "scenario_id",
+                "mode",
+                "pipeline_mode",
+                "contribution_fraction",
+            ],
+            ascending=[True, True, True, False],
+        )
+        .groupby(
+            ["scenario_id", "mode", "pipeline_mode"],
+            as_index=False,
+            sort=True,
+        )
+        .head(1)
+    )
     return f"""# AIRPATH-AI Milestone 4 — route exposure aggregation validation
 
 ## Scope
@@ -746,9 +763,12 @@ selection.
 
 ## Segment contribution analysis
 
-Largest segment fractions (top five per route/pathway):
+Representative largest segment fractions (one per scenario/mode/pathway):
 
-{_markdown_table(top_segments[top_columns])}
+{_markdown_table(representative_top_segments[top_columns])}
+
+The complete top-five list for every candidate/pathway is saved in
+`top_segment_contributions.csv`.
 
 Contribution means `PM × minutes`; a large fraction may reflect duration,
 concentration, or both. It does not establish a pollution cause.
@@ -764,7 +784,10 @@ about inhaled dose or behavioral risk.
 {_markdown_table(relationships)}
 
 These are Spearman associations across only ten routes per mode. Candidate
-routes overlap heavily, and reliability proxies are not calibrated uncertainty.
+routes overlap heavily, and the two OD scenarios differ strongly in distance.
+Associations are therefore substantially confounded by scenario/route length;
+they do not isolate spatial reliability effects. Reliability proxies are not
+calibrated uncertainty.
 
 ## I. Hourly and scientific limitations
 
@@ -783,6 +806,12 @@ routes overlap heavily, and reliability proxies are not calibrated uncertainty.
 ### {decision.classification}
 
 {decision.rationale}
+
+Observed restrictions are material: predicted indices underestimate their
+oracle counterparts by roughly 15–34%, one scenario/mode has Spearman 0.6 and
+only 50% top-2 overlap, only two OD pairs are tested, and candidate routes
+overlap heavily. Any subsequent constrained-optimization work must remain an
+offline sensitivity experiment and must not produce user-facing recommendations.
 
 ```json
 {json.dumps(dict(decision.criteria), indent=2)}
