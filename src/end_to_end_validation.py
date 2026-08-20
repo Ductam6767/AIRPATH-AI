@@ -712,6 +712,30 @@ def _render_report(
         "effective_station_count",
         "reliability_status",
     ]
+    rule_mae = mapping_metrics.groupby("mapping_rule")[
+        "mae_vs_oracle_spatial"
+    ].mean()
+    recommended_rule = str(rule_mae.idxmin())
+    floor_mae = float(rule_mae["floor"])
+    ceiling_mae = float(rule_mae["ceiling"])
+    nearest_mae = float(rule_mae["nearest"])
+    if decision.classification.startswith("B."):
+        readiness_scope = (
+            "Proceed only to an offline, pilot-area exposure-aggregation "
+            "experiment with reliability flags and station-level diagnostics. "
+            "Do not use it for route recommendation: station 5 has negative "
+            "combined R² and no road-level ground truth exists."
+        )
+    elif decision.classification.startswith("A."):
+        readiness_scope = (
+            "Proceed to an offline exposure-aggregation experiment while "
+            "retaining all documented resolution and road-reference caveats."
+        )
+    else:
+        readiness_scope = (
+            "Do not begin exposure aggregation until forecast/spatial "
+            "generalization improves under the same development protocol."
+        )
     return f"""# AIRPATH-AI Milestone 3D — end-to-end forecast + spatial validation
 
 ## Protocol
@@ -778,10 +802,20 @@ No method interpolates:
 
 {_markdown_table(mapping_metrics)}
 
-The recommended current rule remains **ceiling**. It never assigns a passage to
-an earlier forecast and matches the prospective/conservative semantics chosen
-in Milestone 3C. Sensitivity differences are reported rather than using this
-single development example to optimize the rule.
+For this development example, mean segment MAE across modes is
+**{floor_mae:.3f}** for floor, **{nearest_mae:.3f}** for nearest, and
+**{ceiling_mae:.3f} µg/m³** for ceiling. The lowest-error rule is therefore
+**{recommended_rule}**.
+
+The most defensible rule for retrospective validation of the current hourly
+product is **floor to the containing hour**, conditional on treating `HH:00` as
+the label of that hourly bin. It also has the lowest development error here and
+does not interpolate. This does **not** silently change Milestone 3C: when the
+forecast origin equals departure, floor may map early segments to unsupported
+t+0h. A prospective deployment adopting floor must issue forecasts at least one
+hour before departure and still enforce the frozen 1–3h horizon. Ceiling remains
+an explicit fallback when that operational condition is not met. No rule is
+validated at the exact minute because no sub-hourly road reference exists.
 
 ## G. Reliability/error relationship
 
@@ -813,6 +847,8 @@ associations must not be generalized as uncertainty calibration.
 ### {decision.classification}
 
 {decision.rationale}
+
+{readiness_scope}
 
 Decision criteria and observed pass/fail values:
 
