@@ -9,11 +9,13 @@ from src.target_time_integration import (
     StationValueError,
     UnsupportedTargetTimeError,
     build_station_lag_bundle,
+    classify_spatial_reliability,
     forecast_station_values,
     integrate_route_deployment,
     integrate_route_oracle,
     map_target_time,
 )
+from src.spatial_estimation import SpatialEstimate
 
 
 ORIGIN = pd.Timestamp("2024-01-01 17:00:00")
@@ -240,3 +242,21 @@ def test_build_lag_bundle_uses_only_exact_historical_timestamps() -> None:
         for times in bundle.source_times_by_station.values()
         for timestamp in times.values()
     )
+
+
+def test_reliability_heuristic_recognises_near_monitor_support() -> None:
+    estimate = SpatialEstimate(
+        predicted_pm25=20.0,
+        target_time=ORIGIN + pd.Timedelta(hours=1),
+        method="idw",
+        power=1.0,
+        nearest_station_id=6,
+        nearest_distance_km=0.1,
+        second_nearest_distance_km=3.0,
+        contributing_stations=6,
+        maximum_weight=0.9,
+        weight_concentration=0.82,
+        effective_station_count=1.22,
+    )
+
+    assert classify_spatial_reliability(estimate) == "supported"

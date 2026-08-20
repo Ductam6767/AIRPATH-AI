@@ -383,14 +383,16 @@ def observed_station_values_at_time(
 def classify_spatial_reliability(estimate: SpatialEstimate) -> str:
     """Qualitative geometry heuristic, not a calibrated confidence interval."""
     second = estimate.second_nearest_distance_km
-    if (
+    near_monitor = estimate.nearest_distance_km <= 1
+    distributed_support = (
         estimate.nearest_distance_km <= 5
         and second is not None
         and second <= 8
         and estimate.contributing_stations >= 5
         and estimate.maximum_weight <= 0.5
         and estimate.effective_station_count >= 3
-    ):
+    )
+    if near_monitor or distributed_support:
         return "supported"
     if (
         estimate.nearest_distance_km <= 10
@@ -705,8 +707,9 @@ effective station count.
 
 Qualitative flags are deterministic heuristics:
 
-- `supported`: nearest ≤5 km, second-nearest ≤8 km, at least five contributors,
-  maximum weight ≤0.5, effective count ≥3;
+- `supported`: either nearest station ≤1 km, or nearest ≤5 km plus
+  second-nearest ≤8 km, at least five contributors, maximum weight ≤0.5, and
+  effective count ≥3;
 - `moderate reliability`: nearest ≤10 km, at least four contributors, effective
   count ≥2;
 - otherwise `weak spatial support`.
