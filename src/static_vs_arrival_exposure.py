@@ -914,7 +914,9 @@ def generate_static_vs_arrival_outputs(
     pairwise.to_csv(output_directory / "route_diversity_pairwise.csv", index=False)
     route_summary.to_csv(output_directory / "route_exposure_comparison.csv", index=False)
     pd.DataFrame(segment_rows).to_csv(
-        output_directory / "segment_exposure_comparison.csv", index=False
+        output_directory / "segment_exposure_comparison.csv.gz",
+        index=False,
+        compression="gzip",
     )
     ranking_rows.to_csv(output_directory / "route_ranking_comparison.csv", index=False)
     ranking_quality.to_csv(
