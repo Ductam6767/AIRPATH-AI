@@ -1,0 +1,23 @@
+{
+  "recommended_model": "C_xgboost_current_pm",
+  "persistence_still_wins_at_plus_1h": true,
+  "current_pm_materially_changes_conclusion": true,
+  "rationale": "Current PM2.5 materially repairs the unfair V1 comparison: Model C nearly matches persistence on development-validation MAE (2.52% gap), wins RMSE on 3/3 horizons, and remains far stronger than Model B. Freeze C as the fair learned forecaster for downstream experiments, while documenting that persistence still wins MAE at +1h.",
+  "criteria": {
+    "evaluation_split": "validation",
+    "evaluation_status": "development_exploratory_not_untouched_final",
+    "persistence_mae_t_plus_1h": 3.038068292731256,
+    "xgboost_v1_mae_t_plus_1h": 4.698592482790346,
+    "xgboost_current_mae_t_plus_1h": 3.2098168815765993,
+    "mean_mae_reduction_c_vs_b": 0.976475663140382,
+    "horizons_b_beats_persistence_mae": 0,
+    "horizons_c_beats_persistence_mae": 0,
+    "pooled_mae_winner": "A_persistence",
+    "pooled_rmse_winner": "C_xgboost_current_pm",
+    "c_vs_a_pooled_mae_gap_percent": 2.5225950700816524,
+    "c_rmse_horizons_better_than_persistence": 3,
+    "hyperparameters": "frozen_v1_validation_selected_shared_by_b_and_c",
+    "test_partition_used_for_tuning": false,
+    "zeros_or_iqr_removed": false
+  }
+}
