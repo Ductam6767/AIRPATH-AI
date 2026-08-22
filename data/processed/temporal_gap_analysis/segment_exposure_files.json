@@ -1,0 +1,9 @@
+{
+  "files": [
+    "segment_exposure_comparison_0600.csv.gz",
+    "segment_exposure_comparison_0800.csv.gz",
+    "segment_exposure_comparison_1200.csv.gz",
+    "segment_exposure_comparison_1700.csv.gz",
+    "segment_exposure_comparison_2000.csv.gz"
+  ]
+}

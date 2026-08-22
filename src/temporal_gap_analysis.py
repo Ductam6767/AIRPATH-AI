@@ -713,7 +713,9 @@ def generate_temporal_gap_outputs(
             )
 
     route_frames: list[pd.DataFrame] = []
-    segment_rows: list[dict[str, object]] = []
+    segment_paths: list[str] = []
+    output_directory = Path(output_directory)
+    output_directory.mkdir(parents=True, exist_ok=True)
     for departure in supported:
         route_frame, segments = evaluate_departure(
             scenarios=scenarios,
@@ -725,7 +727,14 @@ def generate_temporal_gap_outputs(
             departure=departure,
         )
         route_frames.append(route_frame)
-        segment_rows.extend(segments)
+        clock = departure.departure_time.strftime("%H%M")
+        segment_path = (
+            output_directory / f"segment_exposure_comparison_{clock}.csv.gz"
+        )
+        pd.DataFrame(segments).to_csv(
+            segment_path, index=False, compression="gzip"
+        )
+        segment_paths.append(segment_path.name)
 
     route_summary = pd.concat(route_frames, ignore_index=True)
     ranking_rows, ranking_quality = compare_route_rankings_temporal(route_summary)
@@ -749,8 +758,6 @@ def generate_temporal_gap_outputs(
         departure_summary, selections, ranking_quality
     )
 
-    output_directory = Path(output_directory)
-    output_directory.mkdir(parents=True, exist_ok=True)
     report_path = Path(report_path)
     report_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -762,10 +769,8 @@ def generate_temporal_gap_outputs(
     route_summary.to_csv(
         output_directory / "route_exposure_comparison.csv", index=False
     )
-    pd.DataFrame(segment_rows).to_csv(
-        output_directory / "segment_exposure_comparison.csv.gz",
-        index=False,
-        compression="gzip",
+    (output_directory / "segment_exposure_files.json").write_text(
+        json.dumps({"files": segment_paths}, indent=2), encoding="utf-8"
     )
     ranking_rows.to_csv(
         output_directory / "route_ranking_comparison.csv", index=False

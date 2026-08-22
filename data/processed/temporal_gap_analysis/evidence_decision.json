@@ -1,0 +1,44 @@
+{
+  "classification": "B. MIXED EVIDENCE",
+  "rationale": "Across supported departure times on 2022-02-27, nontrivial selection differences average 1.3% (range 0.0\u20135.0%). Strongest clock times: 06:00, 08:00; weakest: 20:00, 17:00. Mean oracle gain when selections differ is 0.02%. The pooled Gap 1 conclusion remains aligned with MIXED/weak evidence from P0-2A.",
+  "criteria": {
+    "evaluation_status": "development_exploratory_not_untouched_final",
+    "forecaster": "C_xgboost_current_pm",
+    "nontrivial_selection_difference_rate": 0.013333333333333334,
+    "mean_oracle_percent_improvement_when_differ": 0.021162238573929182,
+    "positive_oracle_gain_rate_when_differ": 0.5,
+    "mean_spearman_static_vs_airpath": 0.9973015873015871,
+    "mean_percentage_routes_with_material_rank_change": 2.5,
+    "five_minute_selection_difference_percentage": 1.3333333333333335,
+    "strong_differ_rate_ge_0_25": false,
+    "strong_oracle_gain_ge_1_0": false,
+    "strong_positive_gain_rate_ge_0_60": false,
+    "mixed_differ_rate_ge_0_10": false,
+    "mixed_rank_change_ge_10": false,
+    "analysis_date": "2022-02-27",
+    "overall_nontrivial_selection_difference_rate": 0.013333333333333334,
+    "overall_mean_oracle_pct_improvement_when_differ": 0.021162238573929182,
+    "overall_mean_spearman": 0.9973015873015871,
+    "max_departure_differ_rate": 0.05,
+    "min_departure_differ_rate": 0.0,
+    "p0_2a_reference_differ_rate": 0.0633,
+    "gap1_conclusion_changed_vs_p0_2a": false,
+    "strongest_departure_times": [
+      "06:00",
+      "08:00"
+    ],
+    "weakest_departure_times": [
+      "20:00",
+      "17:00"
+    ]
+  },
+  "strongest_departure_times": [
+    "06:00",
+    "08:00"
+  ],
+  "weakest_departure_times": [
+    "20:00",
+    "17:00"
+  ],
+  "gap1_conclusion_changed": false
+}

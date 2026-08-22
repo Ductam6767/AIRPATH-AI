@@ -1,0 +1,7 @@
+delta_time_allowed_minutes,scenario_mode_cases,same_route_selected,different_routes_selected,only_one_feasible_route,no_alternative_beyond_fastest,percentage_selections_differ
+0.0,300,300,0,300,300,0.0
+1.0,300,296,4,30,30,1.3333333333333335
+2.0,300,296,4,10,10,1.3333333333333335
+3.0,300,296,4,0,0,1.3333333333333335
+5.0,300,296,4,0,0,1.3333333333333335
+10.0,300,296,4,0,0,1.3333333333333335
