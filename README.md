@@ -29,7 +29,7 @@ XGBoost, IDW, OSM routing, or route optimization at request time.
 ```
 data/processed/web_demo/   # scenarios.json, routes.json, metadata.json
 api/                       # FastAPI app (packaging/serving only)
-web/                       # placeholder — React UI not built yet
+web/                       # Vite + React + Leaflet map-first UI (WEB-2)
 ```
 
 Demo scenarios (8 OD pairs) are a **distance-stratified subset** of the P0-2B
