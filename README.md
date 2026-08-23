@@ -70,6 +70,30 @@ there may be **no** alternatives.
 python3 -m pytest
 ```
 
+## WEB-2: map-first React frontend
+
+The UI under `web/` renders frozen demo API results only. It does **not**
+recompute forecasts, IDW, exposure, ETA, or routing in the browser.
+
+```bash
+# terminal 1 — API
+python3 -m uvicorn api.main:app --reload --port 8000
+
+# terminal 2 — UI
+cd web
+npm install
+npm run dev
+```
+
+Vite proxies `/demo` and `/health` to the API. Frontend checks:
+
+```bash
+cd web && npm test && npm run build
+```
+
+Product copy compares the **fastest route** with **top feasible lower-exposure
+alternatives among generated candidates** under an absolute `+δ` minute limit.
+
 ## Dataset (research)
 
 Expected input for full research reproduction:

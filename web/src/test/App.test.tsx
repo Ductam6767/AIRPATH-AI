@@ -76,25 +76,33 @@ describe('AIRPATH frontend', () => {
     render(<App />)
 
     expect(await screen.findByText('AIRPATH-AI')).toBeInTheDocument()
-    expect(await screen.findByText('Fastest route')).toBeInTheDocument()
-    expect(screen.getByText(/Exposure-aware option 1/i)).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        /route planner that balances travel time with predicted PM2.5 exposure/i,
+      ),
+    ).toBeInTheDocument()
+    expect(
+      await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByText(/AIRPATH alternative 1/i)).toBeInTheDocument()
     expect(screen.getByText(/28% lower predicted exposure/i)).toBeInTheDocument()
     expect(
       screen.getByText(/time-weighted proxy, not a medical risk score/i),
     ).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
   })
 
   it('updates delta slider to absolute minute values', async () => {
     stubApi()
     render(<App />)
-    await screen.findByText('Fastest route')
+    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
 
-    const slider = screen.getByLabelText(/How much extra time/i)
+    const slider = screen.getByLabelText(/Maximum additional time/i)
     fireEvent.change(slider, { target: { value: '4' } })
 
     await waitFor(() => {
-      expect(screen.getByText('+5 min')).toBeInTheDocument()
-      expect(screen.getByText(/Allow up to \+5 min/i)).toBeInTheDocument()
+      expect(screen.getByText('Allow up to +5 min')).toBeInTheDocument()
     })
   })
 
@@ -102,11 +110,11 @@ describe('AIRPATH frontend', () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
-    await screen.findByText('Fastest route')
+    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
     expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-1')
 
     const altCard = screen.getByRole('button', {
-      name: /Exposure-aware option 1/i,
+      name: /AIRPATH alternative 1/i,
     })
     await user.click(altCard)
     expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-2')
@@ -114,18 +122,17 @@ describe('AIRPATH frontend', () => {
 
   it('shows empty-alternatives message without empty cards', async () => {
     stubApi({ routes: mockRoutesEmptyAlts })
-    // Force delta 0 path: change slider after load
     render(<App />)
-    await screen.findByText('Fastest route')
-    const slider = screen.getByLabelText(/How much extra time/i)
+    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    const slider = screen.getByLabelText(/Maximum additional time/i)
     fireEvent.change(slider, { target: { value: '0' } })
 
     await waitFor(() => {
       expect(
-        screen.getByText(/No alternative fits the selected 0-minute limit/i),
+        screen.getByText(/No alternative fits the selected \+0 min limit/i),
       ).toBeInTheDocument()
     })
-    expect(screen.queryByText(/Exposure-aware option/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/AIRPATH alternative/i)).not.toBeInTheDocument()
     const list = screen.getByRole('list')
     expect(within(list).getAllByRole('listitem')).toHaveLength(1)
   })
@@ -134,7 +141,7 @@ describe('AIRPATH frontend', () => {
     stubApi({ scenariosFail: true })
     render(<App />)
     expect(
-      await screen.findByText(/Cannot reach the AIRPATH demo API/i),
+      await screen.findByText(/demo API is unavailable/i),
     ).toBeInTheDocument()
   })
 })

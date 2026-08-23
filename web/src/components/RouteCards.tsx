@@ -63,7 +63,7 @@ export function RouteCards({
         {all.map((route) => {
           const selected = route.route_id === selectedRouteId
           const title = routeCardTitle(route)
-          const badge = route.is_fastest
+          const extra = route.is_fastest
             ? '+0 min'
             : `+${formatMinutes(route.additional_time_vs_fastest_minutes)} min`
           const reduction = reductionBadgeText(
@@ -83,9 +83,27 @@ export function RouteCards({
                   route.is_fastest ? 'is-fastest' : 'is-alternative'
                 }`}
                 aria-pressed={selected}
-                aria-label={`${title}, ${formatMinutes(route.travel_time_minutes)} minutes, predicted exposure ${formatExposure(route.predicted_exposure_index)}`}
+                aria-label={`${title}, ${formatMinutes(route.travel_time_minutes)} minutes, ${extra}, predicted exposure ${formatExposure(route.predicted_exposure_index)}${!route.is_fastest && reduction ? `, ${reduction}` : ''}`}
                 onClick={() => onSelectRoute(route.route_id)}
               >
+                <div className="route-card__kicker">
+                  <span
+                    className={
+                      route.is_fastest
+                        ? 'kind kind--fastest'
+                        : route.predicted_exposure_reduction_percent > 0.5
+                          ? 'kind kind--alt'
+                          : 'kind kind--neutral'
+                    }
+                  >
+                    {route.is_fastest
+                      ? 'Fastest'
+                      : route.predicted_exposure_reduction_percent > 0.5
+                        ? 'Lower predicted exposure'
+                        : 'Feasible alternative'}
+                  </span>
+                  {selected ? <span className="kind kind--selected">Selected</span> : null}
+                </div>
                 <div className="route-card__top">
                   <span className="route-card__label">{title}</span>
                   <span className="route-card__time">
@@ -93,13 +111,13 @@ export function RouteCards({
                   </span>
                 </div>
                 <div className="route-card__meta">
-                  <span className="chip">{badge}</span>
+                  <span className="chip">{extra}</span>
                   {!route.is_fastest && reduction ? (
                     <span className="chip chip--eco">{reduction}</span>
                   ) : null}
                 </div>
                 <p className="route-card__exposure">
-                  Estimated PM2.5 exposure{' '}
+                  Predicted exposure{' '}
                   <strong>{formatExposure(route.predicted_exposure_index)}</strong>
                   <span className="muted"> (µg/m³)·min</span>
                 </p>
@@ -117,7 +135,7 @@ export function RouteCards({
       {alternatives.length === 0 ? (
         <p className="empty-alts" role="status">
           {deltaMinutes === 0
-            ? 'No alternative fits the selected 0-minute limit. Showing the fastest route.'
+            ? 'No alternative fits the selected +0 min limit. Showing the fastest route.'
             : 'No lower-exposure alternative fits your current time limit. Try allowing a few more minutes.'}
         </p>
       ) : (

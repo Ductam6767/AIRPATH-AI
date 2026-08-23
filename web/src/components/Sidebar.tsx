@@ -1,12 +1,7 @@
-import type { Scenario } from '../types'
-import {
-  destinationsForOrigin,
-  findScenarioId,
-  uniqueOrigins,
-} from '../utils/labels'
+import type { Scenario, TravelMode } from '../types'
+import { destinationsForOrigin, uniqueOrigins } from '../utils/labels'
 import { DeltaSlider } from './DeltaSlider'
 import { ModeToggle } from './ModeToggle'
-import type { TravelMode } from '../types'
 
 interface SidebarProps {
   scenarios: Scenario[]
@@ -43,42 +38,49 @@ export function Sidebar({
     : []
 
   return (
-    <aside className="sidebar" aria-label="Route controls">
+    <aside className="sidebar" aria-label="Trip controls">
       <div className="brand-block">
         <p className="brand">AIRPATH-AI</p>
-        <h1 className="hero-line">Find a route that fits your time — and your air.</h1>
+        <h1 className="hero-line">
+          A route planner that balances travel time with predicted PM2.5 exposure.
+        </h1>
         <p className="muted">
-          Compare faster and lower-exposure routes using forecast-based PM2.5 estimates.
+          Compare the fastest route with feasible lower-predicted-exposure
+          alternatives under a time limit you choose.
         </p>
         <p className="pilot-chip">Precomputed pilot scenarios · not live city routing</p>
       </div>
 
       <div className="control-stack">
-        <label className="field">
+        <label className="field" htmlFor="origin-select">
           <span>From</span>
           <select
+            id="origin-select"
             value={originKey}
             onChange={(event) => onOriginChange(event.target.value)}
-            aria-label="Origin"
           >
             {origins.map((origin) => (
-              <option key={origin.key} value={origin.key}>
+              <option key={origin.key} value={origin.key} title={origin.secondary}>
                 {origin.label}
               </option>
             ))}
           </select>
         </label>
 
-        <label className="field">
+        <label className="field" htmlFor="destination-select">
           <span>To</span>
           <select
+            id="destination-select"
             value={destinationKey}
             onChange={(event) => onDestinationChange(event.target.value)}
-            aria-label="Destination"
             disabled={destinations.length === 0}
           >
             {destinations.map((destination) => (
-              <option key={destination.key} value={destination.key}>
+              <option
+                key={destination.key}
+                value={destination.key}
+                title={destination.secondary}
+              >
                 {destination.label}
               </option>
             ))}
@@ -102,22 +104,14 @@ export function Sidebar({
           {loadingRoutes ? 'Finding routes…' : 'Find routes'}
         </button>
 
-        <button
-          type="button"
-          className="linkish"
-          onClick={onOpenMethodology}
-        >
-          How AIRPATH works · limitations
+        <button type="button" className="linkish" onClick={onOpenMethodology}>
+          How AIRPATH works
         </button>
       </div>
 
       <p className="sidebar-footnote muted small">
-        Demo OD pairs come from the frozen research pack. Selecting From/To maps to a
-        valid <code>scenario_id</code>
-        {originKey && destinationKey
-          ? ` (currently ${findScenarioId(scenarios, originKey, destinationKey) ?? '—'})`
-          : ''}
-        .
+        Coordinates stay in secondary metadata (option titles and map popups). This
+        demo does not search the live city network.
       </p>
     </aside>
   )

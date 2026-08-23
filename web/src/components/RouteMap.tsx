@@ -10,7 +10,13 @@ import {
 import L from 'leaflet'
 import type { RouteRecord, Scenario } from '../types'
 import { COLORS } from '../constants'
-import { safeGeometry } from '../utils/labels'
+import {
+  destinationLabel,
+  formatCoord,
+  originLabel,
+  routeCardTitle,
+  safeGeometry,
+} from '../utils/labels'
 import 'leaflet/dist/leaflet.css'
 
 const originIcon = L.divIcon({
@@ -43,20 +49,31 @@ function FitRoutes({
 }) {
   const map = useMap()
   useEffect(() => {
-    const points: [number, number][] = []
-    for (const route of routes) {
-      points.push(...safeGeometry(route.geometry))
+    const fit = () => {
+      map.invalidateSize({ animate: false })
+      const points: [number, number][] = []
+      for (const route of routes) {
+        points.push(...safeGeometry(route.geometry))
+      }
+      if (scenario) {
+        points.push([scenario.origin.latitude, scenario.origin.longitude])
+        points.push([scenario.destination.latitude, scenario.destination.longitude])
+      }
+      if (points.length === 0) {
+        map.setView([10.78, 106.66], 12)
+        return
+      }
+      const bounds = L.latLngBounds(points.map(([lat, lon]) => L.latLng(lat, lon)))
+      map.fitBounds(bounds.pad(0.12), { animate: false, maxZoom: 16 })
     }
-    if (scenario) {
-      points.push([scenario.origin.latitude, scenario.origin.longitude])
-      points.push([scenario.destination.latitude, scenario.destination.longitude])
+    fit()
+    const frame = window.requestAnimationFrame(fit)
+    const observer = new ResizeObserver(() => fit())
+    observer.observe(map.getContainer())
+    return () => {
+      window.cancelAnimationFrame(frame)
+      observer.disconnect()
     }
-    if (points.length === 0) {
-      map.setView([10.78, 106.66], 12)
-      return
-    }
-    const bounds = L.latLngBounds(points.map(([lat, lon]) => L.latLng(lat, lon)))
-    map.fitBounds(bounds.pad(0.12))
   }, [map, routes, scenario])
   return null
 }
@@ -64,19 +81,19 @@ function FitRoutes({
 function lineStyle(
   route: RouteRecord,
   selectedRouteId: string | null,
-): { color: string; weight: number; opacity: number } {
+): { color: string; weight: number; opacity: number; dashArray?: string } {
   const selected = route.route_id === selectedRouteId
   if (route.is_fastest) {
     return {
       color: COLORS.sky,
-      weight: selected ? 7 : 5,
-      opacity: selected ? 0.95 : 0.75,
+      weight: selected ? 8 : 5,
+      opacity: selected ? 0.96 : 0.72,
     }
   }
   if (selected) {
-    return { color: COLORS.eco, weight: 7, opacity: 0.95 }
+    return { color: COLORS.eco, weight: 8, opacity: 0.96 }
   }
-  return { color: COLORS.altMuted, weight: 4, opacity: 0.55 }
+  return { color: COLORS.altMuted, weight: 4, opacity: 0.5, dashArray: '7 8' }
 }
 
 export function RouteMap({
@@ -117,7 +134,9 @@ export function RouteMap({
               eventHandlers={{
                 click: () => onSelectRoute(route.route_id),
               }}
-            />
+            >
+              <Popup>{routeCardTitle(route)}</Popup>
+            </Polyline>
           )
         })}
         {scenario ? (
@@ -126,7 +145,13 @@ export function RouteMap({
               position={[scenario.origin.latitude, scenario.origin.longitude]}
               icon={originIcon}
             >
-              <Popup>Origin · {scenario.origin.label}</Popup>
+              <Popup>
+                <strong>{originLabel(scenario)}</strong>
+                <br />
+                <span className="muted">
+                  {formatCoord(scenario.origin.latitude, scenario.origin.longitude)}
+                </span>
+              </Popup>
             </Marker>
             <Marker
               position={[
@@ -135,20 +160,35 @@ export function RouteMap({
               ]}
               icon={destinationIcon}
             >
-              <Popup>Destination · {scenario.destination.label}</Popup>
+              <Popup>
+                <strong>{destinationLabel(scenario)}</strong>
+                <br />
+                <span className="muted">
+                  {formatCoord(
+                    scenario.destination.latitude,
+                    scenario.destination.longitude,
+                  )}
+                </span>
+              </Popup>
             </Marker>
           </>
         ) : null}
       </MapContainer>
-      <div className="map-legend" aria-hidden="true">
+      <div className="map-legend">
         <span>
-          <i style={{ background: COLORS.sky }} /> Fastest
+          <i className="swatch swatch--fastest" /> Fastest
         </span>
         <span>
-          <i style={{ background: COLORS.eco }} /> Selected alternative
+          <i className="swatch swatch--selected" /> Selected alternative
         </span>
         <span>
-          <i style={{ background: COLORS.altMuted }} /> Other alternatives
+          <i className="swatch swatch--other" /> Other alternatives
+        </span>
+        <span>
+          <b className="od-dot od-dot--a">A</b> Origin
+        </span>
+        <span>
+          <b className="od-dot od-dot--b">B</b> Destination
         </span>
       </div>
     </div>
