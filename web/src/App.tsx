@@ -155,7 +155,7 @@ export default function App() {
         ) : !initialLoading && !loadingRoutes && !error ? (
           <StatusBanner tone="info">
             Choose a From/To pair and press Find routes to compare the fastest path with
-            feasible lower-exposure alternatives.
+            feasible exposure-aware alternatives.
           </StatusBanner>
         ) : null}
       </main>

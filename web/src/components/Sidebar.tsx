@@ -45,10 +45,12 @@ export function Sidebar({
           A route planner that balances travel time with predicted PM2.5 exposure.
         </h1>
         <p className="muted">
-          Compare the fastest route with feasible lower-predicted-exposure
-          alternatives under a time limit you choose.
+          Compare the fastest route with feasible exposure-aware alternatives
+          under a time limit you choose.
         </p>
-        <p className="pilot-chip">Precomputed pilot scenarios · not live city routing</p>
+        <p className="pilot-chip">
+          Pilot area · hourly data · precomputed scenarios · not live routing
+        </p>
       </div>
 
       <div className="control-stack">

@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
   destinationLabel,
+  isLowerPredictedExposure,
   originLabel,
+  reductionBadgeText,
   routeCardTitle,
+  routeKindLabel,
   scenarioNumber,
 } from '../utils/labels'
 import type { RouteRecord, Scenario } from '../types'
@@ -60,5 +63,31 @@ describe('labels', () => {
     const alt: RouteRecord = { ...fastest, route_id: 'w-2', route_type: 'AIRPATH alternative', rank: 1, is_fastest: false }
     expect(routeCardTitle(fastest)).toBe('Fastest')
     expect(routeCardTitle(alt)).toBe('AIRPATH alternative 1')
+  })
+
+  it('uses Lower predicted exposure only when exposure is actually lower', () => {
+    const lower: RouteRecord = {
+      route_id: 'w-2',
+      route_type: 'AIRPATH alternative',
+      rank: 1,
+      is_fastest: false,
+      is_feasible: true,
+      travel_time_minutes: 21,
+      additional_time_vs_fastest_minutes: 1,
+      predicted_exposure_index: 720,
+      predicted_exposure_reduction_percent: 28,
+      distance_m: 1000,
+      geometry: [],
+    }
+    const higher: RouteRecord = {
+      ...lower,
+      predicted_exposure_reduction_percent: -9.7,
+    }
+    expect(isLowerPredictedExposure(28)).toBe(true)
+    expect(isLowerPredictedExposure(-9.7)).toBe(false)
+    expect(routeKindLabel(lower)).toBe('Lower predicted exposure')
+    expect(routeKindLabel(higher)).toBe('Feasible alternative')
+    expect(reductionBadgeText(28)).toBe('28% lower predicted exposure')
+    expect(reductionBadgeText(-9.7)).toBe('10% higher predicted exposure')
   })
 })

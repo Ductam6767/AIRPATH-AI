@@ -3,8 +3,10 @@ import { EXPOSURE_NOTE } from '../constants'
 import {
   formatExposure,
   formatMinutes,
+  isLowerPredictedExposure,
   reductionBadgeText,
   routeCardTitle,
+  routeKindLabel,
 } from '../utils/labels'
 
 interface RouteCardsProps {
@@ -91,16 +93,14 @@ export function RouteCards({
                     className={
                       route.is_fastest
                         ? 'kind kind--fastest'
-                        : route.predicted_exposure_reduction_percent > 0.5
+                        : isLowerPredictedExposure(
+                              route.predicted_exposure_reduction_percent,
+                            )
                           ? 'kind kind--alt'
                           : 'kind kind--neutral'
                     }
                   >
-                    {route.is_fastest
-                      ? 'Fastest'
-                      : route.predicted_exposure_reduction_percent > 0.5
-                        ? 'Lower predicted exposure'
-                        : 'Feasible alternative'}
+                    {routeKindLabel(route)}
                   </span>
                   {selected ? <span className="kind kind--selected">Selected</span> : null}
                 </div>
@@ -113,7 +113,17 @@ export function RouteCards({
                 <div className="route-card__meta">
                   <span className="chip">{extra}</span>
                   {!route.is_fastest && reduction ? (
-                    <span className="chip chip--eco">{reduction}</span>
+                    <span
+                      className={
+                        isLowerPredictedExposure(
+                          route.predicted_exposure_reduction_percent,
+                        )
+                          ? 'chip chip--eco'
+                          : 'chip'
+                      }
+                    >
+                      {reduction}
+                    </span>
                   ) : null}
                 </div>
                 <p className="route-card__exposure">
@@ -140,8 +150,8 @@ export function RouteCards({
         </p>
       ) : (
         <p className="muted small">
-          Top feasible lower-exposure alternatives among the generated candidate
-          routes.
+          Top feasible alternatives among the generated candidate routes, ranked
+          by predicted exposure. Not guaranteed to be lower than the fastest route.
         </p>
       )}
     </section>

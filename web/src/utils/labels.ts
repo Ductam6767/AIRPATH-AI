@@ -51,8 +51,21 @@ export function routeCardTitle(route: RouteRecord): string {
   return `AIRPATH alternative ${route.rank}`
 }
 
+export function isLowerPredictedExposure(percent: number): boolean {
+  return percent > 0.5
+}
+
+export function routeKindLabel(route: RouteRecord): string {
+  if (route.is_fastest || route.route_type === 'fastest') {
+    return 'Fastest'
+  }
+  return isLowerPredictedExposure(route.predicted_exposure_reduction_percent)
+    ? 'Lower predicted exposure'
+    : 'Feasible alternative'
+}
+
 export function reductionBadgeText(percent: number): string | null {
-  if (percent > 0.5) {
+  if (isLowerPredictedExposure(percent)) {
     return `${Math.round(percent)}% lower predicted exposure`
   }
   if (percent < -0.5) {
