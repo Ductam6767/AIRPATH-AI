@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { DemoApiError, fetchRoutes, fetchScenarios } from './api'
+import { fetchRoutes, fetchScenarios } from './api'
 import { DELTA_MINUTES } from './constants'
 import { MethodologyDrawer } from './components/MethodologyDrawer'
 import { RouteCards } from './components/RouteCards'
@@ -10,6 +10,7 @@ import type { RouteRecord, RoutesResponse, Scenario, TravelMode } from './types'
 import {
   destinationsForOrigin,
   findScenarioId,
+  friendlyApiError,
   uniqueOrigins,
 } from './utils/labels'
 
@@ -57,11 +58,7 @@ export default function App() {
         }
       } catch (err) {
         if (controller.signal.aborted) return
-        const message =
-          err instanceof DemoApiError
-            ? err.message
-            : 'Unable to load demo scenarios.'
-        setError(message)
+        setError(friendlyApiError(err))
       } finally {
         if (!controller.signal.aborted) {
           setInitialLoading(false)
@@ -78,22 +75,14 @@ export default function App() {
       setRoutesPayload(null)
       return
     }
-    const controller = new AbortController()
     setLoadingRoutes(true)
     setError(null)
     try {
-      const payload = await fetchRoutes(
-        { scenarioId, mode, deltaMinutes },
-        controller.signal,
-      )
+      const payload = await fetchRoutes({ scenarioId, mode, deltaMinutes })
       setRoutesPayload(payload)
       setSelectedRouteId(payload.fastest_route.route_id)
     } catch (err) {
-      const message =
-        err instanceof DemoApiError
-          ? err.message
-          : 'Unable to load routes for this request.'
-      setError(message)
+      setError(friendlyApiError(err))
       setRoutesPayload(null)
       setSelectedRouteId(null)
     } finally {
@@ -115,6 +104,9 @@ export default function App() {
 
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#route-results">
+        Skip to route comparison
+      </a>
       <Sidebar
         scenarios={scenarios}
         originKey={originKey}
@@ -134,7 +126,7 @@ export default function App() {
         onOpenMethodology={() => setMethodologyOpen(true)}
       />
 
-      <main className="main-panel">
+      <main className="main-panel" id="route-results">
         {initialLoading ? (
           <StatusBanner tone="loading">Loading demo scenarios…</StatusBanner>
         ) : null}
@@ -142,9 +134,7 @@ export default function App() {
         {error ? <StatusBanner tone="error">{error}</StatusBanner> : null}
 
         {!initialLoading && !error && loadingRoutes ? (
-          <StatusBanner tone="loading">
-            Finding feasible routes and estimating PM2.5 exposure…
-          </StatusBanner>
+          <StatusBanner tone="loading">Loading precomputed routes…</StatusBanner>
         ) : null}
 
         <RouteMap

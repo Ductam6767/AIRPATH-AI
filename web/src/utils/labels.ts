@@ -13,20 +13,31 @@ export function formatCoord(lat: number, lon: number): string {
   return `${lat.toFixed(4)}, ${lon.toFixed(4)}`
 }
 
+export function scenarioNumber(scenarioId: string): string {
+  const match = scenarioId.match(/(\d+)\s*$/)
+  return match ? match[1].padStart(2, '0') : scenarioId
+}
+
+function isGenericEndpointLabel(label: string, kind: 'origin' | 'destination'): boolean {
+  const pattern =
+    kind === 'origin' ? /^od_\d+\s+origin$/i : /^od_\d+\s+destination$/i
+  return pattern.test(label)
+}
+
 export function originLabel(scenario: Scenario): string {
   const label = scenario.origin.label?.trim()
-  if (label && !/^od_\d+\s+origin$/i.test(label)) {
+  if (label && !isGenericEndpointLabel(label, 'origin')) {
     return label
   }
-  return `Origin · ${formatCoord(scenario.origin.latitude, scenario.origin.longitude)}`
+  return `Origin ${scenarioNumber(scenario.scenario_id)}`
 }
 
 export function destinationLabel(scenario: Scenario): string {
   const label = scenario.destination.label?.trim()
-  if (label && !/^od_\d+\s+destination$/i.test(label)) {
+  if (label && !isGenericEndpointLabel(label, 'destination')) {
     return label
   }
-  return `Destination · ${formatCoord(scenario.destination.latitude, scenario.destination.longitude)}`
+  return `Destination ${scenarioNumber(scenario.scenario_id)}`
 }
 
 export function scenarioPairLabel(scenario: Scenario): string {
@@ -35,9 +46,9 @@ export function scenarioPairLabel(scenario: Scenario): string {
 
 export function routeCardTitle(route: RouteRecord): string {
   if (route.is_fastest || route.route_type === 'fastest') {
-    return 'Fastest route'
+    return 'Fastest'
   }
-  return `Exposure-aware option ${route.rank}`
+  return `AIRPATH alternative ${route.rank}`
 }
 
 export function reductionBadgeText(percent: number): string | null {
@@ -72,9 +83,13 @@ export function scenarioDestKey(scenario: Scenario): string {
 export function uniqueOrigins(scenarios: Scenario[]): {
   key: string
   label: string
+  secondary: string
   scenarioIds: string[]
 }[] {
-  const map = new Map<string, { key: string; label: string; scenarioIds: string[] }>()
+  const map = new Map<
+    string,
+    { key: string; label: string; secondary: string; scenarioIds: string[] }
+  >()
   for (const scenario of scenarios) {
     const key = scenarioOriginKey(scenario)
     const existing = map.get(key)
@@ -84,6 +99,7 @@ export function uniqueOrigins(scenarios: Scenario[]): {
       map.set(key, {
         key,
         label: originLabel(scenario),
+        secondary: formatCoord(scenario.origin.latitude, scenario.origin.longitude),
         scenarioIds: [scenario.scenario_id],
       })
     }
@@ -94,12 +110,13 @@ export function uniqueOrigins(scenarios: Scenario[]): {
 export function destinationsForOrigin(
   scenarios: Scenario[],
   originKey: string,
-): { key: string; label: string; scenarioId: string }[] {
+): { key: string; label: string; secondary: string; scenarioId: string }[] {
   return scenarios
     .filter((s) => scenarioOriginKey(s) === originKey)
     .map((s) => ({
       key: scenarioDestKey(s),
       label: destinationLabel(s),
+      secondary: formatCoord(s.destination.latitude, s.destination.longitude),
       scenarioId: s.scenario_id,
     }))
 }
@@ -115,4 +132,27 @@ export function safeGeometry(
       Number.isFinite(point[0]) &&
       Number.isFinite(point[1]),
   )
+}
+
+export function friendlyApiError(err: unknown): string {
+  const fallback = 'Unable to load this request. Please try again.'
+  if (!err || typeof err !== 'object') return fallback
+  const code = 'code' in err ? String(err.code) : ''
+  const message = 'message' in err ? String(err.message) : fallback
+  if (code === 'api_unavailable') {
+    return 'The demo API is unavailable. Start the backend on port 8000 and refresh.'
+  }
+  if (code === 'unknown_scenario_id') {
+    return 'That origin and destination pair is not in the demo dataset.'
+  }
+  if (code === 'unsupported_mode') {
+    return 'That travel mode is not available for this demo trip.'
+  }
+  if (code === 'unsupported_delta_minutes') {
+    return 'That extra-time value is not supported. Use 0, 1, 2, 3, 5, or 10 minutes.'
+  }
+  if (code === 'route_request_outside_demo_dataset') {
+    return 'No precomputed route is available for this combination.'
+  }
+  return message || fallback
 }

@@ -9,8 +9,8 @@ interface ModeToggleProps {
 export function ModeToggle({ value, onChange, disabled }: ModeToggleProps) {
   return (
     <fieldset className="mode-toggle" disabled={disabled}>
-      <legend>Travel mode</legend>
-      <div className="mode-toggle__row" role="group" aria-label="Travel mode">
+      <legend>Mode</legend>
+      <div className="mode-toggle__row" role="radiogroup" aria-label="Mode">
         <button
           type="button"
           className={value === 'walking' ? 'mode-btn is-active' : 'mode-btn'}
