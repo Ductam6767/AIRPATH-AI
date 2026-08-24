@@ -301,4 +301,15 @@ def test_cors_allows_configured_origin() -> None:
             headers={"Origin": "https://evil.example"},
         )
         assert denied.headers.get("access-control-allow-origin") is None
+        onrender = test_client.get(
+            "/health",
+            headers={"Origin": "https://airpath-api-ii.onrender.com"},
+        )
+        assert (
+            onrender.headers.get("access-control-allow-origin")
+            == "https://airpath-api-ii.onrender.com"
+        )
+        root = test_client.get("/")
+        assert root.status_code == 200
+        assert root.json()["health"] == "/health"
     load_demo_pack.cache_clear()
