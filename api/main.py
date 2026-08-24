@@ -163,11 +163,21 @@ def create_app(
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
+        # Demo static sites get unpredictable *.onrender.com hosts. Not "*".
+        allow_origin_regex=r"https://[a-z0-9.-]+\.onrender\.com",
         allow_credentials=False,
         allow_methods=["GET", "HEAD", "OPTIONS"],
         allow_headers=["*"],
     )
     resolved_dir = str(demo_dir) if demo_dir is not None else None
+
+    @app.get("/")
+    def root() -> dict[str, str]:
+        return {
+            "service": "airpath-demo-api",
+            "health": "/health",
+            "note": "This is the API, not the map UI. Open the Static Site URL.",
+        }
 
     @app.get("/health", response_model=HealthResponse)
     def health() -> HealthResponse:
