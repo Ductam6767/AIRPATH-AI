@@ -94,6 +94,30 @@ cd web && npm test && npm run build
 Product copy compares the **fastest route** with **top feasible lower-exposure
 alternatives among generated candidates** under an absolute `+δ` minute limit.
 
+WEB-3 polished labels, spacing, accessibility, and empty/error states for
+demo readiness. Origin/destination dropdowns use stable labels such as
+`Origin 26` (coordinates remain secondary).
+
+## Deploying AIRPATH-AI
+
+The prototype stays precomputed and read-only. Do not enable live routing.
+
+1. Deploy the **airpath-api** Web Service from `render.yaml` (repo root so
+   `uvicorn api.main:app --host 0.0.0.0 --port $PORT` can load
+   `data/processed/web_demo`).
+2. Copy the API public URL (for example `https://airpath-api.onrender.com`).
+3. Set **VITE_API_URL** on the **airpath-frontend** Static Site to that URL
+   (no trailing slash), then deploy/rebuild the frontend.
+4. Set **AIRPATH_ALLOWED_ORIGINS** on the API to the frontend origin
+   (comma-separated if you have more than one; do not use `*`).
+5. Deploy the **airpath-frontend** Static Site (`web/`, `npm ci && npm run build`,
+   publish `dist`).
+
+Local development is unchanged: leave `VITE_API_URL` unset so Vite proxies
+`/demo` and `/health` to `http://127.0.0.1:8000`. Unset
+`AIRPATH_ALLOWED_ORIGINS` allows `http://localhost:5173` and
+`http://127.0.0.1:5173`.
+
 ## Dataset (research)
 
 Expected input for full research reproduction:

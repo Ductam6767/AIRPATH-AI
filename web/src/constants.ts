@@ -15,5 +15,11 @@ export const COLORS = {
 export const EXPOSURE_NOTE =
   'Exposure is a model-estimated PM2.5 time-weighted proxy from hourly data, not a medical risk score.'
 
-/** Relative API base; Vite proxies /demo and /health in development. */
-export const API_BASE = ''
+/** Empty in local Vite (proxy /demo and /health). Set VITE_API_URL in production. */
+export function resolveApiBase(envUrl: string | undefined): string {
+  const trimmed = envUrl?.trim()
+  if (!trimmed) return ''
+  return trimmed.replace(/\/+$/, '')
+}
+
+export const API_BASE = resolveApiBase(import.meta.env.VITE_API_URL)
