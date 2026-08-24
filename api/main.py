@@ -3,16 +3,35 @@
 from __future__ import annotations
 
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Final
+from typing import Any, Final, Sequence
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ConfigDict, Field
 
 REPO_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 DEFAULT_DEMO_DIR: Final[Path] = REPO_ROOT / "data" / "processed" / "web_demo"
 SUPPORTED_MODES: Final[frozenset[str]] = frozenset({"walking", "motorbike"})
+LOCAL_DEV_ORIGINS: Final[tuple[str, ...]] = (
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+)
+
+
+def parse_allowed_origins(raw: str | None) -> list[str]:
+    """Parse AIRPATH_ALLOWED_ORIGINS. Wildcard * is ignored, never allow-all."""
+    if raw is None or not raw.strip():
+        return list(LOCAL_DEV_ORIGINS)
+    origins: list[str] = []
+    for part in raw.split(","):
+        origin = part.strip().rstrip("/")
+        if not origin or origin == "*":
+            continue
+        origins.append(origin)
+    return origins
 
 
 class Coordinate(BaseModel):
@@ -122,7 +141,11 @@ def load_demo_pack(demo_dir: str | None = None) -> dict[str, Any]:
     }
 
 
-def create_app(demo_dir: Path | None = None) -> FastAPI:
+def create_app(
+    demo_dir: Path | None = None,
+    *,
+    allowed_origins: Sequence[str] | None = None,
+) -> FastAPI:
     """Application factory so tests can point at a temporary demo pack."""
     app = FastAPI(
         title="AIRPATH-AI Demo API",
@@ -131,6 +154,18 @@ def create_app(demo_dir: Path | None = None) -> FastAPI:
             "Does not retrain models, run IDW, or optimize routes."
         ),
         version="0.1.0",
+    )
+    origins = (
+        list(allowed_origins)
+        if allowed_origins is not None
+        else parse_allowed_origins(os.environ.get("AIRPATH_ALLOWED_ORIGINS"))
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=False,
+        allow_methods=["GET", "HEAD", "OPTIONS"],
+        allow_headers=["*"],
     )
     resolved_dir = str(demo_dir) if demo_dir is not None else None
 

@@ -85,6 +85,17 @@ export const mockRoutesWithAlts: RoutesResponse = {
   },
 }
 
+export const mockRoutesHigherExposure: RoutesResponse = {
+  ...mockRoutesWithAlts,
+  alternatives: [
+    {
+      ...mockRoutesWithAlts.alternatives[0],
+      predicted_exposure_index: 1100,
+      predicted_exposure_reduction_percent: -10,
+    },
+  ],
+}
+
 export const mockRoutesEmptyAlts: RoutesResponse = {
   ...mockRoutesWithAlts,
   delta_minutes: 0,

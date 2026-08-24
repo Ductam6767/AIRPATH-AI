@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import App from '../App'
 import {
   mockRoutesEmptyAlts,
+  mockRoutesHigherExposure,
   mockRoutesWithAlts,
   mockScenarios,
 } from './fixtures'
@@ -87,7 +88,7 @@ describe('AIRPATH frontend', () => {
     expect(screen.getByText(/AIRPATH alternative 1/i)).toBeInTheDocument()
     expect(screen.getByText(/28% lower predicted exposure/i)).toBeInTheDocument()
     expect(
-      screen.getByText(/time-weighted proxy, not a medical risk score/i),
+      screen.getByText(/time-weighted proxy from hourly data, not a medical risk score/i),
     ).toBeInTheDocument()
     expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
     expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
@@ -135,6 +136,17 @@ describe('AIRPATH frontend', () => {
     expect(screen.queryByText(/AIRPATH alternative/i)).not.toBeInTheDocument()
     const list = screen.getByRole('list')
     expect(within(list).getAllByRole('listitem')).toHaveLength(1)
+  })
+
+  it('labels higher-exposure alternatives as feasible, not lower', async () => {
+    stubApi({ routes: mockRoutesHigherExposure })
+    render(<App />)
+    expect(await screen.findByText(/10% higher predicted exposure/i)).toBeInTheDocument()
+    expect(screen.getByText('Feasible alternative')).toBeInTheDocument()
+    expect(screen.queryByText('Lower predicted exposure')).not.toBeInTheDocument()
+    expect(
+      screen.getByText(/Not guaranteed to be lower than the fastest route/i),
+    ).toBeInTheDocument()
   })
 
   it('shows a friendly error when the API is unavailable', async () => {

@@ -258,3 +258,47 @@ def test_response_schema_stability(client: TestClient) -> None:
     leaked = {"perturbation_scale", "oracle_exposure_index", "model", "booster"}
     assert leaked.isdisjoint(payload["fastest_route"])
     assert leaked.isdisjoint(payload["metadata"])
+
+
+def test_parse_allowed_origins_defaults_to_local_vite() -> None:
+    from api.main import LOCAL_DEV_ORIGINS, parse_allowed_origins
+
+    assert parse_allowed_origins(None) == list(LOCAL_DEV_ORIGINS)
+    assert parse_allowed_origins("") == list(LOCAL_DEV_ORIGINS)
+
+
+def test_parse_allowed_origins_splits_and_ignores_wildcard() -> None:
+    from api.main import parse_allowed_origins
+
+    origins = parse_allowed_origins(
+        "https://airpath-frontend.onrender.com, http://localhost:5173, *"
+    )
+    assert origins == [
+        "https://airpath-frontend.onrender.com",
+        "http://localhost:5173",
+    ]
+    assert "*" not in parse_allowed_origins("*")
+
+
+def test_cors_allows_configured_origin() -> None:
+    load_demo_pack.cache_clear()
+    app = create_app(
+        DEMO_DIR,
+        allowed_origins=["https://airpath-frontend.example"],
+    )
+    with TestClient(app) as test_client:
+        response = test_client.get(
+            "/health",
+            headers={"Origin": "https://airpath-frontend.example"},
+        )
+        assert response.status_code == 200
+        assert (
+            response.headers.get("access-control-allow-origin")
+            == "https://airpath-frontend.example"
+        )
+        denied = test_client.get(
+            "/health",
+            headers={"Origin": "https://evil.example"},
+        )
+        assert denied.headers.get("access-control-allow-origin") is None
+    load_demo_pack.cache_clear()
