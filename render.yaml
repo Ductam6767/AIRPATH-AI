@@ -1,0 +1,35 @@
+# Render Blueprint for the frozen AIRPATH-AI demo.
+# Does not deploy by itself. Create two services from this file in the dashboard.
+#
+# API uses the repository root (not api/) so:
+#   - start command can be uvicorn api.main:app
+#   - the precomputed pack at data/processed/web_demo remains readable
+#
+# Frontend uses web/ as rootDir. Set VITE_API_URL at frontend *build* time.
+
+services:
+  - type: web
+    name: airpath-frontend
+    runtime: static
+    rootDir: web
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+
+  - type: web
+    name: airpath-api
+    runtime: python
+    buildCommand: pip install -r api/requirements.txt
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.3"
+      - key: AIRPATH_ALLOWED_ORIGINS
+        sync: false
