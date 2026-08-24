@@ -1,0 +1,7 @@
+station_id,latitude,longitude,station_type,location,coordinate_source
+1,10.86994333,106.7960143,Urban background: Industry + Traffic + Residential,"Vietnam National University, Linh Trung ward, Thu Duc city, HCMC","Rakholia et al. (2023), Data in Brief 46, 108774, Table 1, https://doi.org/10.1016/j.dib.2022.108774"
+2,10.74097081,106.6171323,Traffic,"20 Nguyen Trong Tri street, An Lac ward, Binh Tan district, HCMC","Rakholia et al. (2023), Data in Brief 46, 108774, Table 1, https://doi.org/10.1016/j.dib.2022.108774"
+3,10.81621227,106.6204143,Industry,"Tan Binh industrial zone, Tay Thanh ward, Tan Phu district, HCMC","Rakholia et al. (2023), Data in Brief 46, 108774, Table 1, https://doi.org/10.1016/j.dib.2022.108774"
+4,10.81584553,106.7174282,Residential,"49 Thanh Da street, Ward 27, Binh Thanh district, HCMC","Rakholia et al. (2023), Data in Brief 46, 108774, Table 1, https://doi.org/10.1016/j.dib.2022.108774"
+5,10.77636612,106.6878094,Traffic,"268 Nguyen Dinh Chieu street, Ward 6, District 3, HCMC","Rakholia et al. (2023), Data in Brief 46, 108774, Table 1, https://doi.org/10.1016/j.dib.2022.108774"
+6,10.78047163,106.6594579,Traffic + Residential,"MM18 Truong Son street, Ward 14, District 10, HCMC","Rakholia et al. (2023), Data in Brief 46, 108774, Table 1, https://doi.org/10.1016/j.dib.2022.108774"

@@ -1,0 +1,14 @@
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Research data and generated audit artifacts
+data/raw/*.csv
+data/processed/*.csv
+data/processed/models/
+reports/figures/*.png
+reports/tables/*.csv
+
+# Web / frontend (React app not built in WEB-1)
+node_modules/
+web/dist/

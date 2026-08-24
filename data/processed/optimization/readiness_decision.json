@@ -1,0 +1,21 @@
+{
+  "classification": "A. READY FOR PROTOTYPE INTEGRATION",
+  "rationale": "All strict decision-quality and shortlist-availability gates pass.",
+  "criteria": {
+    "nontrivial_mean_decision_regret": 0.0,
+    "nontrivial_maximum_decision_regret": 0.0,
+    "nontrivial_oracle_optimal_agreement_rate": 1.0,
+    "expanded_mean_spearman": 0.9892857142857142,
+    "five_minute_three_alternative_availability_rate": 0.95,
+    "strict_mean_regret_le_0_02": true,
+    "strict_max_regret_le_0_10": true,
+    "strict_oracle_agreement_ge_0_90": true,
+    "strict_mean_spearman_ge_0_80": true,
+    "strict_three_alternative_rate_ge_0_80": true,
+    "restricted_mean_regret_le_0_05": true,
+    "restricted_max_regret_le_0_20": true,
+    "restricted_oracle_agreement_ge_0_70": true,
+    "restricted_mean_spearman_ge_0_60": true,
+    "restricted_three_alternative_rate_ge_0_50": true
+  }
+}

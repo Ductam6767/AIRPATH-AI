@@ -1,0 +1,13 @@
+mode,proxy,routes,spearman_with_absolute_exposure_error
+motorbike,total_distance_m,10,0.9636363636363635
+motorbike,total_travel_time_minutes,10,0.9636363636363635
+motorbike,mean_nearest_station_distance_km,10,0.8181818181818182
+motorbike,max_nearest_station_distance_km,10,0.8703882797784892
+motorbike,mean_effective_station_count,10,0.7939393939393938
+motorbike,moderate_or_weak_segment_fraction,10,0.8328305948416885
+walking,total_distance_m,10,0.9999999999999999
+walking,total_travel_time_minutes,10,0.9999999999999999
+walking,mean_nearest_station_distance_km,10,0.7333333333333332
+walking,max_nearest_station_distance_km,10,0.8703882797784892
+walking,mean_effective_station_count,10,0.7333333333333332
+walking,moderate_or_weak_segment_fraction,10,0.7976060548818034

@@ -1,0 +1,32 @@
+{
+  "classification": "A. READY TO FREEZE",
+  "rationale": "Frozen Model C downstream decisions are stable under global multiplicative prediction bias and pass strict model-based oracle gates.",
+  "criteria": {
+    "frozen_forecaster": "C_xgboost_current_pm",
+    "gap1_conclusion": "MIXED/WEAK evidence that hourly forecast-bucket-aware exposure changes route decisions relative to a static departure-time snapshot (P0-2A/P0-2B).",
+    "baseline_top1_agreement": 1.0,
+    "min_perturbed_top1_agreement": 1.0,
+    "min_perturbed_top3_overlap": 1.0,
+    "oracle_optimal_agreement_rate": 0.9811111111111112,
+    "mean_decision_regret": 0.00013246836669939265,
+    "max_decision_regret": 0.01863276459363978,
+    "global_multiplicative_perturbation_is_rank_invariant": true,
+    "strict_top1_ge_0_95": true,
+    "strict_top3_ge_0_90": true,
+    "strict_oracle_agreement_ge_0_85": true,
+    "strict_mean_regret_le_0_02": true,
+    "strict_max_regret_le_0_10": true,
+    "restricted_top1_ge_0_90": true,
+    "restricted_top3_ge_0_80": true,
+    "restricted_oracle_agreement_ge_0_70": true,
+    "restricted_mean_regret_le_0_05": true,
+    "restricted_max_regret_le_0_20": true
+  },
+  "remaining_issues": [
+    "Hourly HealthyAir resolution; no minute-level validation.",
+    "Six-station spatial support; road PM2.5 is model-estimated.",
+    "Oracle exposure is IDW-derived, not road-measured.",
+    "Constant-speed ETA without traffic/signal/turn delay.",
+    "Pilot-area only; Gap 1 hourly arrival-time benefit remains MIXED/WEAK."
+  ]
+}

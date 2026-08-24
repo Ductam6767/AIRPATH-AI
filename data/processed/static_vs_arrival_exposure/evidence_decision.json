@@ -1,0 +1,19 @@
+{
+  "classification": "B. MIXED EVIDENCE",
+  "rationale": "Static and AIRPATH frameworks sometimes reorder or reselect routes, but oracle gains when selections differ are weak, inconsistent, or limited.",
+  "criteria": {
+    "evaluation_status": "development_exploratory_not_untouched_final",
+    "forecaster": "C_xgboost_current_pm",
+    "nontrivial_selection_difference_rate": 0.06333333333333334,
+    "mean_oracle_percent_improvement_when_differ": 0.1076873292175646,
+    "positive_oracle_gain_rate_when_differ": 0.7368421052631579,
+    "mean_spearman_static_vs_airpath": 0.9924603174603174,
+    "mean_percentage_routes_with_material_rank_change": 7.291666666666667,
+    "five_minute_selection_difference_percentage": 6.666666666666667,
+    "strong_differ_rate_ge_0_25": false,
+    "strong_oracle_gain_ge_1_0": false,
+    "strong_positive_gain_rate_ge_0_60": true,
+    "mixed_differ_rate_ge_0_10": false,
+    "mixed_rank_change_ge_10": false
+  }
+}

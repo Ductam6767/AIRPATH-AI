@@ -1,0 +1,7 @@
+delta_time_allowed_minutes,scenario_mode_cases,no_alternative_beyond_fastest,only_one_feasible_route,exactly_two_feasible_routes,at_least_three_feasible_routes,at_least_three_feasible_alternatives
+0.0,20,20,20,0,0,0
+1.0,20,0,0,7,13,5
+2.0,20,0,0,2,18,9
+3.0,20,0,0,0,20,16
+5.0,20,0,0,0,20,19
+10.0,20,0,0,0,20,20
