@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   destinationLabel,
   hasLowerPredictedExposureAlternative,
+  isAlsoLowestExposureRoute,
   isLowerPredictedExposure,
   originLabel,
   reductionBadgeText,
@@ -113,5 +114,41 @@ describe('labels', () => {
       ]),
     ).toBe(false)
     expect(hasLowerPredictedExposureAlternative([])).toBe(false)
+  })
+
+  it('labels time-archetype alternatives and a dual fastest+lowest card', () => {
+    const fastest: RouteRecord = {
+      route_id: 'w-1',
+      route_type: 'fastest',
+      rank: 0,
+      is_fastest: true,
+      is_feasible: true,
+      travel_time_minutes: 20,
+      additional_time_vs_fastest_minutes: 0,
+      predicted_exposure_index: 100,
+      predicted_exposure_reduction_percent: 0,
+      distance_m: 1000,
+      geometry: [],
+      is_also_lowest_exposure: true,
+    }
+    const closer: RouteRecord = {
+      ...fastest,
+      route_id: 'w-2',
+      route_type: 'AIRPATH alternative',
+      rank: 1,
+      is_fastest: false,
+      is_also_lowest_exposure: false,
+      tradeoff_slot: 'closer_to_fastest',
+      predicted_exposure_reduction_percent: 8,
+    }
+    expect(isAlsoLowestExposureRoute(fastest, [])).toBe(true)
+    expect(routeKindLabel(fastest)).toBe('Fastest')
+    expect(routeKindLabel(closer)).toBe('Slightly slower · lower exposure')
+    expect(
+      routeKindLabel({ ...closer, tradeoff_slot: 'second_fastest' }),
+    ).toBe('Second-fastest · lower exposure')
+    expect(
+      routeKindLabel({ ...closer, tradeoff_slot: 'near_time_limit' }),
+    ).toBe('Near time limit · lower exposure')
   })
 })

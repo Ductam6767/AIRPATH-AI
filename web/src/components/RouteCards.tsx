@@ -4,6 +4,7 @@ import {
   formatExposure,
   formatMinutes,
   hasLowerPredictedExposureAlternative,
+  isAlsoLowestExposureRoute,
   isLowerPredictedExposure,
   reductionBadgeText,
   routeCardTitle,
@@ -54,6 +55,7 @@ export function RouteCards({
   )
   const hasLowerExposureAlt =
     hasLowerPredictedExposureAlternative(alternatives)
+  const alsoLowest = isAlsoLowestExposureRoute(fastest, alternatives)
 
   return (
     <section className="route-cards" aria-label="Route comparison">
@@ -86,7 +88,7 @@ export function RouteCards({
                   route.is_fastest ? 'is-fastest' : 'is-alternative'
                 }`}
                 aria-pressed={selected}
-                aria-label={`${title}, ${formatMinutes(route.travel_time_minutes)} minutes, ${extra}, predicted exposure ${formatExposure(route.predicted_exposure_index)}${!route.is_fastest && reduction ? `, ${reduction}` : ''}`}
+                aria-label={`${title}, ${formatMinutes(route.travel_time_minutes)} minutes, ${extra}, predicted exposure ${formatExposure(route.predicted_exposure_index)}${route.is_fastest && alsoLowest ? ', lowest predicted exposure' : ''}${!route.is_fastest && reduction ? `, ${reduction}` : ''}`}
                 onClick={() => onSelectRoute(route.route_id)}
               >
                 <div className="route-card__kicker">
@@ -103,6 +105,9 @@ export function RouteCards({
                   >
                     {routeKindLabel(route)}
                   </span>
+                  {route.is_fastest && alsoLowest ? (
+                    <span className="kind kind--alt">Lowest predicted exposure</span>
+                  ) : null}
                   {selected ? <span className="kind kind--selected">Selected</span> : null}
                 </div>
                 <div className="route-card__top">
@@ -145,14 +150,21 @@ export function RouteCards({
 
       {hasLowerExposureAlt ? (
         <p className="muted small">
-          The fastest route is the shortest travel time, like a typical maps app.
-          The other cards are slower options with lower predicted exposure within
-          your extra-time limit. Choose the fastest route when you are in a
-          hurry, or an alternative to reduce predicted exposure.
+          The fastest route is the shortest travel time. Other cards are slower
+          options with lower predicted exposure: slightly slower, second-fastest,
+          and near your time limit when those archetypes exist. Choose the fastest
+          route when you are in a hurry, or an alternative to reduce predicted
+          exposure.
         </p>
+      ) : alsoLowest ? (
+        <div className="empty-alts" role="status">
+          <p>
+            This route is both the fastest and the lowest-exposure option within
+            your time limit.
+          </p>
+        </div>
       ) : (
         <div className="empty-alts" role="status">
-          <p>Fastest route is also the lowest-exposure feasible option.</p>
           <p>
             No lower-exposure alternative was found within your time limit.
           </p>

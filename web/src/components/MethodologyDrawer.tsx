@@ -52,10 +52,12 @@ export function MethodologyDrawer({ open, onClose }: MethodologyDrawerProps) {
           <li>Exposure is aggregated across segments as a time-weighted PM2.5 proxy.</li>
           <li>
             The fastest route is the shortest travel time among generated
-            candidates. Up to three alternatives are shown only when they are
-            slower and have lower predicted exposure within your extra-time
-            limit. AIRPATH compares those alternatives rather than guaranteeing
-            a cleaner route.
+            candidates. Walking and motorbike fill up to three cleaner
+            alternatives only when they exist: slightly slower, second-fastest,
+            and near your extra-time limit. A missing archetype is omitted. If
+            the best alternative is the fastest route itself, AIRPATH shows one
+            card that is both fastest and lowest-exposure. AIRPATH compares those
+            alternatives rather than guaranteeing a cleaner route.
           </li>
         </ol>
         <h3>Limitations</h3>

@@ -8,10 +8,13 @@ regeneration, no change to the optimizer *rule*. The demo pack:
 3. Applies a demo-only on-road traffic increment (OSM class / lanes /
    morning-peak / junctions), inspired by mobile-monitoring frameworks.
 4. Keeps the fastest route as the time-fastest candidate (maps-app style).
-5. Among feasible candidates (time ≤ fastest + δ), the demo shortlist returns
-   up to three *lower-exposure* alternatives only — never slower-and-dirtier
-   fillers. When more than three exist, they are spread across the extra-time
-   budget (small / medium / larger detour).
+5. Walking and motorbike use different extra-time / reduction thresholds because
+   their candidate stories differ (near-duplicate footways vs distinct corridors).
+6. Up to three cleaner alternatives are filled as time-archetypes among routes
+   that beat the fastest on predicted exposure:
+   closer-to-fastest, second-fastest, and near the extra-time budget.
+   A missing archetype is omitted. If none exist, the fastest card is also the
+   lowest-exposure option.
 """
 
 from __future__ import annotations
@@ -53,8 +56,24 @@ DEMO_DISTANCE_RANKS: Final[tuple[int, ...]] = (0, 4, 8, 12, 16, 20, 24, 29)
 REQUESTED_ALTERNATIVES: Final[int] = 3
 PACK_NAME: Final[str] = "airpath_web_demo_v2"
 OPENING_SCENARIO_ID: Final[str] = "od_05"
-LOWER_EXPOSURE_PERCENT: Final[float] = 0.5
-MIN_TRADEOFF_EXTRA_MINUTES: Final[float] = 0.25
+SLOT_CLOSER_TO_FASTEST: Final[str] = "closer_to_fastest"
+SLOT_SECOND_FASTEST: Final[str] = "second_fastest"
+SLOT_NEAR_TIME_LIMIT: Final[str] = "near_time_limit"
+# Walking near-duplicates are often +0.01 min; motorbike corridors separate sooner.
+MODE_TRADEOFF_RULES: Final[dict[str, dict[str, float]]] = {
+    "motorbike": {
+        "min_extra_minutes": 0.25,
+        "min_reduction_percent": 0.5,
+        "min_slot_gap_minutes": 0.4,
+        "budget_fraction": 0.7,
+    },
+    "walking": {
+        "min_extra_minutes": 1.0,
+        "min_reduction_percent": 2.0,
+        "min_slot_gap_minutes": 0.8,
+        "budget_fraction": 0.7,
+    },
+}
 RESEARCH_WARNING: Final[str] = (
     "Demo road PM2.5 is simulated: station-forecast IDW background plus a "
     "traffic-class increment from OSM highway type, lanes, junctions, and a "
@@ -108,57 +127,121 @@ def _parse_geometry(raw: object) -> list[list[float]]:
     return geometry
 
 
-def _spread_by_extra_time(alts: pd.DataFrame, count: int) -> pd.DataFrame:
-    """Pick up to `count` lower-exposure alts across the extra-time range."""
-    if alts.empty or count <= 0:
-        return alts.iloc[0:0].copy()
-    ordered = alts.sort_values(
+def _optional_slot(value: object) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, float) and pd.isna(value):
+        return None
+    text = str(value).strip()
+    if not text or text.lower() == "none" or text.lower() == "nan":
+        return None
+    return text
+
+
+def _mode_rules(mode: str) -> dict[str, float]:
+    return MODE_TRADEOFF_RULES.get(mode, MODE_TRADEOFF_RULES["motorbike"])
+
+
+def _pick_time_archetypes(
+    lower: pd.DataFrame, delta: float, rules: dict[str, float]
+) -> pd.DataFrame:
+    """Fill closer-to-fastest, second-fastest, near-budget slots; omit missing ones."""
+    if lower.empty:
+        return lower.iloc[0:0].copy()
+    ordered = lower.sort_values(
         ["additional_time_vs_fastest_minutes", "predicted_exposure_index", "route_id"],
         kind="mergesort",
     ).reset_index(drop=True)
-    if len(ordered) <= count:
-        return ordered
-    if count == 1:
-        return ordered.iloc[[0]].copy()
-    raw_indexes = [
-        int(round(index * (len(ordered) - 1) / (count - 1))) for index in range(count)
-    ]
-    chosen_indexes: list[int] = []
-    for index in raw_indexes:
-        if index not in chosen_indexes:
-            chosen_indexes.append(index)
-    for index in range(len(ordered)):
-        if len(chosen_indexes) >= count:
-            break
-        if index not in chosen_indexes:
-            chosen_indexes.append(index)
-    return ordered.iloc[sorted(chosen_indexes)[:count]].copy()
+    min_gap = float(rules["min_slot_gap_minutes"])
+    budget_cut = float(delta) * float(rules["budget_fraction"])
+    extras = ordered["additional_time_vs_fastest_minutes"].astype(float)
+
+    picked: list[tuple[int, str]] = []
+    picked.append((0, SLOT_CLOSER_TO_FASTEST))
+
+    second_index = next(
+        (
+            index
+            for index in range(1, len(ordered))
+            if float(extras.iloc[index]) >= float(extras.iloc[0]) + min_gap
+        ),
+        None,
+    )
+    last_index = len(ordered) - 1
+    last_extra = float(extras.iloc[last_index])
+    near_budget = last_extra + 1e-9 >= budget_cut and last_extra + 1e-9 >= min_gap
+
+    if second_index is not None and second_index != last_index:
+        picked.append((second_index, SLOT_SECOND_FASTEST))
+    elif (
+        second_index is not None
+        and second_index == last_index
+        and not near_budget
+    ):
+        picked.append((second_index, SLOT_SECOND_FASTEST))
+
+    if near_budget:
+        last_gap_ok = all(
+            abs(last_extra - float(extras.iloc[index])) + 1e-9 >= min_gap
+            for index, _slot in picked
+        )
+        if last_index not in {index for index, _slot in picked} and last_gap_ok:
+            picked.append((last_index, SLOT_NEAR_TIME_LIMIT))
+        elif len(picked) == 1 and last_index == 0 and near_budget:
+            picked = [(0, SLOT_NEAR_TIME_LIMIT)]
+
+    selected = ordered.iloc[[index for index, _slot in picked]].copy()
+    selected["tradeoff_slot"] = [slot for _index, slot in picked]
+    return selected.reset_index(drop=True)
 
 
-def _shortlist_group(candidates: pd.DataFrame, delta: float) -> pd.DataFrame:
+def _shortlist_group(
+    candidates: pd.DataFrame,
+    delta: float,
+    mode: str | None = None,
+) -> pd.DataFrame:
     fastest = candidates.loc[candidates["is_fastest"]].copy()
     if len(fastest) != 1:
         raise AssertionError(
             f"Expected exactly one fastest route, found {len(fastest)}."
         )
+    resolved_mode = mode
+    if resolved_mode is None and "mode" in candidates.columns:
+        resolved_mode = str(candidates["mode"].iloc[0])
+    if resolved_mode is None:
+        resolved_mode = "motorbike"
+    rules = _mode_rules(str(resolved_mode))
     fastest_time = float(fastest.iloc[0]["travel_time_minutes"])
     fastest_exposure = float(fastest.iloc[0]["predicted_exposure_index"])
     feasible = candidates.loc[
-        candidates["travel_time_minutes"].astype(float) <= fastest_time + float(delta) + 1e-9
+        candidates["travel_time_minutes"].astype(float)
+        <= fastest_time + float(delta) + 1e-9
     ].copy()
     alts = feasible.loc[~feasible["is_fastest"]].copy()
     if alts.empty:
         lower = alts
-        chosen = fastest.copy()
+        selected_alts = alts.iloc[0:0].copy()
+        selected_alts["tradeoff_slot"] = pd.Series(dtype="object")
     else:
         alts["exposure_reduction_percent"] = alts["predicted_exposure_index"].map(
             lambda exposure: _reduction_percent(fastest_exposure, float(exposure))
         )
         lower = alts.loc[
-            (alts["exposure_reduction_percent"] > LOWER_EXPOSURE_PERCENT)
-            & (alts["additional_time_vs_fastest_minutes"] >= MIN_TRADEOFF_EXTRA_MINUTES)
+            (alts["exposure_reduction_percent"] > float(rules["min_reduction_percent"]))
+            & (
+                alts["additional_time_vs_fastest_minutes"]
+                >= float(rules["min_extra_minutes"])
+            )
         ].copy()
-        selected_alts = _spread_by_extra_time(lower, REQUESTED_ALTERNATIVES)
+        selected_alts = _pick_time_archetypes(lower, float(delta), rules)
+    fastest = fastest.copy()
+    fastest["tradeoff_slot"] = None
+    fastest["is_also_lowest_exposure"] = bool(selected_alts.empty)
+    if selected_alts.empty:
+        chosen = fastest
+    else:
+        selected_alts = selected_alts.copy()
+        selected_alts["is_also_lowest_exposure"] = False
         chosen = pd.concat([fastest, selected_alts], ignore_index=True)
     chosen = chosen.copy()
     chosen["rank"] = range(len(chosen))
@@ -168,7 +251,7 @@ def _shortlist_group(candidates: pd.DataFrame, delta: float) -> pd.DataFrame:
     ]
     chosen["available_feasible_alternatives"] = int(len(lower))
     chosen["fewer_than_requested_alternatives"] = bool(
-        len(lower) < REQUESTED_ALTERNATIVES
+        len(selected_alts) < REQUESTED_ALTERNATIVES
     )
     return chosen
 
@@ -241,7 +324,7 @@ def build_demo_pack(
     nontrivial_cases = 0
     for (scenario_id, mode), group in merged.groupby(["scenario_id", "mode"], sort=True):
         for delta in deltas:
-            chosen = _shortlist_group(group, float(delta))
+            chosen = _shortlist_group(group, float(delta), mode=str(mode))
             fastest_exposure = float(
                 chosen.loc[chosen["is_fastest"], "predicted_exposure_index"].iloc[0]
             )
@@ -286,6 +369,12 @@ def build_demo_pack(
                         "geometry": _parse_geometry(row.geometry),
                         "available_feasible_alternatives": available_alts,
                         "fewer_than_requested_alternatives": fewer,
+                        "is_also_lowest_exposure": bool(
+                            getattr(row, "is_also_lowest_exposure", False)
+                        ),
+                        "tradeoff_slot": _optional_slot(
+                            getattr(row, "tradeoff_slot", None)
+                        ),
                         "research_warning": RESEARCH_WARNING,
                     }
                 )
@@ -375,8 +464,10 @@ def build_demo_pack(
             "Six-station pilot support (stations 2–6 polygon).",
             "On-road PM in this demo pack is simulated, not measured on each street.",
             "No live traffic model; congestion is proxied by OSM class, lanes, junctions, and hour.",
-            "Alternatives are up to three slower candidates with lower predicted "
-            "exposure among generated routes — not a globally optimal cleanest path.",
+            "Alternatives are up to three slower, lower-exposure time-archetypes "
+            "among generated routes (closer-to-fastest, second-fastest, near the "
+            "time budget). Missing archetypes are omitted — not a globally "
+            "optimal cleanest path.",
             "Not a medical recommendation or inhaled-dose estimate.",
         ],
         "route_count": len(routes),

@@ -78,6 +78,8 @@ class RouteRecord(BaseModel):
     geometry: list[list[float]]
     available_feasible_alternatives: int | None = None
     fewer_than_requested_alternatives: bool | None = None
+    is_also_lowest_exposure: bool | None = None
+    tradeoff_slot: str | None = None
     research_warning: str | None = None
 
 
@@ -318,6 +320,8 @@ def create_app(
                     if row.get("fewer_than_requested_alternatives") is not None
                     else None
                 ),
+                is_also_lowest_exposure=bool(row.get("is_also_lowest_exposure", False)),
+                tradeoff_slot=row.get("tradeoff_slot"),
                 research_warning=row.get("research_warning"),
             )
 
@@ -341,7 +345,8 @@ def create_app(
                 None
                 if alternatives_raw
                 else (
-                    "No lower-exposure alternative was found within your time limit."
+                    "This route is both the fastest and the lowest-exposure option "
+                    "within your time limit."
                 )
             ),
         }

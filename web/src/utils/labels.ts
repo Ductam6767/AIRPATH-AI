@@ -55,9 +55,26 @@ export function isLowerPredictedExposure(percent: number): boolean {
   return percent > 0.5
 }
 
+export function isAlsoLowestExposureRoute(
+  fastest: RouteRecord,
+  alternatives: RouteRecord[],
+): boolean {
+  if (fastest.is_also_lowest_exposure) return true
+  return alternatives.length === 0
+}
+
 export function routeKindLabel(route: RouteRecord): string {
   if (route.is_fastest || route.route_type === 'fastest') {
     return 'Fastest'
+  }
+  if (route.tradeoff_slot === 'closer_to_fastest') {
+    return 'Slightly slower · lower exposure'
+  }
+  if (route.tradeoff_slot === 'second_fastest') {
+    return 'Second-fastest · lower exposure'
+  }
+  if (route.tradeoff_slot === 'near_time_limit') {
+    return 'Near time limit · lower exposure'
   }
   return isLowerPredictedExposure(route.predicted_exposure_reduction_percent)
     ? 'Lower predicted exposure'

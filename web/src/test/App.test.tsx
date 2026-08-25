@@ -152,15 +152,11 @@ describe('AIRPATH frontend', () => {
     await waitFor(() => {
       expect(
         screen.getByText(
-          'No lower-exposure alternative was found within your time limit.',
+          /This route is both the fastest and the lowest-exposure option within your time limit/i,
         ),
       ).toBeInTheDocument()
     })
-    expect(
-      screen.getByText(
-        'Fastest route is also the lowest-exposure feasible option.',
-      ),
-    ).toBeInTheDocument()
+    expect(screen.getByText('Lowest predicted exposure')).toBeInTheDocument()
     expect(screen.queryByText(/AIRPATH alternative/i)).not.toBeInTheDocument()
     const list = screen.getByRole('list')
     expect(within(list).getAllByRole('listitem')).toHaveLength(1)
@@ -174,14 +170,12 @@ describe('AIRPATH frontend', () => {
     expect(screen.queryByText('Lower predicted exposure')).not.toBeInTheDocument()
     expect(
       screen.getByText(
-        'Fastest route is also the lowest-exposure feasible option.',
-      ),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText(
         'No lower-exposure alternative was found within your time limit.',
       ),
     ).toBeInTheDocument()
+    expect(
+      screen.queryByText(/both the fastest and the lowest-exposure option/i),
+    ).not.toBeInTheDocument()
     expect(
       screen.queryByText(/guaranteeing a cleaner route/i),
     ).not.toBeInTheDocument()
