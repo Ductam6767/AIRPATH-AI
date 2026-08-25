@@ -17,6 +17,7 @@ export interface Scenario {
   supported_delta_minutes: number[]
   demo_distance_rank: number
   selection_method: string
+  opening_example?: boolean
 }
 
 export interface ScenariosResponse {

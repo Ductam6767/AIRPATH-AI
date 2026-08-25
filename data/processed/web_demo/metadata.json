@@ -37,7 +37,7 @@
   },
   "demo_tradeoff_scan": {
     "nontrivial_cases": 80,
-    "cases_with_lower_exposure_alternative": 45
+    "cases_with_lower_exposure_alternative": 49
   },
   "supported_modes": [
     "walking",

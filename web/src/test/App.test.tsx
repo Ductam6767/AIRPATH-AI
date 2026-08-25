@@ -101,6 +101,11 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
     expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
     expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Motorbike' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+    expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-2')
   })
 
   it('updates delta slider to absolute minute values', async () => {
@@ -121,6 +126,12 @@ describe('AIRPATH frontend', () => {
     stubApi()
     render(<App />)
     await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-2')
+
+    const fastestCard = screen.getByRole('button', {
+      name: /Fastest, 40 minutes/i,
+    })
+    await user.click(fastestCard)
     expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-1')
 
     const altCard = screen.getByRole('button', {

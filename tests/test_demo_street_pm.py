@@ -30,6 +30,8 @@ def test_peak_and_lanes_increase_arterial_pm() -> None:
     assert morning > off_peak
     assert wide > morning
     assert peak_factor(8, "primary") > peak_factor(12, "primary")
+    assert peak_factor(6, "primary") == pytest.approx(1.12)
+    assert peak_factor(6, "residential") == pytest.approx(1.0)
     assert lane_factor(6) > lane_factor(2)
     assert parse_lane_count("4;3") == 4
     assert road_class_factor("primary") > road_class_factor("service")

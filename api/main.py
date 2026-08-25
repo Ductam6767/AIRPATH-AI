@@ -53,6 +53,7 @@ class Scenario(BaseModel):
     supported_delta_minutes: list[float]
     demo_distance_rank: int
     selection_method: str
+    opening_example: bool = False
 
 
 class ScenariosResponse(BaseModel):

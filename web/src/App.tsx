@@ -11,14 +11,16 @@ import {
   destinationsForOrigin,
   findScenarioId,
   friendlyApiError,
-  uniqueOrigins,
+  isLowerPredictedExposure,
+  scenarioDestKey,
+  scenarioOriginKey,
 } from './utils/labels'
 
 export default function App() {
   const [scenarios, setScenarios] = useState<Scenario[]>([])
   const [originKey, setOriginKey] = useState('')
   const [destinationKey, setDestinationKey] = useState('')
-  const [mode, setMode] = useState<TravelMode>('walking')
+  const [mode, setMode] = useState<TravelMode>('motorbike')
   const [deltaMinutes, setDeltaMinutes] = useState<(typeof DELTA_MINUTES)[number]>(3)
   const [routesPayload, setRoutesPayload] = useState<RoutesResponse | null>(null)
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null)
@@ -46,15 +48,11 @@ export default function App() {
         const payload = await fetchScenarios(controller.signal)
         const list = payload.scenarios ?? []
         setScenarios(list)
-        const origins = uniqueOrigins(list)
-        const firstOrigin = origins[0]
-        if (firstOrigin) {
-          setOriginKey(firstOrigin.key)
-          const destinations = destinationsForOrigin(list, firstOrigin.key)
-          const firstDest = destinations[0]
-          if (firstDest) {
-            setDestinationKey(firstDest.key)
-          }
+        const opening =
+          list.find((scenario) => scenario.opening_example) ?? list[0]
+        if (opening) {
+          setOriginKey(scenarioOriginKey(opening))
+          setDestinationKey(scenarioDestKey(opening))
         }
       } catch (err) {
         if (controller.signal.aborted) return
@@ -80,7 +78,12 @@ export default function App() {
     try {
       const payload = await fetchRoutes({ scenarioId, mode, deltaMinutes })
       setRoutesPayload(payload)
-      setSelectedRouteId(payload.fastest_route.route_id)
+      const tradeoff = payload.alternatives.find((route) =>
+        isLowerPredictedExposure(route.predicted_exposure_reduction_percent),
+      )
+      setSelectedRouteId(
+        tradeoff?.route_id ?? payload.fastest_route.route_id,
+      )
     } catch (err) {
       setError(friendlyApiError(err))
       setRoutesPayload(null)

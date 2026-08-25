@@ -145,9 +145,10 @@ export function RouteCards({
 
       {hasLowerExposureAlt ? (
         <p className="muted small">
-          Top feasible alternatives among the generated candidate routes, ranked
-          by predicted exposure. AIRPATH compares feasible route alternatives
-          rather than guaranteeing a cleaner route.
+          Top feasible alternatives among the generated candidate routes.
+          Slightly slower options with lower predicted exposure are listed first.
+          AIRPATH compares feasible route alternatives rather than guaranteeing a
+          cleaner route.
         </p>
       ) : (
         <div className="empty-alts" role="status">

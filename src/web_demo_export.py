@@ -7,8 +7,10 @@ regeneration, no change to the optimizer *rule*. The demo pack:
 2. Keeps station-IDW AIRPATH PM as the spatial background.
 3. Applies a demo-only on-road traffic increment (OSM class / lanes /
    morning-peak / junctions), inspired by mobile-monitoring frameworks.
-4. Re-applies the published selection rule: keep the fastest route, then up to
-   three lowest-simulated-exposure feasible alternatives.
+4. Re-applies the published feasibility rule (keep the fastest route; keep
+   alternatives with time ≤ fastest + δ). Among those feasible alternatives the
+   demo shortlist prefers a small extra-time, meaningfully lower-exposure
+   trade-off before other candidates.
 """
 
 from __future__ import annotations
@@ -49,6 +51,9 @@ SUPPORTED_MODES: Final[tuple[str, ...]] = ("walking", "motorbike")
 DEMO_DISTANCE_RANKS: Final[tuple[int, ...]] = (0, 4, 8, 12, 16, 20, 24, 29)
 REQUESTED_ALTERNATIVES: Final[int] = 3
 PACK_NAME: Final[str] = "airpath_web_demo_v2"
+OPENING_SCENARIO_ID: Final[str] = "od_23"
+MEANINGFUL_REDUCTION_PERCENT: Final[float] = 2.0
+MIN_TRADEOFF_EXTRA_MINUTES: Final[float] = 0.25
 RESEARCH_WARNING: Final[str] = (
     "Demo road PM2.5 is simulated: station-forecast IDW background plus a "
     "traffic-class increment from OSM highway type, lanes, junctions, and a "
@@ -109,15 +114,42 @@ def _shortlist_group(candidates: pd.DataFrame, delta: float) -> pd.DataFrame:
             f"Expected exactly one fastest route, found {len(fastest)}."
         )
     fastest_time = float(fastest.iloc[0]["travel_time_minutes"])
+    fastest_exposure = float(fastest.iloc[0]["predicted_exposure_index"])
     feasible = candidates.loc[
         candidates["travel_time_minutes"].astype(float) <= fastest_time + float(delta) + 1e-9
     ].copy()
-    alts = feasible.loc[~feasible["is_fastest"]].sort_values(
-        ["predicted_exposure_index", "travel_time_minutes", "route_id"],
-        kind="mergesort",
-    )
-    selected_alts = alts.head(REQUESTED_ALTERNATIVES)
-    chosen = pd.concat([fastest, selected_alts], ignore_index=True)
+    alts = feasible.loc[~feasible["is_fastest"]].copy()
+    if alts.empty:
+        chosen = fastest.copy()
+    else:
+        alts["exposure_reduction_percent"] = alts["predicted_exposure_index"].map(
+            lambda exposure: _reduction_percent(fastest_exposure, float(exposure))
+        )
+        meaningful = alts.loc[
+            (alts["exposure_reduction_percent"] >= MEANINGFUL_REDUCTION_PERCENT)
+            & (alts["additional_time_vs_fastest_minutes"] >= MIN_TRADEOFF_EXTRA_MINUTES)
+        ].sort_values(
+            ["additional_time_vs_fastest_minutes", "predicted_exposure_index", "route_id"],
+            kind="mergesort",
+        )
+        other_lower = alts.loc[
+            (alts["exposure_reduction_percent"] > 0.5)
+            & ~alts.index.isin(meaningful.index)
+        ].sort_values(
+            ["additional_time_vs_fastest_minutes", "predicted_exposure_index", "route_id"],
+            kind="mergesort",
+        )
+        rest = alts.loc[
+            ~alts.index.isin(meaningful.index.union(other_lower.index))
+        ].sort_values(
+            ["predicted_exposure_index", "travel_time_minutes", "route_id"],
+            kind="mergesort",
+        )
+        ordered_alts = pd.concat([meaningful, other_lower, rest], ignore_index=False)
+        chosen = pd.concat(
+            [fastest, ordered_alts.head(REQUESTED_ALTERNATIVES)],
+            ignore_index=True,
+        )
     chosen = chosen.copy()
     chosen["rank"] = range(len(chosen))
     chosen["route_type"] = [
@@ -258,6 +290,7 @@ def build_demo_pack(
                 "supported_delta_minutes": [float(d) for d in deltas],
                 "demo_distance_rank": int(row.demo_distance_rank),
                 "selection_method": str(row.selection_method),
+                "opening_example": str(row.scenario_id) == OPENING_SCENARIO_ID,
             }
         )
 

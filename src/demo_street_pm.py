@@ -43,25 +43,25 @@ DEFAULT_SEGMENT_PATH: Final[Path] = (
 
 # Relative to urban-background IDW. Illustrative, not calibrated to HCMC counts.
 ROAD_CLASS_FACTOR: Final[dict[str, float]] = {
-    "motorway": 1.42,
-    "motorway_link": 1.38,
-    "trunk": 1.38,
-    "trunk_link": 1.34,
-    "primary": 1.30,
-    "primary_link": 1.26,
-    "secondary": 1.18,
-    "secondary_link": 1.14,
-    "tertiary": 1.10,
-    "tertiary_link": 1.06,
+    "motorway": 1.55,
+    "motorway_link": 1.50,
+    "trunk": 1.50,
+    "trunk_link": 1.45,
+    "primary": 1.45,
+    "primary_link": 1.38,
+    "secondary": 1.28,
+    "secondary_link": 1.22,
+    "tertiary": 1.12,
+    "tertiary_link": 1.08,
     "unclassified": 1.04,
-    "residential": 0.97,
-    "living_street": 0.93,
-    "service": 0.92,
-    "pedestrian": 0.88,
-    "footway": 0.86,
-    "path": 0.86,
-    "cycleway": 0.86,
-    "steps": 0.84,
+    "residential": 0.90,
+    "living_street": 0.86,
+    "service": 0.88,
+    "pedestrian": 0.82,
+    "footway": 0.80,
+    "path": 0.80,
+    "cycleway": 0.80,
+    "steps": 0.78,
 }
 ARTERIAL_HIGHWAYS: Final[frozenset[str]] = frozenset(
     {
@@ -107,10 +107,10 @@ def peak_factor(hour: int, highway: str) -> float:
     if highway not in ARTERIAL_HIGHWAYS:
         return 1.0
     if hour in {7, 8, 17, 18}:
-        return 1.16
+        return 1.20
     if hour in {6, 9, 16, 19}:
-        return 1.08
-    return 1.02
+        return 1.12
+    return 1.04
 
 
 def junction_factor(junction: str | None) -> float:

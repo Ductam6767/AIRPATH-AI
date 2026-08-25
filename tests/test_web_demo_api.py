@@ -5,12 +5,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 
 from api.main import create_app, load_demo_pack
 from src.web_demo_export import (
     DEMO_DEPARTURE_TIME,
+    _shortlist_group,
     build_demo_pack,
     select_demo_scenarios,
     write_demo_pack,
@@ -37,8 +39,6 @@ def test_demo_pack_files_exist() -> None:
 
 
 def test_scenario_selection_is_distance_stratified() -> None:
-    import pandas as pd
-
     od = pd.read_csv(OD_PATH)
     selected = select_demo_scenarios(od)
     assert len(selected) == 8
@@ -103,6 +103,68 @@ def test_demo_scenarios(client: TestClient) -> None:
     )
     assert first["supported_modes"] == ["walking", "motorbike"]
     assert 0.0 in first["supported_delta_minutes"]
+    assert "opening_example" in first
+    opening = [row for row in payload["scenarios"] if row.get("opening_example")]
+    assert len(opening) == 1
+    assert opening[0]["scenario_id"] == "od_23"
+
+
+def test_shortlist_prefers_small_time_lower_exposure_tradeoff() -> None:
+    candidates = pd.DataFrame(
+        [
+            {
+                "route_id": "fastest",
+                "is_fastest": True,
+                "travel_time_minutes": 10.0,
+                "additional_time_vs_fastest_minutes": 0.0,
+                "predicted_exposure_index": 100.0,
+            },
+            {
+                "route_id": "longer-cleaner",
+                "is_fastest": False,
+                "travel_time_minutes": 12.5,
+                "additional_time_vs_fastest_minutes": 2.5,
+                "predicted_exposure_index": 80.0,
+            },
+            {
+                "route_id": "small-time-tradeoff",
+                "is_fastest": False,
+                "travel_time_minutes": 10.5,
+                "additional_time_vs_fastest_minutes": 0.5,
+                "predicted_exposure_index": 90.0,
+            },
+            {
+                "route_id": "dirtier",
+                "is_fastest": False,
+                "travel_time_minutes": 11.0,
+                "additional_time_vs_fastest_minutes": 1.0,
+                "predicted_exposure_index": 110.0,
+            },
+        ]
+    )
+    chosen = _shortlist_group(candidates, 3.0)
+    alts = chosen.loc[~chosen["is_fastest"], "route_id"].tolist()
+    assert alts[0] == "small-time-tradeoff"
+    assert alts[1] == "longer-cleaner"
+    assert alts[2] == "dirtier"
+
+
+def test_opening_motorbike_has_lower_exposure_tradeoff(client: TestClient) -> None:
+    response = client.get(
+        "/demo/routes",
+        params={"scenario_id": "od_23", "mode": "motorbike", "delta_minutes": 3},
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    lower = [
+        alt
+        for alt in payload["alternatives"]
+        if alt["predicted_exposure_reduction_percent"] > 0.5
+    ]
+    assert lower, "Opening motorbike example should include a lower-exposure alternative"
+    best = lower[0]
+    assert best["additional_time_vs_fastest_minutes"] <= 3.0
+    assert best["predicted_exposure_reduction_percent"] >= 2.0
 
 
 def test_valid_route_request(client: TestClient) -> None:
