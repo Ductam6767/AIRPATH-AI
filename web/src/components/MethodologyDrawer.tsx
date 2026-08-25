@@ -43,7 +43,11 @@ export function MethodologyDrawer({ open, onClose }: MethodologyDrawerProps) {
         </div>
         <ol className="drawer__steps">
           <li>Historical monitoring data are used to forecast PM2.5.</li>
-          <li>Station forecasts are spatially estimated across the road network.</li>
+          <li>
+            Station forecasts are interpolated as a background field, then the demo
+            applies a simulated on-road increment so busier road classes are dirtier
+            than quiet streets.
+          </li>
           <li>Route segments receive estimated travel times.</li>
           <li>Exposure is aggregated across segments as a time-weighted PM2.5 proxy.</li>
           <li>
@@ -56,17 +60,20 @@ export function MethodologyDrawer({ open, onClose }: MethodologyDrawerProps) {
         <ul className="drawer__limits">
           <li>Current demo uses hourly HealthyAir data.</li>
           <li>Pilot-area only (stations 2–6 polygon).</li>
-          <li>Road PM2.5 is estimated, not directly measured on each road.</li>
-          <li>No live traffic model.</li>
+          <li>Road PM2.5 in this demo is simulated, not measured on each street.</li>
+          <li>
+            Busy-road pollution is a traffic-class proxy (OSM highway type, lanes,
+            junctions, morning peak) inspired by mobile-monitoring frameworks — not
+            live congestion and not a Chinese probe-vehicle dataset.
+          </li>
           <li>
             Exposure is a time-weighted proxy — not inhaled dose, medical risk, or
             medical advice.
           </li>
-          <li>This UI uses precomputed demo scenarios from the frozen research pack.</li>
+          <li>This UI uses precomputed demo scenarios. Candidate routes and travel times stay frozen; only demo road PM is simulated.</li>
           <li>
-            A lower-exposure feasible alternative is not guaranteed; on the frozen
-            research panel it is uncommon, and any predicted reduction is typically
-            small.
+            A lower-exposure feasible alternative is still not guaranteed. AIRPATH
+            compares feasible candidates rather than promising a cleaner route.
           </li>
         </ul>
         <p className="muted small">

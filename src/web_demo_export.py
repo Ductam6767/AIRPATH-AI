@@ -1,8 +1,14 @@
-"""Export a compact frozen Model-C web demo pack (no scientific recompute).
+"""Export a compact web demo pack from frozen candidates + simulated on-road PM.
 
-Reads P0-3 unperturbed shortlists (perturbation_scale=1.0) and joins
-P0-2B candidate geometry. Does not retrain models, run IDW, or re-optimize
-routes — it only packages already-frozen research outputs for the demo API.
+Scientific engine stays frozen: no retraining, no IDW change, no candidate
+regeneration, no change to the optimizer *rule*. The demo pack:
+
+1. Keeps P0-2B candidate geometry and travel times.
+2. Keeps station-IDW AIRPATH PM as the spatial background.
+3. Applies a demo-only on-road traffic increment (OSM class / lanes /
+   morning-peak / junctions), inspired by mobile-monitoring frameworks.
+4. Re-applies the published selection rule: keep the fastest route, then up to
+   three lowest-simulated-exposure feasible alternatives.
 """
 
 from __future__ import annotations
@@ -14,13 +20,15 @@ from typing import Final, Sequence
 
 import pandas as pd
 
+from .demo_street_pm import (
+    load_background_segments,
+    load_way_attributes,
+    simulate_route_exposures,
+)
 from .route_optimizer import TIME_TOLERANCES_MINUTES
 
 REPO_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT_DIR: Final[Path] = REPO_ROOT / "data" / "processed" / "web_demo"
-SHORTLIST_PATH: Final[Path] = (
-    REPO_ROOT / "data" / "processed" / "final_robustness" / "perturbed_shortlists.csv"
-)
 CANDIDATE_PATH: Final[Path] = (
     REPO_ROOT / "data" / "processed" / "temporal_gap_analysis" / "candidate_routes.csv"
 )
@@ -30,18 +38,24 @@ OD_PATH: Final[Path] = (
 FREEZE_MANIFEST_PATH: Final[Path] = (
     REPO_ROOT / "data" / "processed" / "final_robustness" / "freeze_manifest.json"
 )
+WAY_LOOKUP_PATH: Final[Path] = (
+    REPO_ROOT / "data" / "processed" / "web_demo" / "osm_way_traffic_attributes.json"
+)
 
-# Representative demo departure from the P0-2B / P0-3 panel.
 DEMO_DEPARTURE_TIME: Final[str] = "2022-02-27T06:00:00"
 DEMO_FORECASTING_ORIGIN: Final[str] = "2022-02-27T05:00:00"
+DEMO_HOUR: Final[int] = 6
 SUPPORTED_MODES: Final[tuple[str, ...]] = ("walking", "motorbike")
-# Evenly spaced distance ranks among the 30 P0-2B OD pairs (sorted by km).
 DEMO_DISTANCE_RANKS: Final[tuple[int, ...]] = (0, 4, 8, 12, 16, 20, 24, 29)
+REQUESTED_ALTERNATIVES: Final[int] = 3
+PACK_NAME: Final[str] = "airpath_web_demo_v2"
 RESEARCH_WARNING: Final[str] = (
-    "PM2.5 values are forecast-based spatial estimates derived from an hourly "
-    "monitoring network. Exposure is a time-weighted PM2.5 proxy, not a direct "
-    "measure of inhaled dose or health risk. Road-level PM2.5 is estimated "
-    "(IDW p=1 over six stations), not measured. Pilot area only; no live traffic."
+    "Demo road PM2.5 is simulated: station-forecast IDW background plus a "
+    "traffic-class increment from OSM highway type, lanes, junctions, and a "
+    "morning-peak factor. It is inspired by mobile-monitoring (走航监测) "
+    "frameworks, not measured by pollution-probe vehicles, and is not live "
+    "traffic. Exposure is a time-weighted PM2.5 proxy, not inhaled dose or "
+    "medical risk. Pilot area only."
 )
 
 
@@ -88,9 +102,35 @@ def _parse_geometry(raw: object) -> list[list[float]]:
     return geometry
 
 
+def _shortlist_group(candidates: pd.DataFrame, delta: float) -> pd.DataFrame:
+    fastest = candidates.loc[candidates["is_fastest"]].copy()
+    if len(fastest) != 1:
+        raise AssertionError(
+            f"Expected exactly one fastest route, found {len(fastest)}."
+        )
+    fastest_time = float(fastest.iloc[0]["travel_time_minutes"])
+    feasible = candidates.loc[
+        candidates["travel_time_minutes"].astype(float) <= fastest_time + float(delta) + 1e-9
+    ].copy()
+    alts = feasible.loc[~feasible["is_fastest"]].sort_values(
+        ["predicted_exposure_index", "travel_time_minutes", "route_id"],
+        kind="mergesort",
+    )
+    selected_alts = alts.head(REQUESTED_ALTERNATIVES)
+    chosen = pd.concat([fastest, selected_alts], ignore_index=True)
+    chosen = chosen.copy()
+    chosen["rank"] = range(len(chosen))
+    chosen["route_type"] = [
+        "fastest" if bool(is_fastest) else "AIRPATH alternative"
+        for is_fastest in chosen["is_fastest"]
+    ]
+    chosen["available_feasible_alternatives"] = int(len(alts))
+    chosen["fewer_than_requested_alternatives"] = bool(len(alts) < REQUESTED_ALTERNATIVES)
+    return chosen
+
+
 def build_demo_pack(
     *,
-    shortlist_path: Path = SHORTLIST_PATH,
     candidate_path: Path = CANDIDATE_PATH,
     od_path: Path = OD_PATH,
     freeze_manifest_path: Path = FREEZE_MANIFEST_PATH,
@@ -98,9 +138,7 @@ def build_demo_pack(
     modes: Sequence[str] = SUPPORTED_MODES,
     deltas: Sequence[float] = TIME_TOLERANCES_MINUTES,
 ) -> dict[str, object]:
-    """Assemble scenarios/routes/metadata from frozen Model-C artifacts."""
-    if not shortlist_path.is_file():
-        raise FileNotFoundError(f"Missing frozen shortlist: {shortlist_path}")
+    """Assemble scenarios/routes/metadata with simulated on-road PM for the demo."""
     if not candidate_path.is_file():
         raise FileNotFoundError(f"Missing candidate geometry: {candidate_path}")
     if not od_path.is_file():
@@ -110,35 +148,6 @@ def build_demo_pack(
     selected_od = select_demo_scenarios(od_all)
     scenario_ids = list(selected_od["scenario_id"].astype(str))
 
-    shortlist = pd.read_csv(shortlist_path)
-    required_shortlist = {
-        "perturbation_scale",
-        "departure_time",
-        "scenario_id",
-        "mode",
-        "delta_time_allowed_minutes",
-        "route_id",
-        "rank",
-        "route_type",
-        "travel_time_minutes",
-        "predicted_exposure_index",
-        "available_feasible_alternatives",
-        "fewer_than_requested_alternatives",
-    }
-    missing = required_shortlist - set(shortlist.columns)
-    if missing:
-        raise ValueError(f"Shortlist missing columns: {sorted(missing)}")
-
-    base = shortlist.loc[
-        (shortlist["perturbation_scale"].astype(float) == 1.0)
-        & (shortlist["departure_time"].astype(str) == departure_time)
-        & (shortlist["scenario_id"].astype(str).isin(scenario_ids))
-        & (shortlist["mode"].astype(str).isin(list(modes)))
-        & (shortlist["delta_time_allowed_minutes"].astype(float).isin([float(d) for d in deltas]))
-    ].copy()
-    if base.empty:
-        raise ValueError("No unperturbed shortlist rows matched the demo filters.")
-
     candidates = pd.read_csv(candidate_path)
     cand_cols = [
         "scenario_id",
@@ -146,6 +155,7 @@ def build_demo_pack(
         "route_id",
         "geometry",
         "distance_m",
+        "travel_time_minutes",
         "additional_time_vs_fastest_minutes",
         "is_fastest",
     ]
@@ -153,62 +163,80 @@ def build_demo_pack(
     if missing_cand:
         raise ValueError(f"Candidates missing columns: {sorted(missing_cand)}")
 
+    base = candidates.loc[
+        candidates["scenario_id"].astype(str).isin(scenario_ids)
+        & candidates["mode"].astype(str).isin(list(modes)),
+        cand_cols,
+    ].copy()
+    if base.empty:
+        raise ValueError("No candidate rows matched the demo filters.")
+
+    way_lookup = load_way_attributes(WAY_LOOKUP_PATH)
+    segments = load_background_segments(scenario_ids=scenario_ids)
+    exposures = simulate_route_exposures(segments, way_lookup, hour=DEMO_HOUR)
     merged = base.merge(
-        candidates[cand_cols],
+        exposures,
         on=["scenario_id", "mode", "route_id"],
         how="left",
-        validate="many_to_one",
+        validate="one_to_one",
     )
-    if merged["geometry"].isna().any():
-        bad = merged.loc[merged["geometry"].isna(), ["scenario_id", "mode", "route_id"]]
-        raise ValueError(f"Geometry join failed for rows:\n{bad.to_string(index=False)}")
+    if merged["predicted_exposure_index"].isna().any():
+        bad = merged.loc[
+            merged["predicted_exposure_index"].isna(),
+            ["scenario_id", "mode", "route_id"],
+        ]
+        raise ValueError(f"Simulated exposure join failed:\n{bad.to_string(index=False)}")
 
     freeze: dict[str, object] = {}
     if freeze_manifest_path.is_file():
         freeze = json.loads(freeze_manifest_path.read_text(encoding="utf-8"))
 
     routes: list[dict[str, object]] = []
-    for (scenario_id, mode, delta), group in merged.groupby(
-        ["scenario_id", "mode", "delta_time_allowed_minutes"], sort=True
-    ):
-        fastest_rows = group.loc[group["route_type"].astype(str) == "fastest"]
-        if len(fastest_rows) != 1:
-            raise AssertionError(
-                f"Expected exactly one fastest route for "
-                f"{scenario_id}/{mode}/+{delta}, found {len(fastest_rows)}."
+    lower_exposure_cases = 0
+    nontrivial_cases = 0
+    for (scenario_id, mode), group in merged.groupby(["scenario_id", "mode"], sort=True):
+        for delta in deltas:
+            chosen = _shortlist_group(group, float(delta))
+            fastest_exposure = float(
+                chosen.loc[chosen["is_fastest"], "predicted_exposure_index"].iloc[0]
             )
-        fastest_exposure = float(fastest_rows.iloc[0]["predicted_exposure_index"])
-        ordered = group.sort_values(["rank", "route_id"], kind="mergesort")
-        available_alts = int(ordered.iloc[0]["available_feasible_alternatives"])
-        fewer = bool(ordered.iloc[0]["fewer_than_requested_alternatives"])
-        for row in ordered.itertuples(index=False):
-            exposure = float(row.predicted_exposure_index)
-            is_fastest = str(row.route_type) == "fastest" or bool(row.is_fastest)
-            routes.append(
-                {
-                    "scenario_id": str(scenario_id),
-                    "mode": str(mode),
-                    "delta_minutes": float(delta),
-                    "route_id": str(row.route_id),
-                    "route_type": str(row.route_type),
-                    "rank": int(row.rank),
-                    "is_fastest": bool(is_fastest),
-                    "is_feasible": True,
-                    "travel_time_minutes": float(row.travel_time_minutes),
-                    "additional_time_vs_fastest_minutes": float(
-                        row.additional_time_vs_fastest_minutes
-                    ),
-                    "distance_m": float(row.distance_m),
-                    "predicted_exposure_index": exposure,
-                    "predicted_exposure_reduction_percent": _reduction_percent(
-                        fastest_exposure, exposure
-                    ),
-                    "geometry": _parse_geometry(row.geometry),
-                    "available_feasible_alternatives": available_alts,
-                    "fewer_than_requested_alternatives": fewer,
-                    "research_warning": RESEARCH_WARNING,
-                }
-            )
+            has_lower = False
+            for row in chosen.itertuples(index=False):
+                if not bool(row.is_fastest) and float(row.predicted_exposure_index) < fastest_exposure:
+                    has_lower = True
+            if float(delta) > 0:
+                nontrivial_cases += 1
+                if has_lower:
+                    lower_exposure_cases += 1
+            available_alts = int(chosen.iloc[0]["available_feasible_alternatives"])
+            fewer = bool(chosen.iloc[0]["fewer_than_requested_alternatives"])
+            for row in chosen.itertuples(index=False):
+                exposure = float(row.predicted_exposure_index)
+                routes.append(
+                    {
+                        "scenario_id": str(scenario_id),
+                        "mode": str(mode),
+                        "delta_minutes": float(delta),
+                        "route_id": str(row.route_id),
+                        "route_type": str(row.route_type),
+                        "rank": int(row.rank),
+                        "is_fastest": bool(row.is_fastest),
+                        "is_feasible": True,
+                        "travel_time_minutes": float(row.travel_time_minutes),
+                        "additional_time_vs_fastest_minutes": float(
+                            row.additional_time_vs_fastest_minutes
+                        ),
+                        "distance_m": float(row.distance_m),
+                        "predicted_exposure_index": exposure,
+                        "predicted_exposure_reduction_percent": _reduction_percent(
+                            fastest_exposure, exposure
+                        ),
+                        "geometry": _parse_geometry(row.geometry),
+                        "available_feasible_alternatives": available_alts,
+                        "fewer_than_requested_alternatives": fewer,
+                        "research_warning": RESEARCH_WARNING,
+                    }
+                )
 
     scenarios: list[dict[str, object]] = []
     for row in selected_od.itertuples(index=False):
@@ -234,9 +262,9 @@ def build_demo_pack(
         )
 
     metadata: dict[str, object] = {
-        "pack_name": "airpath_web_demo_v1",
+        "pack_name": PACK_NAME,
         "forecaster": freeze.get("frozen_forecaster", "C_xgboost_current_pm"),
-        "spatial_model": freeze.get("spatial_model", "idw_p1"),
+        "spatial_model": "idw_p1_plus_simulated_onroad_traffic_increment",
         "exposure_definition": freeze.get(
             "exposure_definition", "sum_pm25_times_duration_minutes"
         ),
@@ -246,11 +274,15 @@ def build_demo_pack(
         ),
         "departure_time": departure_time,
         "forecasting_origin": DEMO_FORECASTING_ORIGIN,
+        "demo_hour": DEMO_HOUR,
         "source_artifacts": {
-            "shortlist": str(shortlist_path.relative_to(REPO_ROOT)),
-            "shortlist_filter": "perturbation_scale == 1.0 (unperturbed Model C)",
             "candidates": str(candidate_path.relative_to(REPO_ROOT)),
             "od_scenarios": str(od_path.relative_to(REPO_ROOT)),
+            "background_segments": (
+                "data/processed/temporal_gap_analysis/"
+                "segment_exposure_comparison_0600.csv.gz"
+            ),
+            "osm_traffic_lookup": str(WAY_LOOKUP_PATH.relative_to(REPO_ROOT)),
             "freeze_manifest": str(freeze_manifest_path.relative_to(REPO_ROOT))
             if freeze_manifest_path.is_file()
             else None,
@@ -264,15 +296,31 @@ def build_demo_pack(
                 "Scenarios were not filtered on exposure reduction or map aesthetics."
             ),
         },
+        "pollution_simulation": {
+            "enabled": True,
+            "background": "Frozen Model-C AIRPATH segment PM (IDW p=1 from six stations).",
+            "on_road_increment": (
+                "Deterministic OSM highway-class / lanes / junction / 06:00 arterial "
+                "peak multipliers. Inspired by Chinese mobile-monitoring (走航监测) "
+                "frameworks that combine fixed-station background with on-road traffic "
+                "intensity. Not those vehicle datasets, not live congestion counts."
+            ),
+            "optimizer_rule_unchanged": True,
+            "research_engine_modified": False,
+        },
+        "demo_tradeoff_scan": {
+            "nontrivial_cases": nontrivial_cases,
+            "cases_with_lower_exposure_alternative": lower_exposure_cases,
+        },
         "supported_modes": list(modes),
         "supported_delta_minutes": [float(d) for d in deltas],
         "exposure_unit": "(µg/m³)·min",
         "research_warning": RESEARCH_WARNING,
         "limitations": [
             "Hourly HealthyAir resolution; segment ETA maps to hourly forecast buckets.",
-            "Six-station pilot support (stations 2–6 polygon); road PM2.5 is estimated.",
-            "No road-level ground-truth PM2.5.",
-            "Constant-speed ETA; no live traffic.",
+            "Six-station pilot support (stations 2–6 polygon).",
+            "On-road PM in this demo pack is simulated, not measured on each street.",
+            "No live traffic model; congestion is proxied by OSM class, lanes, junctions, and hour.",
             "Alternatives are top feasible lower-predicted-exposure candidates among "
             "generated routes — not a globally optimal cleanest path.",
             "Not a medical recommendation or inhaled-dose estimate.",
@@ -308,7 +356,7 @@ def write_demo_pack(output_dir: Path, pack: dict[str, object]) -> dict[str, Path
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Export frozen Model-C web demo JSON pack (packaging only)."
+        description="Export web demo JSON pack with simulated on-road PM."
     )
     parser.add_argument(
         "--output-dir",
@@ -325,6 +373,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "output_dir": str(args.output_dir),
                 "scenario_count": len(pack["scenarios"]),  # type: ignore[arg-type]
                 "route_count": len(pack["routes"]),  # type: ignore[arg-type]
+                "demo_tradeoff_scan": pack["metadata"]["demo_tradeoff_scan"],  # type: ignore[index]
                 "files": {key: str(path) for key, path in paths.items()},
             },
             indent=2,

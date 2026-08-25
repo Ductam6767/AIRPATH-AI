@@ -51,9 +51,12 @@ def test_build_demo_pack_uses_model_c_and_geometry() -> None:
     pack = build_demo_pack()
     metadata = pack["metadata"]
     assert metadata["forecaster"] == "C_xgboost_current_pm"
-    assert metadata["spatial_model"] == "idw_p1"
+    assert metadata["spatial_model"] == "idw_p1_plus_simulated_onroad_traffic_increment"
     assert metadata["departure_time"] == DEMO_DEPARTURE_TIME
     assert metadata["scientific_logic_modified"] is False
+    assert metadata["pollution_simulation"]["enabled"] is True
+    assert metadata["pollution_simulation"]["research_engine_modified"] is False
+    assert metadata["demo_tradeoff_scan"]["cases_with_lower_exposure_alternative"] > 0
     routes = pack["routes"]
     assert len(routes) > 0
     sample = routes[0]
@@ -62,6 +65,10 @@ def test_build_demo_pack_uses_model_c_and_geometry() -> None:
     assert len(sample["geometry"][0]) == 2
     assert "predicted_exposure_reduction_percent" in sample
     assert sample["is_feasible"] is True
+    assert any(
+        (not route["is_fastest"]) and route["predicted_exposure_reduction_percent"] > 0.5
+        for route in routes
+    )
 
 
 def test_write_demo_pack_roundtrip(tmp_path: Path) -> None:
@@ -72,7 +79,7 @@ def test_write_demo_pack_roundtrip(tmp_path: Path) -> None:
     metadata = json.loads(paths["metadata"].read_text(encoding="utf-8"))
     assert len(scenarios["scenarios"]) == 8
     assert len(routes["routes"]) == len(pack["routes"])
-    assert metadata["pack_name"] == "airpath_web_demo_v1"
+    assert metadata["pack_name"] == "airpath_web_demo_v2"
 
 
 def test_health(client: TestClient) -> None:
@@ -81,7 +88,7 @@ def test_health(client: TestClient) -> None:
     payload = response.json()
     assert payload["status"] == "ok"
     assert payload["service"] == "airpath-demo-api"
-    assert payload["demo_pack"] == "airpath_web_demo_v1"
+    assert payload["demo_pack"] == "airpath_web_demo_v2"
 
 
 def test_demo_scenarios(client: TestClient) -> None:

@@ -1,16 +1,17 @@
 {
-  "pack_name": "airpath_web_demo_v1",
+  "pack_name": "airpath_web_demo_v2",
   "forecaster": "C_xgboost_current_pm",
-  "spatial_model": "idw_p1",
+  "spatial_model": "idw_p1_plus_simulated_onroad_traffic_increment",
   "exposure_definition": "sum_pm25_times_duration_minutes",
   "route_selector": "absolute_minute_feasible_min_predicted_exposure_plus_top3",
   "departure_time": "2022-02-27T06:00:00",
   "forecasting_origin": "2022-02-27T05:00:00",
+  "demo_hour": 6,
   "source_artifacts": {
-    "shortlist": "data/processed/final_robustness/perturbed_shortlists.csv",
-    "shortlist_filter": "perturbation_scale == 1.0 (unperturbed Model C)",
     "candidates": "data/processed/temporal_gap_analysis/candidate_routes.csv",
     "od_scenarios": "data/processed/temporal_gap_analysis/od_scenarios.csv",
+    "background_segments": "data/processed/temporal_gap_analysis/segment_exposure_comparison_0600.csv.gz",
+    "osm_traffic_lookup": "data/processed/web_demo/osm_way_traffic_attributes.json",
     "freeze_manifest": "data/processed/final_robustness/freeze_manifest.json"
   },
   "scenario_selection": {
@@ -27,6 +28,17 @@
     ],
     "method": "Evenly spaced ranks by straight-line OD distance across the 30 P0-2B scenarios so short and long trips are both represented. Scenarios were not filtered on exposure reduction or map aesthetics."
   },
+  "pollution_simulation": {
+    "enabled": true,
+    "background": "Frozen Model-C AIRPATH segment PM (IDW p=1 from six stations).",
+    "on_road_increment": "Deterministic OSM highway-class / lanes / junction / 06:00 arterial peak multipliers. Inspired by Chinese mobile-monitoring (\u8d70\u822a\u76d1\u6d4b) frameworks that combine fixed-station background with on-road traffic intensity. Not those vehicle datasets, not live congestion counts.",
+    "optimizer_rule_unchanged": true,
+    "research_engine_modified": false
+  },
+  "demo_tradeoff_scan": {
+    "nontrivial_cases": 80,
+    "cases_with_lower_exposure_alternative": 45
+  },
   "supported_modes": [
     "walking",
     "motorbike"
@@ -40,12 +52,12 @@
     10.0
   ],
   "exposure_unit": "(\u00b5g/m\u00b3)\u00b7min",
-  "research_warning": "PM2.5 values are forecast-based spatial estimates derived from an hourly monitoring network. Exposure is a time-weighted PM2.5 proxy, not a direct measure of inhaled dose or health risk. Road-level PM2.5 is estimated (IDW p=1 over six stations), not measured. Pilot area only; no live traffic.",
+  "research_warning": "Demo road PM2.5 is simulated: station-forecast IDW background plus a traffic-class increment from OSM highway type, lanes, junctions, and a morning-peak factor. It is inspired by mobile-monitoring (\u8d70\u822a\u76d1\u6d4b) frameworks, not measured by pollution-probe vehicles, and is not live traffic. Exposure is a time-weighted PM2.5 proxy, not inhaled dose or medical risk. Pilot area only.",
   "limitations": [
     "Hourly HealthyAir resolution; segment ETA maps to hourly forecast buckets.",
-    "Six-station pilot support (stations 2\u20136 polygon); road PM2.5 is estimated.",
-    "No road-level ground-truth PM2.5.",
-    "Constant-speed ETA; no live traffic.",
+    "Six-station pilot support (stations 2\u20136 polygon).",
+    "On-road PM in this demo pack is simulated, not measured on each street.",
+    "No live traffic model; congestion is proxied by OSM class, lanes, junctions, and hour.",
     "Alternatives are top feasible lower-predicted-exposure candidates among generated routes \u2014 not a globally optimal cleanest path.",
     "Not a medical recommendation or inhaled-dose estimate."
   ],

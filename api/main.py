@@ -340,8 +340,7 @@ def create_app(
                 None
                 if alternatives_raw
                 else (
-                    "No lower-exposure alternative fits your current time limit. "
-                    "Try allowing a few more minutes."
+                    "No lower-exposure alternative was found within your time limit."
                 )
             ),
         }

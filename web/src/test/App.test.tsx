@@ -97,7 +97,7 @@ describe('AIRPATH frontend', () => {
       ),
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/time-weighted proxy from hourly data, not a medical risk score/i),
+      screen.getByText(/time-weighted PM2.5 proxy/i),
     ).toBeInTheDocument()
     expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
     expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
