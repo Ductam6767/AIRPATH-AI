@@ -149,13 +149,12 @@ export default function App() {
             fastest={routesPayload.fastest_route}
             alternatives={routesPayload.alternatives}
             selectedRouteId={selectedRouteId}
-            deltaMinutes={deltaMinutes}
             onSelectRoute={setSelectedRouteId}
           />
         ) : !initialLoading && !loadingRoutes && !error ? (
           <StatusBanner tone="info">
-            Choose a From/To pair and press Find routes to compare the fastest path with
-            feasible exposure-aware alternatives.
+            Choose a From/To pair and press Compare routes to compare travel time
+            and predicted PM2.5 exposure.
           </StatusBanner>
         ) : null}
       </main>

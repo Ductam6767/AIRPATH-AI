@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   destinationLabel,
+  hasLowerPredictedExposureAlternative,
   isLowerPredictedExposure,
   originLabel,
   reductionBadgeText,
@@ -88,6 +89,29 @@ describe('labels', () => {
     expect(routeKindLabel(lower)).toBe('Lower predicted exposure')
     expect(routeKindLabel(higher)).toBe('Feasible alternative')
     expect(reductionBadgeText(28)).toBe('28% lower predicted exposure')
-    expect(reductionBadgeText(-9.7)).toBe('10% higher predicted exposure')
+    expect(reductionBadgeText(-9.7)).toBe('+10% higher predicted exposure')
+  })
+
+  it('detects whether any feasible alternative has lower predicted exposure', () => {
+    const lower: RouteRecord = {
+      route_id: 'w-2',
+      route_type: 'AIRPATH alternative',
+      rank: 1,
+      is_fastest: false,
+      is_feasible: true,
+      travel_time_minutes: 21,
+      additional_time_vs_fastest_minutes: 1,
+      predicted_exposure_index: 720,
+      predicted_exposure_reduction_percent: 28,
+      distance_m: 1000,
+      geometry: [],
+    }
+    expect(hasLowerPredictedExposureAlternative([lower])).toBe(true)
+    expect(
+      hasLowerPredictedExposureAlternative([
+        { ...lower, predicted_exposure_reduction_percent: -9.7 },
+      ]),
+    ).toBe(false)
+    expect(hasLowerPredictedExposureAlternative([])).toBe(false)
   })
 })
