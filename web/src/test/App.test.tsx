@@ -78,20 +78,35 @@ describe('AIRPATH frontend', () => {
 
     expect(await screen.findByText('AIRPATH-AI')).toBeInTheDocument()
     expect(
-      screen.getByText(
-        /route planner that balances travel time with predicted PM2.5 exposure/i,
-      ),
+      screen.getByRole('heading', {
+        name: 'Compare routes by travel time and predicted PM2.5 exposure.',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Compare routes' }),
     ).toBeInTheDocument()
     expect(
       await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
     ).toBeInTheDocument()
     expect(screen.getByText(/AIRPATH alternative 1/i)).toBeInTheDocument()
     expect(screen.getByText(/28% lower predicted exposure/i)).toBeInTheDocument()
+    expect(screen.getByText('Lower predicted exposure')).toBeInTheDocument()
     expect(
-      screen.getByText(/time-weighted proxy from hourly data, not a medical risk score/i),
+      screen.getByText(
+        /Choose the fastest route when you are in a hurry, or an alternative to reduce predicted exposure/i,
+      ),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/time-weighted PM2.5 proxy/i),
     ).toBeInTheDocument()
     expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
     expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Motorbike' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+    expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-1')
+    expect(screen.getByText('Allow up to +5 min')).toBeInTheDocument()
   })
 
   it('updates delta slider to absolute minute values', async () => {
@@ -100,10 +115,10 @@ describe('AIRPATH frontend', () => {
     await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
 
     const slider = screen.getByLabelText(/Maximum additional time/i)
-    fireEvent.change(slider, { target: { value: '4' } })
+    fireEvent.change(slider, { target: { value: '5' } })
 
     await waitFor(() => {
-      expect(screen.getByText('Allow up to +5 min')).toBeInTheDocument()
+      expect(screen.getByText('Allow up to +10 min')).toBeInTheDocument()
     })
   })
 
@@ -119,6 +134,12 @@ describe('AIRPATH frontend', () => {
     })
     await user.click(altCard)
     expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-2')
+
+    const fastestCard = screen.getByRole('button', {
+      name: /Fastest, 40 minutes/i,
+    })
+    await user.click(fastestCard)
+    expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-1')
   })
 
   it('shows empty-alternatives message without empty cards', async () => {
@@ -130,9 +151,12 @@ describe('AIRPATH frontend', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(/No alternative fits the selected \+0 min limit/i),
+        screen.getByText(
+          /This route is both the fastest and the lowest-exposure option within your time limit/i,
+        ),
       ).toBeInTheDocument()
     })
+    expect(screen.getByText('Lowest predicted exposure')).toBeInTheDocument()
     expect(screen.queryByText(/AIRPATH alternative/i)).not.toBeInTheDocument()
     const list = screen.getByRole('list')
     expect(within(list).getAllByRole('listitem')).toHaveLength(1)
@@ -141,11 +165,32 @@ describe('AIRPATH frontend', () => {
   it('labels higher-exposure alternatives as feasible, not lower', async () => {
     stubApi({ routes: mockRoutesHigherExposure })
     render(<App />)
-    expect(await screen.findByText(/10% higher predicted exposure/i)).toBeInTheDocument()
+    expect(await screen.findByText(/\+10% higher predicted exposure/i)).toBeInTheDocument()
     expect(screen.getByText('Feasible alternative')).toBeInTheDocument()
     expect(screen.queryByText('Lower predicted exposure')).not.toBeInTheDocument()
     expect(
-      screen.getByText(/Not guaranteed to be lower than the fastest route/i),
+      screen.getByText(
+        'No lower-exposure alternative was found within your time limit.',
+      ),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText(/both the fastest and the lowest-exposure option/i),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByText(/guaranteeing a cleaner route/i),
+    ).not.toBeInTheDocument()
+  })
+
+  it('explains in methodology that AIRPATH compares rather than guaranteeing a cleaner route', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    await user.click(screen.getByRole('button', { name: 'How AIRPATH works' }))
+    expect(
+      await screen.findByText(
+        /AIRPATH compares those alternatives rather than guaranteeing a cleaner route/i,
+      ),
     ).toBeInTheDocument()
   })
 

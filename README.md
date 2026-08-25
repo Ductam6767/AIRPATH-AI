@@ -22,12 +22,19 @@ Freeze manifest: `data/processed/final_robustness/freeze_manifest.json`.
 
 ## WEB-1: demo data pack + thin FastAPI backend
 
-The first web milestone packages **frozen Model-C outputs** into a compact demo
-dataset and serves them with a read-only FastAPI app. It does **not** run
-XGBoost, IDW, OSM routing, or route optimization at request time.
+The first web milestone packages **frozen candidate routes and travel times**
+into a compact demo dataset and serves them with a read-only FastAPI app. It
+does **not** run XGBoost, IDW, OSM routing, or route optimization at request
+time.
+
+Demo road PM2.5 is a **separate simulation layer** for the product UI: station
+IDW remains the background, then an OSM traffic-class increment (inspired by
+mobile-monitoring / 走航监测 frameworks) makes arterials dirtier than quiet
+streets. This is **not** the frozen research exposure table and **not** a
+Chinese probe-vehicle dataset.
 
 ```
-data/processed/web_demo/   # scenarios.json, routes.json, metadata.json
+data/processed/web_demo/   # scenarios.json, routes.json, metadata.json, osm_way_traffic_attributes.json
 api/                       # FastAPI app (packaging/serving only)
 web/                       # Vite + React + Leaflet map-first UI (WEB-2)
 ```
@@ -37,7 +44,7 @@ Demo scenarios (8 OD pairs) are a **distance-stratified subset** of the P0-2B
 cherry-picked for exposure reduction or map aesthetics. Departure time for the
 pack is `2022-02-27T06:00:00` (forecast origin `05:00`).
 
-Regenerate the pack (packaging only):
+Regenerate the pack (frozen candidates + simulated on-road PM):
 
 ```bash
 python3 -m src.web_demo_export

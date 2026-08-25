@@ -543,6 +543,14 @@ code {
   font-size: 0.9rem;
 }
 
+.empty-alts p {
+  margin: 0;
+}
+
+.empty-alts p + p {
+  margin-top: 0.4rem;
+}
+
 .status-banner {
   border-radius: 12px;
   padding: 0.75rem 0.9rem;

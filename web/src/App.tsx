@@ -11,15 +11,16 @@ import {
   destinationsForOrigin,
   findScenarioId,
   friendlyApiError,
-  uniqueOrigins,
+  scenarioDestKey,
+  scenarioOriginKey,
 } from './utils/labels'
 
 export default function App() {
   const [scenarios, setScenarios] = useState<Scenario[]>([])
   const [originKey, setOriginKey] = useState('')
   const [destinationKey, setDestinationKey] = useState('')
-  const [mode, setMode] = useState<TravelMode>('walking')
-  const [deltaMinutes, setDeltaMinutes] = useState<(typeof DELTA_MINUTES)[number]>(3)
+  const [mode, setMode] = useState<TravelMode>('motorbike')
+  const [deltaMinutes, setDeltaMinutes] = useState<(typeof DELTA_MINUTES)[number]>(5)
   const [routesPayload, setRoutesPayload] = useState<RoutesResponse | null>(null)
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null)
   const [initialLoading, setInitialLoading] = useState(true)
@@ -46,15 +47,11 @@ export default function App() {
         const payload = await fetchScenarios(controller.signal)
         const list = payload.scenarios ?? []
         setScenarios(list)
-        const origins = uniqueOrigins(list)
-        const firstOrigin = origins[0]
-        if (firstOrigin) {
-          setOriginKey(firstOrigin.key)
-          const destinations = destinationsForOrigin(list, firstOrigin.key)
-          const firstDest = destinations[0]
-          if (firstDest) {
-            setDestinationKey(firstDest.key)
-          }
+        const opening =
+          list.find((scenario) => scenario.opening_example) ?? list[0]
+        if (opening) {
+          setOriginKey(scenarioOriginKey(opening))
+          setDestinationKey(scenarioDestKey(opening))
         }
       } catch (err) {
         if (controller.signal.aborted) return
@@ -149,13 +146,12 @@ export default function App() {
             fastest={routesPayload.fastest_route}
             alternatives={routesPayload.alternatives}
             selectedRouteId={selectedRouteId}
-            deltaMinutes={deltaMinutes}
             onSelectRoute={setSelectedRouteId}
           />
         ) : !initialLoading && !loadingRoutes && !error ? (
           <StatusBanner tone="info">
-            Choose a From/To pair and press Find routes to compare the fastest path with
-            feasible exposure-aware alternatives.
+            Choose a From/To pair and press Compare routes to compare travel time
+            and predicted PM2.5 exposure.
           </StatusBanner>
         ) : null}
       </main>

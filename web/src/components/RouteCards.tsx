@@ -3,6 +3,8 @@ import { EXPOSURE_NOTE } from '../constants'
 import {
   formatExposure,
   formatMinutes,
+  hasLowerPredictedExposureAlternative,
+  isAlsoLowestExposureRoute,
   isLowerPredictedExposure,
   reductionBadgeText,
   routeCardTitle,
@@ -13,7 +15,6 @@ interface RouteCardsProps {
   fastest: RouteRecord | null
   alternatives: RouteRecord[]
   selectedRouteId: string | null
-  deltaMinutes: number
   onSelectRoute: (routeId: string) => void
 }
 
@@ -41,7 +42,6 @@ export function RouteCards({
   fastest,
   alternatives,
   selectedRouteId,
-  deltaMinutes,
   onSelectRoute,
 }: RouteCardsProps) {
   if (!fastest) {
@@ -53,6 +53,9 @@ export function RouteCards({
     ...all.map((route) => route.predicted_exposure_index),
     1,
   )
+  const hasLowerExposureAlt =
+    hasLowerPredictedExposureAlternative(alternatives)
+  const alsoLowest = isAlsoLowestExposureRoute(fastest, alternatives)
 
   return (
     <section className="route-cards" aria-label="Route comparison">
@@ -85,7 +88,7 @@ export function RouteCards({
                   route.is_fastest ? 'is-fastest' : 'is-alternative'
                 }`}
                 aria-pressed={selected}
-                aria-label={`${title}, ${formatMinutes(route.travel_time_minutes)} minutes, ${extra}, predicted exposure ${formatExposure(route.predicted_exposure_index)}${!route.is_fastest && reduction ? `, ${reduction}` : ''}`}
+                aria-label={`${title}, ${formatMinutes(route.travel_time_minutes)} minutes, ${extra}, predicted exposure ${formatExposure(route.predicted_exposure_index)}${route.is_fastest && alsoLowest ? ', lowest predicted exposure' : ''}${!route.is_fastest && reduction ? `, ${reduction}` : ''}`}
                 onClick={() => onSelectRoute(route.route_id)}
               >
                 <div className="route-card__kicker">
@@ -102,6 +105,9 @@ export function RouteCards({
                   >
                     {routeKindLabel(route)}
                   </span>
+                  {route.is_fastest && alsoLowest ? (
+                    <span className="kind kind--alt">Lowest predicted exposure</span>
+                  ) : null}
                   {selected ? <span className="kind kind--selected">Selected</span> : null}
                 </div>
                 <div className="route-card__top">
@@ -142,17 +148,27 @@ export function RouteCards({
         })}
       </ul>
 
-      {alternatives.length === 0 ? (
-        <p className="empty-alts" role="status">
-          {deltaMinutes === 0
-            ? 'No alternative fits the selected +0 min limit. Showing the fastest route.'
-            : 'No lower-exposure alternative fits your current time limit. Try allowing a few more minutes.'}
-        </p>
-      ) : (
+      {hasLowerExposureAlt ? (
         <p className="muted small">
-          Top feasible alternatives among the generated candidate routes, ranked
-          by predicted exposure. Not guaranteed to be lower than the fastest route.
+          The fastest route is the shortest travel time. Other cards are slower
+          options with lower predicted exposure: slightly slower, second-fastest,
+          and near your time limit when those archetypes exist. Choose the fastest
+          route when you are in a hurry, or an alternative to reduce predicted
+          exposure.
         </p>
+      ) : alsoLowest ? (
+        <div className="empty-alts" role="status">
+          <p>
+            This route is both the fastest and the lowest-exposure option within
+            your time limit.
+          </p>
+        </div>
+      ) : (
+        <div className="empty-alts" role="status">
+          <p>
+            No lower-exposure alternative was found within your time limit.
+          </p>
+        </div>
       )}
     </section>
   )

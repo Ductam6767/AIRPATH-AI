@@ -26,7 +26,8 @@
         10.0
       ],
       "demo_distance_rank": 0,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_22",
@@ -54,7 +55,8 @@
         10.0
       ],
       "demo_distance_rank": 4,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_28",
@@ -82,7 +84,8 @@
         10.0
       ],
       "demo_distance_rank": 8,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_01",
@@ -110,7 +113,8 @@
         10.0
       ],
       "demo_distance_rank": 12,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_23",
@@ -138,7 +142,8 @@
         10.0
       ],
       "demo_distance_rank": 16,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_12",
@@ -166,7 +171,8 @@
         10.0
       ],
       "demo_distance_rank": 20,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_11",
@@ -194,7 +200,8 @@
         10.0
       ],
       "demo_distance_rank": 24,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_05",
@@ -222,7 +229,8 @@
         10.0
       ],
       "demo_distance_rank": 29,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": true
     }
   ]
 }

@@ -5,12 +5,17 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 
 from api.main import create_app, load_demo_pack
 from src.web_demo_export import (
     DEMO_DEPARTURE_TIME,
+    SLOT_CLOSER_TO_FASTEST,
+    SLOT_NEAR_TIME_LIMIT,
+    SLOT_SECOND_FASTEST,
+    _shortlist_group,
     build_demo_pack,
     select_demo_scenarios,
     write_demo_pack,
@@ -37,8 +42,6 @@ def test_demo_pack_files_exist() -> None:
 
 
 def test_scenario_selection_is_distance_stratified() -> None:
-    import pandas as pd
-
     od = pd.read_csv(OD_PATH)
     selected = select_demo_scenarios(od)
     assert len(selected) == 8
@@ -51,9 +54,12 @@ def test_build_demo_pack_uses_model_c_and_geometry() -> None:
     pack = build_demo_pack()
     metadata = pack["metadata"]
     assert metadata["forecaster"] == "C_xgboost_current_pm"
-    assert metadata["spatial_model"] == "idw_p1"
+    assert metadata["spatial_model"] == "idw_p1_plus_simulated_onroad_traffic_increment"
     assert metadata["departure_time"] == DEMO_DEPARTURE_TIME
     assert metadata["scientific_logic_modified"] is False
+    assert metadata["pollution_simulation"]["enabled"] is True
+    assert metadata["pollution_simulation"]["research_engine_modified"] is False
+    assert metadata["demo_tradeoff_scan"]["cases_with_lower_exposure_alternative"] > 0
     routes = pack["routes"]
     assert len(routes) > 0
     sample = routes[0]
@@ -62,6 +68,10 @@ def test_build_demo_pack_uses_model_c_and_geometry() -> None:
     assert len(sample["geometry"][0]) == 2
     assert "predicted_exposure_reduction_percent" in sample
     assert sample["is_feasible"] is True
+    assert all(
+        route["is_fastest"] or route["predicted_exposure_reduction_percent"] > 0.5
+        for route in routes
+    )
 
 
 def test_write_demo_pack_roundtrip(tmp_path: Path) -> None:
@@ -72,7 +82,7 @@ def test_write_demo_pack_roundtrip(tmp_path: Path) -> None:
     metadata = json.loads(paths["metadata"].read_text(encoding="utf-8"))
     assert len(scenarios["scenarios"]) == 8
     assert len(routes["routes"]) == len(pack["routes"])
-    assert metadata["pack_name"] == "airpath_web_demo_v1"
+    assert metadata["pack_name"] == "airpath_web_demo_v2"
 
 
 def test_health(client: TestClient) -> None:
@@ -81,7 +91,7 @@ def test_health(client: TestClient) -> None:
     payload = response.json()
     assert payload["status"] == "ok"
     assert payload["service"] == "airpath-demo-api"
-    assert payload["demo_pack"] == "airpath_web_demo_v1"
+    assert payload["demo_pack"] == "airpath_web_demo_v2"
 
 
 def test_demo_scenarios(client: TestClient) -> None:
@@ -96,6 +106,224 @@ def test_demo_scenarios(client: TestClient) -> None:
     )
     assert first["supported_modes"] == ["walking", "motorbike"]
     assert 0.0 in first["supported_delta_minutes"]
+    assert "opening_example" in first
+    opening = [row for row in payload["scenarios"] if row.get("opening_example")]
+    assert len(opening) == 1
+    assert opening[0]["scenario_id"] == "od_05"
+
+
+def test_shortlist_keeps_only_lower_exposure_alternatives() -> None:
+    candidates = pd.DataFrame(
+        [
+            {
+                "route_id": "fastest",
+                "mode": "motorbike",
+                "is_fastest": True,
+                "travel_time_minutes": 20.0,
+                "additional_time_vs_fastest_minutes": 0.0,
+                "predicted_exposure_index": 110.0,
+            },
+            {
+                "route_id": "dirtier",
+                "mode": "motorbike",
+                "is_fastest": False,
+                "travel_time_minutes": 21.0,
+                "additional_time_vs_fastest_minutes": 1.0,
+                "predicted_exposure_index": 120.0,
+            },
+            {
+                "route_id": "alt-21",
+                "mode": "motorbike",
+                "is_fastest": False,
+                "travel_time_minutes": 21.0,
+                "additional_time_vs_fastest_minutes": 1.0,
+                "predicted_exposure_index": 101.0,
+            },
+            {
+                "route_id": "alt-23",
+                "mode": "motorbike",
+                "is_fastest": False,
+                "travel_time_minutes": 23.0,
+                "additional_time_vs_fastest_minutes": 3.0,
+                "predicted_exposure_index": 89.0,
+            },
+            {
+                "route_id": "alt-25",
+                "mode": "motorbike",
+                "is_fastest": False,
+                "travel_time_minutes": 25.0,
+                "additional_time_vs_fastest_minutes": 5.0,
+                "predicted_exposure_index": 70.0,
+            },
+            {
+                "route_id": "near-dup",
+                "mode": "motorbike",
+                "is_fastest": False,
+                "travel_time_minutes": 20.1,
+                "additional_time_vs_fastest_minutes": 0.1,
+                "predicted_exposure_index": 100.0,
+            },
+        ]
+    )
+    chosen = _shortlist_group(candidates, 5.0, mode="motorbike")
+    alts = chosen.loc[~chosen["is_fastest"]]
+    assert alts["route_id"].tolist() == ["alt-21", "alt-23", "alt-25"]
+    assert alts["tradeoff_slot"].tolist() == [
+        SLOT_CLOSER_TO_FASTEST,
+        SLOT_SECOND_FASTEST,
+        SLOT_NEAR_TIME_LIMIT,
+    ]
+    assert (alts["predicted_exposure_index"] < 110.0).all()
+    assert chosen.iloc[0]["route_id"] == "fastest"
+    assert bool(chosen.iloc[0]["is_also_lowest_exposure"]) is False
+
+
+def test_shortlist_collapses_to_dual_fastest_when_no_cleaner_detour() -> None:
+    candidates = pd.DataFrame(
+        [
+            {
+                "route_id": "fastest",
+                "mode": "walking",
+                "is_fastest": True,
+                "travel_time_minutes": 40.0,
+                "additional_time_vs_fastest_minutes": 0.0,
+                "predicted_exposure_index": 100.0,
+            },
+            {
+                "route_id": "near-dup",
+                "mode": "walking",
+                "is_fastest": False,
+                "travel_time_minutes": 40.04,
+                "additional_time_vs_fastest_minutes": 0.04,
+                "predicted_exposure_index": 99.4,
+            },
+            {
+                "route_id": "dirtier",
+                "mode": "walking",
+                "is_fastest": False,
+                "travel_time_minutes": 42.0,
+                "additional_time_vs_fastest_minutes": 2.0,
+                "predicted_exposure_index": 130.0,
+            },
+        ]
+    )
+    chosen = _shortlist_group(candidates, 5.0, mode="walking")
+    assert list(chosen["route_id"]) == ["fastest"]
+    assert bool(chosen.iloc[0]["is_also_lowest_exposure"]) is True
+
+
+def test_shortlist_omits_missing_near_budget_archetype() -> None:
+    candidates = pd.DataFrame(
+        [
+            {
+                "route_id": "fastest",
+                "mode": "motorbike",
+                "is_fastest": True,
+                "travel_time_minutes": 10.0,
+                "additional_time_vs_fastest_minutes": 0.0,
+                "predicted_exposure_index": 100.0,
+            },
+            {
+                "route_id": "a",
+                "mode": "motorbike",
+                "is_fastest": False,
+                "travel_time_minutes": 10.6,
+                "additional_time_vs_fastest_minutes": 0.6,
+                "predicted_exposure_index": 90.0,
+            },
+            {
+                "route_id": "b",
+                "mode": "motorbike",
+                "is_fastest": False,
+                "travel_time_minutes": 11.2,
+                "additional_time_vs_fastest_minutes": 1.2,
+                "predicted_exposure_index": 88.0,
+            },
+        ]
+    )
+    chosen = _shortlist_group(candidates, 5.0, mode="motorbike")
+    alts = chosen.loc[~chosen["is_fastest"]]
+    assert alts["route_id"].tolist() == ["a", "b"]
+    assert SLOT_NEAR_TIME_LIMIT not in set(alts["tradeoff_slot"])
+
+
+def test_walking_shortlist_ignores_tiny_reductions_and_near_duplicates() -> None:
+    candidates = pd.DataFrame(
+        [
+            {
+                "route_id": "fastest",
+                "mode": "walking",
+                "is_fastest": True,
+                "travel_time_minutes": 50.0,
+                "additional_time_vs_fastest_minutes": 0.0,
+                "predicted_exposure_index": 1000.0,
+            },
+            {
+                "route_id": "tiny",
+                "mode": "walking",
+                "is_fastest": False,
+                "travel_time_minutes": 51.2,
+                "additional_time_vs_fastest_minutes": 1.2,
+                "predicted_exposure_index": 985.0,
+            },
+            {
+                "route_id": "quiet",
+                "mode": "walking",
+                "is_fastest": False,
+                "travel_time_minutes": 54.3,
+                "additional_time_vs_fastest_minutes": 4.3,
+                "predicted_exposure_index": 700.0,
+            },
+        ]
+    )
+    chosen = _shortlist_group(candidates, 5.0, mode="walking")
+    alts = chosen.loc[~chosen["is_fastest"]]
+    assert alts["route_id"].tolist() == ["quiet"]
+    assert alts.iloc[0]["tradeoff_slot"] == SLOT_NEAR_TIME_LIMIT
+
+
+def test_opening_motorbike_has_three_lower_exposure_alternatives(
+    client: TestClient,
+) -> None:
+    response = client.get(
+        "/demo/routes",
+        params={"scenario_id": "od_05", "mode": "motorbike", "delta_minutes": 5},
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["fastest_route"]["is_fastest"] is True
+    alts = payload["alternatives"]
+    assert len(alts) == 3
+    extra = [alt["additional_time_vs_fastest_minutes"] for alt in alts]
+    assert extra == sorted(extra)
+    for alt in alts:
+        assert alt["predicted_exposure_reduction_percent"] > 0.5
+        assert alt["additional_time_vs_fastest_minutes"] <= 5.0
+        assert alt["tradeoff_slot"] in {
+            SLOT_CLOSER_TO_FASTEST,
+            SLOT_SECOND_FASTEST,
+            SLOT_NEAR_TIME_LIMIT,
+        }
+    assert payload["fastest_route"]["is_also_lowest_exposure"] is False
+
+
+def test_demo_alternatives_are_never_dirtier_than_fastest(client: TestClient) -> None:
+    scenarios = client.get("/demo/scenarios").json()["scenarios"]
+    for scenario in scenarios:
+        for mode in ("walking", "motorbike"):
+            for delta in (1, 3, 5, 10):
+                payload = client.get(
+                    "/demo/routes",
+                    params={
+                        "scenario_id": scenario["scenario_id"],
+                        "mode": mode,
+                        "delta_minutes": delta,
+                    },
+                ).json()
+                for alt in payload["alternatives"]:
+                    assert alt["predicted_exposure_reduction_percent"] > 0.5, (
+                        f"{scenario['scenario_id']} {mode} +{delta}"
+                    )
 
 
 def test_valid_route_request(client: TestClient) -> None:
@@ -251,6 +479,8 @@ def test_response_schema_stability(client: TestClient) -> None:
         "geometry",
         "available_feasible_alternatives",
         "fewer_than_requested_alternatives",
+        "is_also_lowest_exposure",
+        "tradeoff_slot",
         "research_warning",
     }
     assert route_keys <= set(payload["fastest_route"])

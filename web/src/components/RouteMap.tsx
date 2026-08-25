@@ -182,7 +182,7 @@ export function RouteMap({
           <i className="swatch swatch--selected" /> Selected alternative
         </span>
         <span>
-          <i className="swatch swatch--other" /> Other alternatives
+          <i className="swatch swatch--other" /> Lower-exposure alternatives
         </span>
         <span>
           <b className="od-dot od-dot--a">A</b> Origin

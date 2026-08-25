@@ -17,6 +17,7 @@ export interface Scenario {
   supported_delta_minutes: number[]
   demo_distance_rank: number
   selection_method: string
+  opening_example?: boolean
 }
 
 export interface ScenariosResponse {
@@ -37,6 +38,8 @@ export interface RouteRecord {
   geometry: [number, number][]
   available_feasible_alternatives?: number | null
   fewer_than_requested_alternatives?: boolean | null
+  is_also_lowest_exposure?: boolean | null
+  tradeoff_slot?: string | null
   research_warning?: string | null
 }
 
