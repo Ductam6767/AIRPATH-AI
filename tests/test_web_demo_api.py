@@ -65,8 +65,8 @@ def test_build_demo_pack_uses_model_c_and_geometry() -> None:
     assert len(sample["geometry"][0]) == 2
     assert "predicted_exposure_reduction_percent" in sample
     assert sample["is_feasible"] is True
-    assert any(
-        (not route["is_fastest"]) and route["predicted_exposure_reduction_percent"] > 0.5
+    assert all(
+        route["is_fastest"] or route["predicted_exposure_reduction_percent"] > 0.5
         for route in routes
     )
 
@@ -106,65 +106,99 @@ def test_demo_scenarios(client: TestClient) -> None:
     assert "opening_example" in first
     opening = [row for row in payload["scenarios"] if row.get("opening_example")]
     assert len(opening) == 1
-    assert opening[0]["scenario_id"] == "od_23"
+    assert opening[0]["scenario_id"] == "od_05"
 
 
-def test_shortlist_prefers_small_time_lower_exposure_tradeoff() -> None:
+def test_shortlist_keeps_only_lower_exposure_alternatives() -> None:
     candidates = pd.DataFrame(
         [
             {
                 "route_id": "fastest",
                 "is_fastest": True,
-                "travel_time_minutes": 10.0,
+                "travel_time_minutes": 20.0,
                 "additional_time_vs_fastest_minutes": 0.0,
-                "predicted_exposure_index": 100.0,
-            },
-            {
-                "route_id": "longer-cleaner",
-                "is_fastest": False,
-                "travel_time_minutes": 12.5,
-                "additional_time_vs_fastest_minutes": 2.5,
-                "predicted_exposure_index": 80.0,
-            },
-            {
-                "route_id": "small-time-tradeoff",
-                "is_fastest": False,
-                "travel_time_minutes": 10.5,
-                "additional_time_vs_fastest_minutes": 0.5,
-                "predicted_exposure_index": 90.0,
+                "predicted_exposure_index": 110.0,
             },
             {
                 "route_id": "dirtier",
                 "is_fastest": False,
-                "travel_time_minutes": 11.0,
+                "travel_time_minutes": 21.0,
                 "additional_time_vs_fastest_minutes": 1.0,
-                "predicted_exposure_index": 110.0,
+                "predicted_exposure_index": 120.0,
+            },
+            {
+                "route_id": "alt-21",
+                "is_fastest": False,
+                "travel_time_minutes": 21.0,
+                "additional_time_vs_fastest_minutes": 1.0,
+                "predicted_exposure_index": 101.0,
+            },
+            {
+                "route_id": "alt-23",
+                "is_fastest": False,
+                "travel_time_minutes": 23.0,
+                "additional_time_vs_fastest_minutes": 3.0,
+                "predicted_exposure_index": 89.0,
+            },
+            {
+                "route_id": "alt-25",
+                "is_fastest": False,
+                "travel_time_minutes": 25.0,
+                "additional_time_vs_fastest_minutes": 5.0,
+                "predicted_exposure_index": 70.0,
+            },
+            {
+                "route_id": "near-dup",
+                "is_fastest": False,
+                "travel_time_minutes": 20.1,
+                "additional_time_vs_fastest_minutes": 0.1,
+                "predicted_exposure_index": 100.0,
             },
         ]
     )
-    chosen = _shortlist_group(candidates, 3.0)
-    alts = chosen.loc[~chosen["is_fastest"], "route_id"].tolist()
-    assert alts[0] == "small-time-tradeoff"
-    assert alts[1] == "longer-cleaner"
-    assert alts[2] == "dirtier"
+    chosen = _shortlist_group(candidates, 5.0)
+    alts = chosen.loc[~chosen["is_fastest"]]
+    assert alts["route_id"].tolist() == ["alt-21", "alt-23", "alt-25"]
+    assert (alts["predicted_exposure_index"] < 110.0).all()
+    assert chosen.iloc[0]["route_id"] == "fastest"
 
 
-def test_opening_motorbike_has_lower_exposure_tradeoff(client: TestClient) -> None:
+def test_opening_motorbike_has_three_lower_exposure_alternatives(
+    client: TestClient,
+) -> None:
     response = client.get(
         "/demo/routes",
-        params={"scenario_id": "od_23", "mode": "motorbike", "delta_minutes": 3},
+        params={"scenario_id": "od_05", "mode": "motorbike", "delta_minutes": 5},
     )
     assert response.status_code == 200
     payload = response.json()
-    lower = [
-        alt
-        for alt in payload["alternatives"]
-        if alt["predicted_exposure_reduction_percent"] > 0.5
-    ]
-    assert lower, "Opening motorbike example should include a lower-exposure alternative"
-    best = lower[0]
-    assert best["additional_time_vs_fastest_minutes"] <= 3.0
-    assert best["predicted_exposure_reduction_percent"] >= 2.0
+    assert payload["fastest_route"]["is_fastest"] is True
+    alts = payload["alternatives"]
+    assert len(alts) == 3
+    extra = [alt["additional_time_vs_fastest_minutes"] for alt in alts]
+    assert extra == sorted(extra)
+    for alt in alts:
+        assert alt["predicted_exposure_reduction_percent"] > 0.5
+        assert alt["additional_time_vs_fastest_minutes"] <= 5.0
+
+
+def test_demo_alternatives_are_never_dirtier_than_fastest(client: TestClient) -> None:
+    scenarios = client.get("/demo/scenarios").json()["scenarios"]
+    for scenario in scenarios:
+        for mode in ("walking", "motorbike"):
+            for delta in (1, 3, 5, 10):
+                payload = client.get(
+                    "/demo/routes",
+                    params={
+                        "scenario_id": scenario["scenario_id"],
+                        "mode": mode,
+                        "delta_minutes": delta,
+                    },
+                ).json()
+                for alt in payload["alternatives"]:
+                    assert alt["predicted_exposure_reduction_percent"] > 0.5, (
+                        f"{scenario['scenario_id']} {mode} +{delta}"
+                    )
 
 
 def test_valid_route_request(client: TestClient) -> None:

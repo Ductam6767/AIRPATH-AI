@@ -93,7 +93,7 @@ describe('AIRPATH frontend', () => {
     expect(screen.getByText('Lower predicted exposure')).toBeInTheDocument()
     expect(
       screen.getByText(
-        /AIRPATH compares feasible route alternatives rather than guaranteeing a cleaner route/i,
+        /Choose the fastest route when you are in a hurry, or an alternative to reduce predicted exposure/i,
       ),
     ).toBeInTheDocument()
     expect(
@@ -105,7 +105,8 @@ describe('AIRPATH frontend', () => {
       'aria-pressed',
       'true',
     )
-    expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-2')
+    expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-1')
+    expect(screen.getByText('Allow up to +5 min')).toBeInTheDocument()
   })
 
   it('updates delta slider to absolute minute values', async () => {
@@ -114,10 +115,10 @@ describe('AIRPATH frontend', () => {
     await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
 
     const slider = screen.getByLabelText(/Maximum additional time/i)
-    fireEvent.change(slider, { target: { value: '4' } })
+    fireEvent.change(slider, { target: { value: '5' } })
 
     await waitFor(() => {
-      expect(screen.getByText('Allow up to +5 min')).toBeInTheDocument()
+      expect(screen.getByText('Allow up to +10 min')).toBeInTheDocument()
     })
   })
 
@@ -126,12 +127,6 @@ describe('AIRPATH frontend', () => {
     stubApi()
     render(<App />)
     await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
-    expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-2')
-
-    const fastestCard = screen.getByRole('button', {
-      name: /Fastest, 40 minutes/i,
-    })
-    await user.click(fastestCard)
     expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-1')
 
     const altCard = screen.getByRole('button', {
@@ -139,6 +134,12 @@ describe('AIRPATH frontend', () => {
     })
     await user.click(altCard)
     expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-2')
+
+    const fastestCard = screen.getByRole('button', {
+      name: /Fastest, 40 minutes/i,
+    })
+    await user.click(fastestCard)
+    expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-1')
   })
 
   it('shows empty-alternatives message without empty cards', async () => {
@@ -194,7 +195,7 @@ describe('AIRPATH frontend', () => {
     await user.click(screen.getByRole('button', { name: 'How AIRPATH works' }))
     expect(
       await screen.findByText(
-        /AIRPATH compares those feasible alternatives rather than guaranteeing a cleaner route/i,
+        /AIRPATH compares those alternatives rather than guaranteeing a cleaner route/i,
       ),
     ).toBeInTheDocument()
   })

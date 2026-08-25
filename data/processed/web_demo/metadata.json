@@ -37,7 +37,8 @@
   },
   "demo_tradeoff_scan": {
     "nontrivial_cases": 80,
-    "cases_with_lower_exposure_alternative": 49
+    "cases_with_lower_exposure_alternative": 47,
+    "cases_with_three_lower_exposure_alternatives": 11
   },
   "supported_modes": [
     "walking",
@@ -58,9 +59,9 @@
     "Six-station pilot support (stations 2\u20136 polygon).",
     "On-road PM in this demo pack is simulated, not measured on each street.",
     "No live traffic model; congestion is proxied by OSM class, lanes, junctions, and hour.",
-    "Alternatives are top feasible lower-predicted-exposure candidates among generated routes \u2014 not a globally optimal cleanest path.",
+    "Alternatives are up to three slower candidates with lower predicted exposure among generated routes \u2014 not a globally optimal cleanest path.",
     "Not a medical recommendation or inhaled-dose estimate."
   ],
-  "route_count": 289,
+  "route_count": 182,
   "scientific_logic_modified": false
 }

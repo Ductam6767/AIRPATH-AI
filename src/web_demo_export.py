@@ -7,10 +7,11 @@ regeneration, no change to the optimizer *rule*. The demo pack:
 2. Keeps station-IDW AIRPATH PM as the spatial background.
 3. Applies a demo-only on-road traffic increment (OSM class / lanes /
    morning-peak / junctions), inspired by mobile-monitoring frameworks.
-4. Re-applies the published feasibility rule (keep the fastest route; keep
-   alternatives with time ≤ fastest + δ). Among those feasible alternatives the
-   demo shortlist prefers a small extra-time, meaningfully lower-exposure
-   trade-off before other candidates.
+4. Keeps the fastest route as the time-fastest candidate (maps-app style).
+5. Among feasible candidates (time ≤ fastest + δ), the demo shortlist returns
+   up to three *lower-exposure* alternatives only — never slower-and-dirtier
+   fillers. When more than three exist, they are spread across the extra-time
+   budget (small / medium / larger detour).
 """
 
 from __future__ import annotations
@@ -51,8 +52,8 @@ SUPPORTED_MODES: Final[tuple[str, ...]] = ("walking", "motorbike")
 DEMO_DISTANCE_RANKS: Final[tuple[int, ...]] = (0, 4, 8, 12, 16, 20, 24, 29)
 REQUESTED_ALTERNATIVES: Final[int] = 3
 PACK_NAME: Final[str] = "airpath_web_demo_v2"
-OPENING_SCENARIO_ID: Final[str] = "od_23"
-MEANINGFUL_REDUCTION_PERCENT: Final[float] = 2.0
+OPENING_SCENARIO_ID: Final[str] = "od_05"
+LOWER_EXPOSURE_PERCENT: Final[float] = 0.5
 MIN_TRADEOFF_EXTRA_MINUTES: Final[float] = 0.25
 RESEARCH_WARNING: Final[str] = (
     "Demo road PM2.5 is simulated: station-forecast IDW background plus a "
@@ -107,6 +108,33 @@ def _parse_geometry(raw: object) -> list[list[float]]:
     return geometry
 
 
+def _spread_by_extra_time(alts: pd.DataFrame, count: int) -> pd.DataFrame:
+    """Pick up to `count` lower-exposure alts across the extra-time range."""
+    if alts.empty or count <= 0:
+        return alts.iloc[0:0].copy()
+    ordered = alts.sort_values(
+        ["additional_time_vs_fastest_minutes", "predicted_exposure_index", "route_id"],
+        kind="mergesort",
+    ).reset_index(drop=True)
+    if len(ordered) <= count:
+        return ordered
+    if count == 1:
+        return ordered.iloc[[0]].copy()
+    raw_indexes = [
+        int(round(index * (len(ordered) - 1) / (count - 1))) for index in range(count)
+    ]
+    chosen_indexes: list[int] = []
+    for index in raw_indexes:
+        if index not in chosen_indexes:
+            chosen_indexes.append(index)
+    for index in range(len(ordered)):
+        if len(chosen_indexes) >= count:
+            break
+        if index not in chosen_indexes:
+            chosen_indexes.append(index)
+    return ordered.iloc[sorted(chosen_indexes)[:count]].copy()
+
+
 def _shortlist_group(candidates: pd.DataFrame, delta: float) -> pd.DataFrame:
     fastest = candidates.loc[candidates["is_fastest"]].copy()
     if len(fastest) != 1:
@@ -120,44 +148,28 @@ def _shortlist_group(candidates: pd.DataFrame, delta: float) -> pd.DataFrame:
     ].copy()
     alts = feasible.loc[~feasible["is_fastest"]].copy()
     if alts.empty:
+        lower = alts
         chosen = fastest.copy()
     else:
         alts["exposure_reduction_percent"] = alts["predicted_exposure_index"].map(
             lambda exposure: _reduction_percent(fastest_exposure, float(exposure))
         )
-        meaningful = alts.loc[
-            (alts["exposure_reduction_percent"] >= MEANINGFUL_REDUCTION_PERCENT)
+        lower = alts.loc[
+            (alts["exposure_reduction_percent"] > LOWER_EXPOSURE_PERCENT)
             & (alts["additional_time_vs_fastest_minutes"] >= MIN_TRADEOFF_EXTRA_MINUTES)
-        ].sort_values(
-            ["additional_time_vs_fastest_minutes", "predicted_exposure_index", "route_id"],
-            kind="mergesort",
-        )
-        other_lower = alts.loc[
-            (alts["exposure_reduction_percent"] > 0.5)
-            & ~alts.index.isin(meaningful.index)
-        ].sort_values(
-            ["additional_time_vs_fastest_minutes", "predicted_exposure_index", "route_id"],
-            kind="mergesort",
-        )
-        rest = alts.loc[
-            ~alts.index.isin(meaningful.index.union(other_lower.index))
-        ].sort_values(
-            ["predicted_exposure_index", "travel_time_minutes", "route_id"],
-            kind="mergesort",
-        )
-        ordered_alts = pd.concat([meaningful, other_lower, rest], ignore_index=False)
-        chosen = pd.concat(
-            [fastest, ordered_alts.head(REQUESTED_ALTERNATIVES)],
-            ignore_index=True,
-        )
+        ].copy()
+        selected_alts = _spread_by_extra_time(lower, REQUESTED_ALTERNATIVES)
+        chosen = pd.concat([fastest, selected_alts], ignore_index=True)
     chosen = chosen.copy()
     chosen["rank"] = range(len(chosen))
     chosen["route_type"] = [
         "fastest" if bool(is_fastest) else "AIRPATH alternative"
         for is_fastest in chosen["is_fastest"]
     ]
-    chosen["available_feasible_alternatives"] = int(len(alts))
-    chosen["fewer_than_requested_alternatives"] = bool(len(alts) < REQUESTED_ALTERNATIVES)
+    chosen["available_feasible_alternatives"] = int(len(lower))
+    chosen["fewer_than_requested_alternatives"] = bool(
+        len(lower) < REQUESTED_ALTERNATIVES
+    )
     return chosen
 
 
@@ -225,6 +237,7 @@ def build_demo_pack(
 
     routes: list[dict[str, object]] = []
     lower_exposure_cases = 0
+    three_lower_cases = 0
     nontrivial_cases = 0
     for (scenario_id, mode), group in merged.groupby(["scenario_id", "mode"], sort=True):
         for delta in deltas:
@@ -232,14 +245,21 @@ def build_demo_pack(
             fastest_exposure = float(
                 chosen.loc[chosen["is_fastest"], "predicted_exposure_index"].iloc[0]
             )
-            has_lower = False
-            for row in chosen.itertuples(index=False):
-                if not bool(row.is_fastest) and float(row.predicted_exposure_index) < fastest_exposure:
-                    has_lower = True
+            lower_count = int(
+                (
+                    (~chosen["is_fastest"])
+                    & (
+                        chosen["predicted_exposure_index"].astype(float)
+                        < fastest_exposure
+                    )
+                ).sum()
+            )
             if float(delta) > 0:
                 nontrivial_cases += 1
-                if has_lower:
+                if lower_count:
                     lower_exposure_cases += 1
+                if lower_count >= REQUESTED_ALTERNATIVES:
+                    three_lower_cases += 1
             available_alts = int(chosen.iloc[0]["available_feasible_alternatives"])
             fewer = bool(chosen.iloc[0]["fewer_than_requested_alternatives"])
             for row in chosen.itertuples(index=False):
@@ -344,6 +364,7 @@ def build_demo_pack(
         "demo_tradeoff_scan": {
             "nontrivial_cases": nontrivial_cases,
             "cases_with_lower_exposure_alternative": lower_exposure_cases,
+            "cases_with_three_lower_exposure_alternatives": three_lower_cases,
         },
         "supported_modes": list(modes),
         "supported_delta_minutes": [float(d) for d in deltas],
@@ -354,8 +375,8 @@ def build_demo_pack(
             "Six-station pilot support (stations 2–6 polygon).",
             "On-road PM in this demo pack is simulated, not measured on each street.",
             "No live traffic model; congestion is proxied by OSM class, lanes, junctions, and hour.",
-            "Alternatives are top feasible lower-predicted-exposure candidates among "
-            "generated routes — not a globally optimal cleanest path.",
+            "Alternatives are up to three slower candidates with lower predicted "
+            "exposure among generated routes — not a globally optimal cleanest path.",
             "Not a medical recommendation or inhaled-dose estimate.",
         ],
         "route_count": len(routes),

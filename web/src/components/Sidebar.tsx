@@ -45,8 +45,10 @@ export function Sidebar({
           Compare routes by travel time and predicted PM2.5 exposure.
         </h1>
         <p className="muted">
-          Compare the fastest route with other feasible candidates under a time
-          limit you choose. A lower-exposure option is not guaranteed.
+          Compare the fastest route (shortest travel time) with up to three
+          slower alternatives that have lower predicted PM2.5 exposure. Choose
+          the fastest route when you are in a hurry, or an alternative to reduce
+          exposure.
         </p>
         <p className="pilot-chip">
           Pilot area · hourly data · precomputed scenarios · not live routing

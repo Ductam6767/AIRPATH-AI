@@ -51,10 +51,11 @@ export function MethodologyDrawer({ open, onClose }: MethodologyDrawerProps) {
           <li>Route segments receive estimated travel times.</li>
           <li>Exposure is aggregated across segments as a time-weighted PM2.5 proxy.</li>
           <li>
-            Routes are filtered by your maximum additional travel time. Among
-            feasible candidates, slightly slower options with meaningfully lower
-            predicted exposure are shown first. AIRPATH compares those
-            feasible alternatives rather than guaranteeing a cleaner route.
+            The fastest route is the shortest travel time among generated
+            candidates. Up to three alternatives are shown only when they are
+            slower and have lower predicted exposure within your extra-time
+            limit. AIRPATH compares those alternatives rather than guaranteeing
+            a cleaner route.
           </li>
         </ol>
         <h3>Limitations</h3>

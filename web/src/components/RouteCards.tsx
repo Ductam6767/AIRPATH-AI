@@ -145,10 +145,10 @@ export function RouteCards({
 
       {hasLowerExposureAlt ? (
         <p className="muted small">
-          Top feasible alternatives among the generated candidate routes.
-          Slightly slower options with lower predicted exposure are listed first.
-          AIRPATH compares feasible route alternatives rather than guaranteeing a
-          cleaner route.
+          The fastest route is the shortest travel time, like a typical maps app.
+          The other cards are slower options with lower predicted exposure within
+          your extra-time limit. Choose the fastest route when you are in a
+          hurry, or an alternative to reduce predicted exposure.
         </p>
       ) : (
         <div className="empty-alts" role="status">

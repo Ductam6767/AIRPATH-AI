@@ -11,7 +11,6 @@ import {
   destinationsForOrigin,
   findScenarioId,
   friendlyApiError,
-  isLowerPredictedExposure,
   scenarioDestKey,
   scenarioOriginKey,
 } from './utils/labels'
@@ -21,7 +20,7 @@ export default function App() {
   const [originKey, setOriginKey] = useState('')
   const [destinationKey, setDestinationKey] = useState('')
   const [mode, setMode] = useState<TravelMode>('motorbike')
-  const [deltaMinutes, setDeltaMinutes] = useState<(typeof DELTA_MINUTES)[number]>(3)
+  const [deltaMinutes, setDeltaMinutes] = useState<(typeof DELTA_MINUTES)[number]>(5)
   const [routesPayload, setRoutesPayload] = useState<RoutesResponse | null>(null)
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null)
   const [initialLoading, setInitialLoading] = useState(true)
@@ -78,12 +77,7 @@ export default function App() {
     try {
       const payload = await fetchRoutes({ scenarioId, mode, deltaMinutes })
       setRoutesPayload(payload)
-      const tradeoff = payload.alternatives.find((route) =>
-        isLowerPredictedExposure(route.predicted_exposure_reduction_percent),
-      )
-      setSelectedRouteId(
-        tradeoff?.route_id ?? payload.fastest_route.route_id,
-      )
+      setSelectedRouteId(payload.fastest_route.route_id)
     } catch (err) {
       setError(friendlyApiError(err))
       setRoutesPayload(null)
