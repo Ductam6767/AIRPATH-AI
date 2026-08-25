@@ -78,15 +78,24 @@ describe('AIRPATH frontend', () => {
 
     expect(await screen.findByText('AIRPATH-AI')).toBeInTheDocument()
     expect(
-      screen.getByText(
-        /route planner that balances travel time with predicted PM2.5 exposure/i,
-      ),
+      screen.getByRole('heading', {
+        name: 'Compare routes by travel time and predicted PM2.5 exposure.',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Compare routes' }),
     ).toBeInTheDocument()
     expect(
       await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
     ).toBeInTheDocument()
     expect(screen.getByText(/AIRPATH alternative 1/i)).toBeInTheDocument()
     expect(screen.getByText(/28% lower predicted exposure/i)).toBeInTheDocument()
+    expect(screen.getByText('Lower predicted exposure')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        /AIRPATH compares feasible route alternatives rather than guaranteeing a cleaner route/i,
+      ),
+    ).toBeInTheDocument()
     expect(
       screen.getByText(/time-weighted proxy from hourly data, not a medical risk score/i),
     ).toBeInTheDocument()
@@ -130,9 +139,16 @@ describe('AIRPATH frontend', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(/No alternative fits the selected \+0 min limit/i),
+        screen.getByText(
+          'No lower-exposure alternative was found within your time limit.',
+        ),
       ).toBeInTheDocument()
     })
+    expect(
+      screen.getByText(
+        'Fastest route is also the lowest-exposure feasible option.',
+      ),
+    ).toBeInTheDocument()
     expect(screen.queryByText(/AIRPATH alternative/i)).not.toBeInTheDocument()
     const list = screen.getByRole('list')
     expect(within(list).getAllByRole('listitem')).toHaveLength(1)
@@ -141,11 +157,34 @@ describe('AIRPATH frontend', () => {
   it('labels higher-exposure alternatives as feasible, not lower', async () => {
     stubApi({ routes: mockRoutesHigherExposure })
     render(<App />)
-    expect(await screen.findByText(/10% higher predicted exposure/i)).toBeInTheDocument()
+    expect(await screen.findByText(/\+10% higher predicted exposure/i)).toBeInTheDocument()
     expect(screen.getByText('Feasible alternative')).toBeInTheDocument()
     expect(screen.queryByText('Lower predicted exposure')).not.toBeInTheDocument()
     expect(
-      screen.getByText(/Not guaranteed to be lower than the fastest route/i),
+      screen.getByText(
+        'Fastest route is also the lowest-exposure feasible option.',
+      ),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'No lower-exposure alternative was found within your time limit.',
+      ),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText(/guaranteeing a cleaner route/i),
+    ).not.toBeInTheDocument()
+  })
+
+  it('explains in methodology that AIRPATH compares rather than guaranteeing a cleaner route', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    await user.click(screen.getByRole('button', { name: 'How AIRPATH works' }))
+    expect(
+      await screen.findByText(
+        /AIRPATH compares those feasible alternatives rather than guaranteeing a cleaner route/i,
+      ),
     ).toBeInTheDocument()
   })
 

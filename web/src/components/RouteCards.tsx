@@ -3,6 +3,7 @@ import { EXPOSURE_NOTE } from '../constants'
 import {
   formatExposure,
   formatMinutes,
+  hasLowerPredictedExposureAlternative,
   isLowerPredictedExposure,
   reductionBadgeText,
   routeCardTitle,
@@ -13,7 +14,6 @@ interface RouteCardsProps {
   fastest: RouteRecord | null
   alternatives: RouteRecord[]
   selectedRouteId: string | null
-  deltaMinutes: number
   onSelectRoute: (routeId: string) => void
 }
 
@@ -41,7 +41,6 @@ export function RouteCards({
   fastest,
   alternatives,
   selectedRouteId,
-  deltaMinutes,
   onSelectRoute,
 }: RouteCardsProps) {
   if (!fastest) {
@@ -53,6 +52,8 @@ export function RouteCards({
     ...all.map((route) => route.predicted_exposure_index),
     1,
   )
+  const hasLowerExposureAlt =
+    hasLowerPredictedExposureAlternative(alternatives)
 
   return (
     <section className="route-cards" aria-label="Route comparison">
@@ -142,17 +143,19 @@ export function RouteCards({
         })}
       </ul>
 
-      {alternatives.length === 0 ? (
-        <p className="empty-alts" role="status">
-          {deltaMinutes === 0
-            ? 'No alternative fits the selected +0 min limit. Showing the fastest route.'
-            : 'No lower-exposure alternative fits your current time limit. Try allowing a few more minutes.'}
-        </p>
-      ) : (
+      {hasLowerExposureAlt ? (
         <p className="muted small">
           Top feasible alternatives among the generated candidate routes, ranked
-          by predicted exposure. Not guaranteed to be lower than the fastest route.
+          by predicted exposure. AIRPATH compares feasible route alternatives
+          rather than guaranteeing a cleaner route.
         </p>
+      ) : (
+        <div className="empty-alts" role="status">
+          <p>Fastest route is also the lowest-exposure feasible option.</p>
+          <p>
+            No lower-exposure alternative was found within your time limit.
+          </p>
+        </div>
       )}
     </section>
   )

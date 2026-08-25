@@ -42,11 +42,11 @@ export function Sidebar({
       <div className="brand-block">
         <p className="brand">AIRPATH-AI</p>
         <h1 className="hero-line">
-          A route planner that balances travel time with predicted PM2.5 exposure.
+          Compare routes by travel time and predicted PM2.5 exposure.
         </h1>
         <p className="muted">
-          Compare the fastest route with feasible exposure-aware alternatives
-          under a time limit you choose.
+          Compare the fastest route with other feasible candidates under a time
+          limit you choose. A lower-exposure option is not guaranteed.
         </p>
         <p className="pilot-chip">
           Pilot area · hourly data · precomputed scenarios · not live routing
@@ -103,7 +103,7 @@ export function Sidebar({
           onClick={onFindRoutes}
           disabled={loadingRoutes || !originKey || !destinationKey}
         >
-          {loadingRoutes ? 'Finding routes…' : 'Find routes'}
+          {loadingRoutes ? 'Comparing routes…' : 'Compare routes'}
         </button>
 
         <button type="button" className="linkish" onClick={onOpenMethodology}>

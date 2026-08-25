@@ -48,7 +48,8 @@ export function MethodologyDrawer({ open, onClose }: MethodologyDrawerProps) {
           <li>Exposure is aggregated across segments as a time-weighted PM2.5 proxy.</li>
           <li>
             Routes are filtered by your maximum additional travel time, then ranked by
-            predicted exposure among feasible candidates.
+            predicted exposure among feasible candidates. AIRPATH compares those
+            feasible alternatives rather than guaranteeing a cleaner route.
           </li>
         </ol>
         <h3>Limitations</h3>
@@ -62,6 +63,11 @@ export function MethodologyDrawer({ open, onClose }: MethodologyDrawerProps) {
             medical advice.
           </li>
           <li>This UI uses precomputed demo scenarios from the frozen research pack.</li>
+          <li>
+            A lower-exposure feasible alternative is not guaranteed; on the frozen
+            research panel it is uncommon, and any predicted reduction is typically
+            small.
+          </li>
         </ul>
         <p className="muted small">
           Research metrics such as MAE or R² belong in the scientific reports, not on

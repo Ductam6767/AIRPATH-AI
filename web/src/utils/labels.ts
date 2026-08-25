@@ -69,9 +69,17 @@ export function reductionBadgeText(percent: number): string | null {
     return `${Math.round(percent)}% lower predicted exposure`
   }
   if (percent < -0.5) {
-    return `${Math.round(Math.abs(percent))}% higher predicted exposure`
+    return `+${Math.round(Math.abs(percent))}% higher predicted exposure`
   }
   return 'Similar predicted exposure'
+}
+
+export function hasLowerPredictedExposureAlternative(
+  alternatives: RouteRecord[],
+): boolean {
+  return alternatives.some((route) =>
+    isLowerPredictedExposure(route.predicted_exposure_reduction_percent),
+  )
 }
 
 export function findScenarioId(
