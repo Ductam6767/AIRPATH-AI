@@ -64,6 +64,39 @@ export function Gap1Research({
         {exhibit.freeze_gap1_conclusion}
       </p>
 
+      {exhibit.how_to_prove_rare ? (
+        <>
+          <h3>If a reviewer asks “is it really rare?”</h3>
+          <p>{exhibit.how_to_prove_rare.meaning}</p>
+          <p>{exhibit.how_to_prove_rare.reviewer_sentence}</p>
+          <p className="muted small">{exhibit.how_to_prove_rare.recipe}</p>
+          <ul>
+            <li>
+              P0-2A: {exhibit.how_to_prove_rare.p0_2a.differ_count}/
+              {exhibit.how_to_prove_rare.p0_2a.nontrivial_count} (
+              {pct(exhibit.how_to_prove_rare.p0_2a.rate)})
+            </li>
+            <li>
+              P0-2B: {exhibit.how_to_prove_rare.p0_2b.differ_count}/
+              {exhibit.how_to_prove_rare.p0_2b.nontrivial_count} (
+              {pct(exhibit.how_to_prove_rare.p0_2b.rate)})
+            </li>
+          </ul>
+        </>
+      ) : null}
+
+      {exhibit.peak_hour_with_current_data ? (
+        <>
+          <h3>Peak hour with the data we have (walk / motorbike)</h3>
+          <p>{exhibit.peak_hour_with_current_data.what_is_identifiable}</p>
+          <p>{exhibit.peak_hour_with_current_data.what_is_not_identifiable}</p>
+          <p>{exhibit.peak_hour_with_current_data.result}</p>
+          <p className="muted small">
+            {exhibit.peak_hour_with_current_data.future_when_street_data_exists}
+          </p>
+        </>
+      ) : null}
+
       <h3>Desired quantity (not in the dataset)</h3>
       <p>
         <code>PM2.5_road(x_D, t_arrival)</code> — {exhibit.desired_quantity}
@@ -161,21 +194,29 @@ export function Gap1Research({
             <thead>
               <tr>
                 <th>Clock</th>
+                <th>Band</th>
                 <th>Differ rate</th>
                 <th>Spearman</th>
                 <th>Oracle gain if differ</th>
+                <th>Mean |ΔE|</th>
               </tr>
             </thead>
             <tbody>
               {exhibit.p0_2b.by_clock.map((row) => (
                 <tr key={row.clock_time}>
                   <td>{row.clock_time}</td>
+                  <td>{row.band ?? '—'}</td>
                   <td>{pct(row.nontrivial_selection_difference_rate)}</td>
                   <td>{row.mean_spearman.toFixed(3)}</td>
                   <td>
                     {row.mean_oracle_pct_improvement_when_differ == null
                       ? '—'
                       : `${row.mean_oracle_pct_improvement_when_differ.toFixed(3)}%`}
+                  </td>
+                  <td>
+                    {row.mean_abs_pct_exposure_diff == null
+                      ? '—'
+                      : `${row.mean_abs_pct_exposure_diff.toFixed(2)}%`}
                   </td>
                 </tr>
               ))}

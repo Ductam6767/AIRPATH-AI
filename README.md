@@ -63,11 +63,13 @@ python3 -m uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
 ```bash
 curl -s http://127.0.0.1:8000/health
 curl -s http://127.0.0.1:8000/demo/scenarios | head
-curl -s "http://127.0.0.1:8000/demo/routes?scenario_id=od_01&mode=walking&delta_minutes=5"
+curl -s "http://127.0.0.1:8000/demo/routes?scenario_id=od_01&mode=walking&delta_minutes=5&time_window=morning_peak"
 curl -s http://127.0.0.1:8000/research/gap1 | python3 -m json.tool | head
 ```
 
-`/demo/routes` returns `{ scenario_id, mode, delta_minutes, fastest_route, alternatives, metadata }`.
+`/demo/routes` returns `{ scenario_id, mode, delta_minutes, time_window, fastest_route, alternatives, metadata }`.
+`time_window` is a **demo congestion proxy** (`morning_peak` / `midday` / `evening_peak`): it only
+changes arterial OSM multipliers. It is not Gap 1 and does not identify jammed streets.
 Alternatives are **top feasible lower-exposure candidates among generated routes**
 for that `+δ` allowance — not a globally optimal cleanest path. At `delta_minutes=0`
 there may be **no** alternatives.

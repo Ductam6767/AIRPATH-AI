@@ -51,10 +51,16 @@ WAY_LOOKUP_PATH: Final[Path] = (
 DEMO_DEPARTURE_TIME: Final[str] = "2022-02-27T06:00:00"
 DEMO_FORECASTING_ORIGIN: Final[str] = "2022-02-27T05:00:00"
 DEMO_HOUR: Final[int] = 6
+DEMO_TIME_WINDOWS: Final[tuple[tuple[str, int], ...]] = (
+    ("morning_peak", 6),
+    ("midday", 12),
+    ("evening_peak", 18),
+)
+DEFAULT_TIME_WINDOW: Final[str] = "morning_peak"
 SUPPORTED_MODES: Final[tuple[str, ...]] = ("walking", "motorbike")
 DEMO_DISTANCE_RANKS: Final[tuple[int, ...]] = (0, 4, 8, 12, 16, 20, 24, 29)
 REQUESTED_ALTERNATIVES: Final[int] = 3
-PACK_NAME: Final[str] = "airpath_web_demo_v2"
+PACK_NAME: Final[str] = "airpath_web_demo_v3"
 OPENING_SCENARIO_ID: Final[str] = "od_05"
 SLOT_CLOSER_TO_FASTEST: Final[str] = "closer_to_fastest"
 SLOT_SECOND_FASTEST: Final[str] = "second_fastest"
@@ -79,7 +85,9 @@ RESEARCH_WARNING: Final[str] = (
     "traffic-class increment from OSM highway type, lanes, junctions, and a "
     "morning-peak factor. It is inspired by mobile-monitoring (走航监测) "
     "frameworks, not measured by pollution-probe vehicles, and is not live "
-    "traffic. Exposure is a time-weighted PM2.5 proxy, not inhaled dose or "
+    "traffic. Time-of-day (morning peak / midday / evening peak) only changes "
+    "the arterial congestion multiplier; the station-IDW background stays the "
+    "06:00 field. Exposure is a time-weighted PM2.5 proxy, not inhaled dose or "
     "medical risk. Pilot area only."
 )
 
@@ -256,6 +264,82 @@ def _shortlist_group(
     return chosen
 
 
+def _shortlisted_route_rows(
+    merged: pd.DataFrame,
+    *,
+    deltas: Sequence[float],
+    time_window: str,
+    hour: int,
+) -> tuple[list[dict[str, object]], dict[str, int]]:
+    routes: list[dict[str, object]] = []
+    lower_exposure_cases = 0
+    three_lower_cases = 0
+    nontrivial_cases = 0
+    for (scenario_id, mode), group in merged.groupby(["scenario_id", "mode"], sort=True):
+        for delta in deltas:
+            chosen = _shortlist_group(group, float(delta), mode=str(mode))
+            fastest_exposure = float(
+                chosen.loc[chosen["is_fastest"], "predicted_exposure_index"].iloc[0]
+            )
+            lower_count = int(
+                (
+                    (~chosen["is_fastest"])
+                    & (
+                        chosen["predicted_exposure_index"].astype(float)
+                        < fastest_exposure
+                    )
+                ).sum()
+            )
+            if float(delta) > 0:
+                nontrivial_cases += 1
+                if lower_count:
+                    lower_exposure_cases += 1
+                if lower_count >= REQUESTED_ALTERNATIVES:
+                    three_lower_cases += 1
+            available_alts = int(chosen.iloc[0]["available_feasible_alternatives"])
+            fewer = bool(chosen.iloc[0]["fewer_than_requested_alternatives"])
+            for row in chosen.itertuples(index=False):
+                exposure = float(row.predicted_exposure_index)
+                routes.append(
+                    {
+                        "scenario_id": str(scenario_id),
+                        "mode": str(mode),
+                        "delta_minutes": float(delta),
+                        "time_window": time_window,
+                        "demo_hour": hour,
+                        "route_id": str(row.route_id),
+                        "route_type": str(row.route_type),
+                        "rank": int(row.rank),
+                        "is_fastest": bool(row.is_fastest),
+                        "is_feasible": True,
+                        "travel_time_minutes": float(row.travel_time_minutes),
+                        "additional_time_vs_fastest_minutes": float(
+                            row.additional_time_vs_fastest_minutes
+                        ),
+                        "distance_m": float(row.distance_m),
+                        "predicted_exposure_index": exposure,
+                        "predicted_exposure_reduction_percent": _reduction_percent(
+                            fastest_exposure, exposure
+                        ),
+                        "geometry": _parse_geometry(row.geometry),
+                        "available_feasible_alternatives": available_alts,
+                        "fewer_than_requested_alternatives": fewer,
+                        "is_also_lowest_exposure": bool(
+                            getattr(row, "is_also_lowest_exposure", False)
+                        ),
+                        "tradeoff_slot": _optional_slot(
+                            getattr(row, "tradeoff_slot", None)
+                        ),
+                        "research_warning": RESEARCH_WARNING,
+                    }
+                )
+    return routes, {
+        "nontrivial_cases": nontrivial_cases,
+        "cases_with_lower_exposure_alternative": lower_exposure_cases,
+        "cases_with_three_lower_exposure_alternatives": three_lower_cases,
+    }
+
+
 def build_demo_pack(
     *,
     candidate_path: Path = CANDIDATE_PATH,
@@ -300,84 +384,37 @@ def build_demo_pack(
 
     way_lookup = load_way_attributes(WAY_LOOKUP_PATH)
     segments = load_background_segments(scenario_ids=scenario_ids)
-    exposures = simulate_route_exposures(segments, way_lookup, hour=DEMO_HOUR)
-    merged = base.merge(
-        exposures,
-        on=["scenario_id", "mode", "route_id"],
-        how="left",
-        validate="one_to_one",
-    )
-    if merged["predicted_exposure_index"].isna().any():
-        bad = merged.loc[
-            merged["predicted_exposure_index"].isna(),
-            ["scenario_id", "mode", "route_id"],
-        ]
-        raise ValueError(f"Simulated exposure join failed:\n{bad.to_string(index=False)}")
 
     freeze: dict[str, object] = {}
     if freeze_manifest_path.is_file():
         freeze = json.loads(freeze_manifest_path.read_text(encoding="utf-8"))
 
     routes: list[dict[str, object]] = []
-    lower_exposure_cases = 0
-    three_lower_cases = 0
-    nontrivial_cases = 0
-    for (scenario_id, mode), group in merged.groupby(["scenario_id", "mode"], sort=True):
-        for delta in deltas:
-            chosen = _shortlist_group(group, float(delta), mode=str(mode))
-            fastest_exposure = float(
-                chosen.loc[chosen["is_fastest"], "predicted_exposure_index"].iloc[0]
+    scan_by_window: dict[str, dict[str, int]] = {}
+    for time_window, hour in DEMO_TIME_WINDOWS:
+        exposures = simulate_route_exposures(segments, way_lookup, hour=hour)
+        merged = base.merge(
+            exposures,
+            on=["scenario_id", "mode", "route_id"],
+            how="left",
+            validate="one_to_one",
+        )
+        if merged["predicted_exposure_index"].isna().any():
+            bad = merged.loc[
+                merged["predicted_exposure_index"].isna(),
+                ["scenario_id", "mode", "route_id"],
+            ]
+            raise ValueError(
+                f"Simulated exposure join failed ({time_window}):\n"
+                f"{bad.to_string(index=False)}"
             )
-            lower_count = int(
-                (
-                    (~chosen["is_fastest"])
-                    & (
-                        chosen["predicted_exposure_index"].astype(float)
-                        < fastest_exposure
-                    )
-                ).sum()
-            )
-            if float(delta) > 0:
-                nontrivial_cases += 1
-                if lower_count:
-                    lower_exposure_cases += 1
-                if lower_count >= REQUESTED_ALTERNATIVES:
-                    three_lower_cases += 1
-            available_alts = int(chosen.iloc[0]["available_feasible_alternatives"])
-            fewer = bool(chosen.iloc[0]["fewer_than_requested_alternatives"])
-            for row in chosen.itertuples(index=False):
-                exposure = float(row.predicted_exposure_index)
-                routes.append(
-                    {
-                        "scenario_id": str(scenario_id),
-                        "mode": str(mode),
-                        "delta_minutes": float(delta),
-                        "route_id": str(row.route_id),
-                        "route_type": str(row.route_type),
-                        "rank": int(row.rank),
-                        "is_fastest": bool(row.is_fastest),
-                        "is_feasible": True,
-                        "travel_time_minutes": float(row.travel_time_minutes),
-                        "additional_time_vs_fastest_minutes": float(
-                            row.additional_time_vs_fastest_minutes
-                        ),
-                        "distance_m": float(row.distance_m),
-                        "predicted_exposure_index": exposure,
-                        "predicted_exposure_reduction_percent": _reduction_percent(
-                            fastest_exposure, exposure
-                        ),
-                        "geometry": _parse_geometry(row.geometry),
-                        "available_feasible_alternatives": available_alts,
-                        "fewer_than_requested_alternatives": fewer,
-                        "is_also_lowest_exposure": bool(
-                            getattr(row, "is_also_lowest_exposure", False)
-                        ),
-                        "tradeoff_slot": _optional_slot(
-                            getattr(row, "tradeoff_slot", None)
-                        ),
-                        "research_warning": RESEARCH_WARNING,
-                    }
-                )
+        window_routes, scan = _shortlisted_route_rows(
+            merged, deltas=deltas, time_window=time_window, hour=hour
+        )
+        routes.extend(window_routes)
+        scan_by_window[time_window] = scan
+
+    default_scan = scan_by_window[DEFAULT_TIME_WINDOW]
 
     scenarios: list[dict[str, object]] = []
     for row in selected_od.itertuples(index=False):
@@ -397,6 +434,7 @@ def build_demo_pack(
                 "straight_line_distance_km": float(row.straight_line_distance_km),
                 "supported_modes": list(modes),
                 "supported_delta_minutes": [float(d) for d in deltas],
+                "supported_time_windows": [window for window, _hour in DEMO_TIME_WINDOWS],
                 "demo_distance_rank": int(row.demo_distance_rank),
                 "selection_method": str(row.selection_method),
                 "opening_example": str(row.scenario_id) == OPENING_SCENARIO_ID,
@@ -417,6 +455,11 @@ def build_demo_pack(
         "departure_time": departure_time,
         "forecasting_origin": DEMO_FORECASTING_ORIGIN,
         "demo_hour": DEMO_HOUR,
+        "default_time_window": DEFAULT_TIME_WINDOW,
+        "time_window_hours": [
+            {"id": window, "hour": hour, "congestion_proxy": True}
+            for window, hour in DEMO_TIME_WINDOWS
+        ],
         "source_artifacts": {
             "candidates": str(candidate_path.relative_to(REPO_ROOT)),
             "od_scenarios": str(od_path.relative_to(REPO_ROOT)),
@@ -442,28 +485,28 @@ def build_demo_pack(
             "enabled": True,
             "background": "Frozen Model-C AIRPATH segment PM (IDW p=1 from six stations).",
             "on_road_increment": (
-                "Deterministic OSM highway-class / lanes / junction / 06:00 arterial "
-                "peak multipliers. Inspired by Chinese mobile-monitoring (走航监测) "
-                "frameworks that combine fixed-station background with on-road traffic "
-                "intensity. Not those vehicle datasets, not live congestion counts."
+                "Deterministic OSM highway-class / lanes / junction / hour-of-day "
+                "arterial multipliers (morning peak, midday, evening peak). "
+                "Inspired by Chinese mobile-monitoring (走航监测) frameworks that "
+                "combine fixed-station background with on-road traffic intensity. "
+                "Not those vehicle datasets, not live congestion counts. The "
+                "station-IDW background remains the 06:00 field for all windows."
             ),
             "optimizer_rule_unchanged": True,
             "research_engine_modified": False,
         },
-        "demo_tradeoff_scan": {
-            "nontrivial_cases": nontrivial_cases,
-            "cases_with_lower_exposure_alternative": lower_exposure_cases,
-            "cases_with_three_lower_exposure_alternatives": three_lower_cases,
-        },
+        "demo_tradeoff_scan": default_scan,
+        "demo_tradeoff_scan_by_window": scan_by_window,
         "supported_modes": list(modes),
         "supported_delta_minutes": [float(d) for d in deltas],
+        "supported_time_windows": [window for window, _hour in DEMO_TIME_WINDOWS],
         "exposure_unit": "(µg/m³)·min",
         "research_warning": RESEARCH_WARNING,
         "limitations": [
             "Hourly HealthyAir resolution; segment ETA maps to hourly forecast buckets.",
             "Six-station pilot support (stations 2–6 polygon).",
             "On-road PM in this demo pack is simulated, not measured on each street.",
-            "No live traffic model; congestion is proxied by OSM class, lanes, junctions, and hour.",
+            "No live traffic model; congestion is proxied by OSM class, lanes, junctions, and hour-of-day.",
             "Alternatives are up to three slower, lower-exposure time-archetypes "
             "among generated routes (closer-to-fastest, second-fastest, near the "
             "time budget). Missing archetypes are omitted — not a globally "

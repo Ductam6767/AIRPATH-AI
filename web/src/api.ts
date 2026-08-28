@@ -3,6 +3,7 @@ import type {
   Gap1Exhibit,
   RoutesResponse,
   ScenariosResponse,
+  TimeWindow,
   TravelMode,
 } from './types'
 import { API_BASE } from './constants'
@@ -79,6 +80,7 @@ export async function fetchRoutes(
     scenarioId: string
     mode: TravelMode
     deltaMinutes: number
+    timeWindow?: TimeWindow | string
   },
   signal?: AbortSignal,
 ): Promise<RoutesResponse> {
@@ -86,6 +88,7 @@ export async function fetchRoutes(
     scenario_id: params.scenarioId,
     mode: params.mode,
     delta_minutes: String(params.deltaMinutes),
+    time_window: params.timeWindow ?? 'morning_peak',
   })
   let response: Response
   try {

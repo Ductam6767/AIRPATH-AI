@@ -25,6 +25,11 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 0,
       "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
       "opening_example": false
@@ -53,6 +58,11 @@
         3.0,
         5.0,
         10.0
+      ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
       ],
       "demo_distance_rank": 4,
       "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
@@ -83,6 +93,11 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 8,
       "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
       "opening_example": false
@@ -111,6 +126,11 @@
         3.0,
         5.0,
         10.0
+      ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
       ],
       "demo_distance_rank": 12,
       "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
@@ -141,6 +161,11 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 16,
       "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
       "opening_example": false
@@ -169,6 +194,11 @@
         3.0,
         5.0,
         10.0
+      ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
       ],
       "demo_distance_rank": 20,
       "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
@@ -199,6 +229,11 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 24,
       "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
       "opening_example": false
@@ -227,6 +262,11 @@
         3.0,
         5.0,
         10.0
+      ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
       ],
       "demo_distance_rank": 29,
       "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",

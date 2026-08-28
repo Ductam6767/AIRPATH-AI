@@ -1,18 +1,21 @@
-import type { Scenario, TravelMode } from '../types'
+import type { Scenario, TimeWindow, TravelMode } from '../types'
 import { destinationsForOrigin, uniqueOrigins } from '../utils/labels'
 import { DeltaSlider } from './DeltaSlider'
 import { ModeToggle } from './ModeToggle'
+import { TimeWindowToggle } from './TimeWindowToggle'
 
 interface SidebarProps {
   scenarios: Scenario[]
   originKey: string
   destinationKey: string
   mode: TravelMode
+  timeWindow: TimeWindow
   deltaMinutes: number
   loadingRoutes: boolean
   onOriginChange: (key: string) => void
   onDestinationChange: (key: string) => void
   onModeChange: (mode: TravelMode) => void
+  onTimeWindowChange: (value: TimeWindow) => void
   onDeltaChange: (value: number) => void
   onFindRoutes: () => void
   onOpenMethodology: () => void
@@ -24,11 +27,13 @@ export function Sidebar({
   originKey,
   destinationKey,
   mode,
+  timeWindow,
   deltaMinutes,
   loadingRoutes,
   onOriginChange,
   onDestinationChange,
   onModeChange,
+  onTimeWindowChange,
   onDeltaChange,
   onFindRoutes,
   onOpenMethodology,
@@ -94,6 +99,12 @@ export function Sidebar({
         </label>
 
         <ModeToggle value={mode} onChange={onModeChange} disabled={loadingRoutes} />
+
+        <TimeWindowToggle
+          value={timeWindow}
+          onChange={onTimeWindowChange}
+          disabled={loadingRoutes}
+        />
 
         <DeltaSlider
           value={deltaMinutes}

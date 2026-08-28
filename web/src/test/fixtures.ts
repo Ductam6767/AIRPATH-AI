@@ -168,9 +168,35 @@ export const mockGap1Exhibit: Gap1Exhibit = {
         nontrivial_selection_difference_rate: 0.05,
         mean_spearman: 0.99,
         mean_oracle_pct_improvement_when_differ: 0.04,
+        mean_abs_pct_exposure_diff: 3.8,
+        band: 'morning_peak',
       },
     ],
     representative_disagreements: [],
+  },
+  how_to_prove_rare: {
+    meaning: 'Rare means the chosen route changes, not that the exposure number is the same.',
+    recipe: 'Count selections_differ among delta>0 rows.',
+    reviewer_sentence:
+      'On P0-2A the two methods pick different routes in 19 of 300 cells (6.33%).',
+    p0_2a: {
+      differ_count: 19,
+      nontrivial_count: 300,
+      rate: 0.0633,
+      by_mode: [],
+    },
+    p0_2b: {
+      differ_count: 20,
+      nontrivial_count: 1500,
+      rate: 0.0133,
+      by_mode: [],
+    },
+  },
+  peak_hour_with_current_data: {
+    what_is_identifiable: 'City-wide hour from six stations.',
+    what_is_not_identifiable: 'Which specific street is congested.',
+    result: 'Disagreements exist only at 06:00 and 08:00.',
+    future_when_street_data_exists: 'Learn E[PM | segment, hour, mode] from on-road measurements.',
   },
   paper_claim_allowed:
     'Hourly forecast-bucket-aware exposure rarely changes constrained route selection versus a static snapshot (MIXED/WEAK).',

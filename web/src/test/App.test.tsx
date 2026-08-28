@@ -109,6 +109,10 @@ describe('AIRPATH frontend', () => {
       'aria-pressed',
       'true',
     )
+    expect(screen.getByRole('button', { name: 'Morning peak' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
     expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-1')
     expect(screen.getByText('Allow up to +5 min')).toBeInTheDocument()
   })
@@ -218,6 +222,7 @@ describe('AIRPATH frontend', () => {
       }),
     ).toBeInTheDocument()
     expect(screen.getAllByText(/MIXED\/WEAK/).length).toBeGreaterThan(0)
+    expect(screen.getByText(/If a reviewer asks/i)).toBeInTheDocument()
     expect(screen.getByText(/Simulated on-road PM used: no/)).toBeInTheDocument()
     expect(
       screen.getByText('AIRPATH knows PM2.5 on street D at the arrival minute.'),

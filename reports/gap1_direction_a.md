@@ -148,6 +148,39 @@ change, and oracle gains when they do are ~0.11% (P0-2A) and ~0.02% (P0-2B).
 This is a negative/weak result about **hourly station buckets**, not proof that
 arrival-time routing is useless once street-level PM exists.
 
-Artifacts: `data/processed/gap1_research/exhibit.json`, API `GET /research/gap1`.
-Source tables: `data/processed/static_vs_arrival_exposure/`,
-`data/processed/temporal_gap_analysis/`.
+## 9. How to prove “rarely” if asked
+
+“Rarely” is a **count**, not a vibe.
+
+1. File: `data/processed/static_vs_arrival_exposure/constrained_selection_comparison.csv`
+   (P0-2B: `temporal_gap_analysis/constrained_selection_comparison.csv`).
+2. Keep rows with `delta_time_allowed_minutes > 0`.
+3. Rate = `mean(selections_differ)`.
+
+| Experiment | Differ / cells | Rate | Spearman | Oracle gain if differ |
+|---|---|---|---|---|
+| P0-2A | **19 / 300** | 6.33% | 0.992 | 0.11% |
+| P0-2A walking | 9 / 150 | 6.00% | — | — |
+| P0-2A motorbike | 10 / 150 | 6.67% | — | — |
+| P0-2B pooled | **20 / 1500** | 1.33% | 0.997 | 0.02% |
+| P0-2B 12:00, 17:00, 20:00 | **0** | 0% | ~0.999 | — |
+
+At 12:00 the **exposure numbers** still differ (mean |ΔE| ≈ 17%) but the **chosen route** never does. So “rare” = rare **reselection**, not identical indices.
+
+Copy-paste reviewer sentence is in `exhibit.json` → `how_to_prove_rare.reviewer_sentence`.
+
+## 10. Backup branch: peak hour (walk / motorbike)
+
+**Hypothesis you stated:** later, with measured data, some roads at some hours are congested and therefore dirtier; the selector should output differently at peak vs off-peak, separately for walking and motorbike.
+
+**With HealthyAir only, you can already say:**
+
+- Model C has learned a **city-wide** diurnal pattern at six stations.
+- Walking vs motorbike already differ because duration (and therefore ceil-hour) differs.
+- P0-2B: reselection happens only at **06:00 and 08:00**. Walking 15/750, motorbike 5/750. Later clocks: 0.
+
+**You cannot yet say** which street is jammed, or that pollution is the consequence of that jam.
+
+**When on-road PM (+ traffic) exists:** learn `E[PM | road class or segment, hour, mode]`, keep the same δ-constraint. That study replaces IDW-from-six-stations. Do not back-port demo OSM multipliers into Gap 1.
+
+The map toggle “Morning peak / Midday / Evening peak” is a **demo congestion proxy** on OSM class. It is allowed as product illustration. It is not evidence for section 10.

@@ -12,6 +12,7 @@ import type {
   RouteRecord,
   RoutesResponse,
   Scenario,
+  TimeWindow,
   TravelMode,
 } from './types'
 import {
@@ -27,6 +28,7 @@ export default function App() {
   const [originKey, setOriginKey] = useState('')
   const [destinationKey, setDestinationKey] = useState('')
   const [mode, setMode] = useState<TravelMode>('motorbike')
+  const [timeWindow, setTimeWindow] = useState<TimeWindow>('morning_peak')
   const [deltaMinutes, setDeltaMinutes] = useState<(typeof DELTA_MINUTES)[number]>(5)
   const [routesPayload, setRoutesPayload] = useState<RoutesResponse | null>(null)
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null)
@@ -86,7 +88,7 @@ export default function App() {
     setLoadingRoutes(true)
     setError(null)
     try {
-      const payload = await fetchRoutes({ scenarioId, mode, deltaMinutes })
+      const payload = await fetchRoutes({ scenarioId, mode, deltaMinutes, timeWindow })
       setRoutesPayload(payload)
       setSelectedRouteId(payload.fastest_route.route_id)
     } catch (err) {
@@ -96,12 +98,12 @@ export default function App() {
     } finally {
       setLoadingRoutes(false)
     }
-  }, [scenarios, originKey, destinationKey, mode, deltaMinutes])
+  }, [scenarios, originKey, destinationKey, mode, deltaMinutes, timeWindow])
 
   useEffect(() => {
     if (!selectedScenario || initialLoading) return
     void loadRoutes()
-  }, [selectedScenario?.scenario_id, mode, deltaMinutes, initialLoading]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedScenario?.scenario_id, mode, deltaMinutes, timeWindow, initialLoading]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleOriginChange = (key: string) => {
     setOriginKey(key)
@@ -135,11 +137,13 @@ export default function App() {
         originKey={originKey}
         destinationKey={destinationKey}
         mode={mode}
+        timeWindow={timeWindow}
         deltaMinutes={deltaMinutes}
         loadingRoutes={loadingRoutes}
         onOriginChange={handleOriginChange}
         onDestinationChange={setDestinationKey}
         onModeChange={setMode}
+        onTimeWindowChange={setTimeWindow}
         onDeltaChange={(value) =>
           setDeltaMinutes(value as (typeof DELTA_MINUTES)[number])
         }

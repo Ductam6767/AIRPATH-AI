@@ -104,6 +104,66 @@ def _representative_disagreements(frame: pd.DataFrame) -> list[dict[str, Any]]:
     return rows
 
 
+def _clock_band(clock_time: str) -> str:
+    hour = int(str(clock_time).split(":")[0])
+    if hour in {6, 7, 8, 9}:
+        return "morning_peak"
+    if hour in {11, 12, 13, 14}:
+        return "midday"
+    if hour in {16, 17, 18, 19}:
+        return "evening_peak"
+    return "off_peak"
+
+
+def _selection_proof(frame: pd.DataFrame) -> dict[str, Any]:
+    nontrivial = frame.loc[frame["delta_time_allowed_minutes"].astype(float) > 0]
+    differ = nontrivial.loc[nontrivial["selections_differ"].astype(bool)]
+    n = int(len(nontrivial))
+    d = int(len(differ))
+    by_mode: list[dict[str, Any]] = []
+    for mode, group in nontrivial.groupby("mode", sort=True):
+        differ_mode = group.loc[group["selections_differ"].astype(bool)]
+        n_mode = int(len(group))
+        d_mode = int(len(differ_mode))
+        by_mode.append(
+            {
+                "mode": str(mode),
+                "differ_count": d_mode,
+                "nontrivial_count": n_mode,
+                "rate": _round(d_mode / n_mode) if n_mode else 0.0,
+            }
+        )
+    return {
+        "differ_count": d,
+        "nontrivial_count": n,
+        "rate": _round(d / n) if n else 0.0,
+        "by_mode": by_mode,
+    }
+
+
+def _clock_mode_proof(frame: pd.DataFrame) -> list[dict[str, Any]]:
+    nontrivial = frame.loc[frame["delta_time_allowed_minutes"].astype(float) > 0]
+    rows: list[dict[str, Any]] = []
+    grouped = nontrivial.groupby(["departure_time", "mode"], sort=True)
+    for (departure, mode), group in grouped:
+        differ = group.loc[group["selections_differ"].astype(bool)]
+        clock = str(departure)[11:16] if len(str(departure)) >= 16 else str(departure)
+        n = int(len(group))
+        d = int(len(differ))
+        rows.append(
+            {
+                "clock_time": clock,
+                "departure_time": str(departure),
+                "band": _clock_band(clock),
+                "mode": str(mode),
+                "differ_count": d,
+                "nontrivial_count": n,
+                "rate": _round(d / n) if n else 0.0,
+            }
+        )
+    return rows
+
+
 def build_gap1_exhibit(
     *,
     p0_2a_dir: Path = P0_2A_DIR,
@@ -131,8 +191,16 @@ def build_gap1_exhibit(
                 "mean_oracle_pct_improvement_when_differ": (
                     None if pd.isna(oracle) else _round(float(oracle))
                 ),
+                "mean_abs_pct_exposure_diff": _round(
+                    float(row.mean_abs_pct_exposure_diff)
+                ),
+                "band": _clock_band(str(row.clock_time)),
             }
         )
+
+    p0_2a_proof = _selection_proof(p0_2a_sel)
+    p0_2b_proof = _selection_proof(p0_2b_sel)
+    p0_2b_proof["by_clock_and_mode"] = _clock_mode_proof(p0_2b_sel)
 
     return {
         "pack_name": "airpath_gap1_direction_a_v1",
@@ -190,6 +258,48 @@ def build_gap1_exhibit(
             ),
             "by_clock": clock_rows,
             "representative_disagreements": _representative_disagreements(p0_2b_sel),
+        },
+        "how_to_prove_rare": {
+            "meaning": (
+                "Rare means the chosen route changes, not that the exposure "
+                "number is the same."
+            ),
+            "recipe": (
+                "Open constrained_selection_comparison.csv. Keep rows with "
+                "delta_time_allowed_minutes > 0. Count selections_differ == True "
+                "divided by the number of remaining rows."
+            ),
+            "p0_2a": p0_2a_proof,
+            "p0_2b": p0_2b_proof,
+            "reviewer_sentence": (
+                f"On P0-2A the two methods pick different routes in "
+                f"{p0_2a_proof['differ_count']} of {p0_2a_proof['nontrivial_count']} "
+                f"cells ({p0_2a_proof['rate'] * 100:.2f}%). "
+                f"On P0-2B that is {p0_2b_proof['differ_count']} of "
+                f"{p0_2b_proof['nontrivial_count']} ({p0_2b_proof['rate'] * 100:.2f}%). "
+                "At 12:00, 17:00 and 20:00 the count is 0. When they do differ, "
+                "mean oracle gain is about 0.11% (P0-2A) and 0.02% (P0-2B)."
+            ),
+        },
+        "peak_hour_with_current_data": {
+            "what_is_identifiable": (
+                "City-wide hour from six stations (Model C diurnal pattern), "
+                "separately for walking and motorbike because duration differs."
+            ),
+            "what_is_not_identifiable": (
+                "Which specific street is congested, or PM on that street as a "
+                "consequence of traffic."
+            ),
+            "result": (
+                "Disagreements exist only at 06:00 and 08:00. Walking disagrees "
+                "more often than motorbike because a walk crosses more hourly "
+                "buckets. Midday and evening clocks never change the selected route."
+            ),
+            "future_when_street_data_exists": (
+                "Learn E[PM | segment or road class, hour, mode] from "
+                "on-road measurements, then reuse the same constrained selector. "
+                "That is a new quantity, not a Gap 1 result from HealthyAir."
+            ),
         },
         "paper_claim_allowed": (
             "Hourly forecast-bucket-aware exposure is a defined substitution "

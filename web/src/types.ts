@@ -1,6 +1,7 @@
 /** Shared TypeScript contracts for the WEB-1 demo API (render-only). */
 
 export type TravelMode = 'walking' | 'motorbike'
+export type TimeWindow = 'morning_peak' | 'midday' | 'evening_peak'
 
 export interface Coordinate {
   label: string
@@ -15,6 +16,7 @@ export interface Scenario {
   straight_line_distance_km: number
   supported_modes: string[]
   supported_delta_minutes: number[]
+  supported_time_windows?: string[]
   demo_distance_rank: number
   selection_method: string
   opening_example?: boolean
@@ -47,6 +49,7 @@ export interface RoutesResponse {
   scenario_id: string
   mode: TravelMode | string
   delta_minutes: number
+  time_window?: TimeWindow | string
   fastest_route: RouteRecord
   alternatives: RouteRecord[]
   metadata: Record<string, unknown>
@@ -79,6 +82,35 @@ export interface Gap1ClockRow {
   nontrivial_selection_difference_rate: number
   mean_spearman: number
   mean_oracle_pct_improvement_when_differ: number | null
+  mean_abs_pct_exposure_diff?: number
+  band?: string
+}
+
+export interface Gap1CountRow {
+  differ_count: number
+  nontrivial_count: number
+  rate: number
+  mode?: string
+  clock_time?: string
+  band?: string
+}
+
+export interface Gap1Proof {
+  meaning: string
+  recipe: string
+  reviewer_sentence: string
+  p0_2a: Gap1CountRow & { by_mode: Gap1CountRow[] }
+  p0_2b: Gap1CountRow & {
+    by_mode: Gap1CountRow[]
+    by_clock_and_mode?: Gap1CountRow[]
+  }
+}
+
+export interface Gap1PeakHourNote {
+  what_is_identifiable: string
+  what_is_not_identifiable: string
+  result: string
+  future_when_street_data_exists: string
 }
 
 export interface Gap1Panel {
@@ -119,6 +151,8 @@ export interface Gap1Exhibit {
   freeze_gap1_conclusion: string
   p0_2a: Gap1Panel
   p0_2b: Gap1Panel
+  how_to_prove_rare: Gap1Proof
+  peak_hour_with_current_data: Gap1PeakHourNote
   paper_claim_allowed: string
   paper_claim_forbidden: string[]
 }

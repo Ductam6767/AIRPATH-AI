@@ -44,6 +44,13 @@ def test_build_gap1_exhibit_uses_frozen_tables_not_demo_pm() -> None:
         0.013333333333333334
     )
     assert exhibit["p0_2b"]["gap1_conclusion_changed_vs_p0_2a"] is False
+    proof = exhibit["how_to_prove_rare"]
+    assert proof["p0_2a"]["differ_count"] == 19
+    assert proof["p0_2a"]["nontrivial_count"] == 300
+    assert proof["p0_2b"]["differ_count"] == 20
+    assert proof["p0_2b"]["nontrivial_count"] == 1500
+    peak = exhibit["peak_hour_with_current_data"]
+    assert "congested" in peak["what_is_not_identifiable"].lower()
     for panel in (exhibit["p0_2a"], exhibit["p0_2b"]):
         for row in panel["representative_disagreements"]:
             assert row["delta_minutes"] == 5.0

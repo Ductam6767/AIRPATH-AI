@@ -89,35 +89,45 @@
         "departure_time": "2022-02-27T06:00:00",
         "nontrivial_selection_difference_rate": 0.05,
         "mean_spearman": 0.99246,
-        "mean_oracle_pct_improvement_when_differ": 0.02568
+        "mean_oracle_pct_improvement_when_differ": 0.02568,
+        "mean_abs_pct_exposure_diff": 3.797933,
+        "band": "morning_peak"
       },
       {
         "clock_time": "08:00",
         "departure_time": "2022-02-27T08:00:00",
         "nontrivial_selection_difference_rate": 0.016667,
         "mean_spearman": 0.998016,
-        "mean_oracle_pct_improvement_when_differ": 0.007608
+        "mean_oracle_pct_improvement_when_differ": 0.007608,
+        "mean_abs_pct_exposure_diff": 3.868728,
+        "band": "morning_peak"
       },
       {
         "clock_time": "12:00",
         "departure_time": "2022-02-27T12:00:00",
         "nontrivial_selection_difference_rate": 0.0,
         "mean_spearman": 0.99881,
-        "mean_oracle_pct_improvement_when_differ": null
+        "mean_oracle_pct_improvement_when_differ": null,
+        "mean_abs_pct_exposure_diff": 17.06366,
+        "band": "midday"
       },
       {
         "clock_time": "17:00",
         "departure_time": "2022-02-27T17:00:00",
         "nontrivial_selection_difference_rate": 0.0,
         "mean_spearman": 0.998413,
-        "mean_oracle_pct_improvement_when_differ": null
+        "mean_oracle_pct_improvement_when_differ": null,
+        "mean_abs_pct_exposure_diff": 4.709435,
+        "band": "evening_peak"
       },
       {
         "clock_time": "20:00",
         "departure_time": "2022-02-27T20:00:00",
         "nontrivial_selection_difference_rate": 0.0,
         "mean_spearman": 0.99881,
-        "mean_oracle_pct_improvement_when_differ": null
+        "mean_oracle_pct_improvement_when_differ": null,
+        "mean_abs_pct_exposure_diff": 0.957478,
+        "band": "off_peak"
       }
     ],
     "representative_disagreements": [
@@ -162,6 +172,147 @@
         "departure_time": "2022-02-27T08:00:00"
       }
     ]
+  },
+  "how_to_prove_rare": {
+    "meaning": "Rare means the chosen route changes, not that the exposure number is the same.",
+    "recipe": "Open constrained_selection_comparison.csv. Keep rows with delta_time_allowed_minutes > 0. Count selections_differ == True divided by the number of remaining rows.",
+    "p0_2a": {
+      "differ_count": 19,
+      "nontrivial_count": 300,
+      "rate": 0.063333,
+      "by_mode": [
+        {
+          "mode": "motorbike",
+          "differ_count": 10,
+          "nontrivial_count": 150,
+          "rate": 0.066667
+        },
+        {
+          "mode": "walking",
+          "differ_count": 9,
+          "nontrivial_count": 150,
+          "rate": 0.06
+        }
+      ]
+    },
+    "p0_2b": {
+      "differ_count": 20,
+      "nontrivial_count": 1500,
+      "rate": 0.013333,
+      "by_mode": [
+        {
+          "mode": "motorbike",
+          "differ_count": 5,
+          "nontrivial_count": 750,
+          "rate": 0.006667
+        },
+        {
+          "mode": "walking",
+          "differ_count": 15,
+          "nontrivial_count": 750,
+          "rate": 0.02
+        }
+      ],
+      "by_clock_and_mode": [
+        {
+          "clock_time": "06:00",
+          "departure_time": "2022-02-27T06:00:00",
+          "band": "morning_peak",
+          "mode": "motorbike",
+          "differ_count": 5,
+          "nontrivial_count": 150,
+          "rate": 0.033333
+        },
+        {
+          "clock_time": "06:00",
+          "departure_time": "2022-02-27T06:00:00",
+          "band": "morning_peak",
+          "mode": "walking",
+          "differ_count": 10,
+          "nontrivial_count": 150,
+          "rate": 0.066667
+        },
+        {
+          "clock_time": "08:00",
+          "departure_time": "2022-02-27T08:00:00",
+          "band": "morning_peak",
+          "mode": "motorbike",
+          "differ_count": 0,
+          "nontrivial_count": 150,
+          "rate": 0.0
+        },
+        {
+          "clock_time": "08:00",
+          "departure_time": "2022-02-27T08:00:00",
+          "band": "morning_peak",
+          "mode": "walking",
+          "differ_count": 5,
+          "nontrivial_count": 150,
+          "rate": 0.033333
+        },
+        {
+          "clock_time": "12:00",
+          "departure_time": "2022-02-27T12:00:00",
+          "band": "midday",
+          "mode": "motorbike",
+          "differ_count": 0,
+          "nontrivial_count": 150,
+          "rate": 0.0
+        },
+        {
+          "clock_time": "12:00",
+          "departure_time": "2022-02-27T12:00:00",
+          "band": "midday",
+          "mode": "walking",
+          "differ_count": 0,
+          "nontrivial_count": 150,
+          "rate": 0.0
+        },
+        {
+          "clock_time": "17:00",
+          "departure_time": "2022-02-27T17:00:00",
+          "band": "evening_peak",
+          "mode": "motorbike",
+          "differ_count": 0,
+          "nontrivial_count": 150,
+          "rate": 0.0
+        },
+        {
+          "clock_time": "17:00",
+          "departure_time": "2022-02-27T17:00:00",
+          "band": "evening_peak",
+          "mode": "walking",
+          "differ_count": 0,
+          "nontrivial_count": 150,
+          "rate": 0.0
+        },
+        {
+          "clock_time": "20:00",
+          "departure_time": "2022-02-27T20:00:00",
+          "band": "off_peak",
+          "mode": "motorbike",
+          "differ_count": 0,
+          "nontrivial_count": 150,
+          "rate": 0.0
+        },
+        {
+          "clock_time": "20:00",
+          "departure_time": "2022-02-27T20:00:00",
+          "band": "off_peak",
+          "mode": "walking",
+          "differ_count": 0,
+          "nontrivial_count": 150,
+          "rate": 0.0
+        }
+      ]
+    },
+    "reviewer_sentence": "On P0-2A the two methods pick different routes in 19 of 300 cells (6.33%). On P0-2B that is 20 of 1500 (1.33%). At 12:00, 17:00 and 20:00 the count is 0. When they do differ, mean oracle gain is about 0.11% (P0-2A) and 0.02% (P0-2B)."
+  },
+  "peak_hour_with_current_data": {
+    "what_is_identifiable": "City-wide hour from six stations (Model C diurnal pattern), separately for walking and motorbike because duration differs.",
+    "what_is_not_identifiable": "Which specific street is congested, or PM on that street as a consequence of traffic.",
+    "result": "Disagreements exist only at 06:00 and 08:00. Walking disagrees more often than motorbike because a walk crosses more hourly buckets. Midday and evening clocks never change the selected route.",
+    "future_when_street_data_exists": "Learn E[PM | segment or road class, hour, mode] from on-road measurements, then reuse the same constrained selector. That is a new quantity, not a Gap 1 result from HealthyAir."
   },
   "paper_claim_allowed": "Hourly forecast-bucket-aware exposure is a defined substitution for unavailable on-road arrival PM. Under six-station IDW it rarely changes constrained route selection versus a static snapshot (MIXED/WEAK).",
   "paper_claim_forbidden": [
