@@ -619,6 +619,58 @@ code {
   cursor: pointer;
 }
 
+.gap1-panel {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.2rem 1.4rem;
+  overflow: auto;
+  max-height: calc(100dvh - 2rem);
+}
+
+.gap1-panel h2 {
+  margin: 0.35rem 0 0.7rem;
+  font-size: 1.35rem;
+  font-family: Fraunces, Georgia, serif;
+}
+
+.gap1-panel h3 {
+  margin: 1.25rem 0 0.4rem;
+  font-size: 1.02rem;
+}
+
+.gap1-panel ul {
+  margin: 0.35rem 0 0.8rem;
+  padding-left: 1.2rem;
+}
+
+.gap1-table-wrap {
+  overflow-x: auto;
+  margin: 0.5rem 0 0.85rem;
+}
+
+.gap1-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+.gap1-table th,
+.gap1-table td {
+  text-align: left;
+  padding: 0.45rem 0.55rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.gap1-table th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
 @media (max-width: 1100px) {
   :root {
     --sidebar-width: 360px;

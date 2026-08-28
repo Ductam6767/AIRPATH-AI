@@ -61,3 +61,64 @@ export interface ApiErrorBody {
         [key: string]: unknown
       }
 }
+
+export interface Gap1Disagreement {
+  scenario_id: string
+  mode: string
+  delta_minutes: number
+  fastest_route_id: string
+  static_selected_route_id: string
+  airpath_selected_route_id: string
+  oracle_percent_improvement_airpath_over_static: number
+  departure_time?: string
+}
+
+export interface Gap1ClockRow {
+  clock_time: string
+  departure_time: string
+  nontrivial_selection_difference_rate: number
+  mean_spearman: number
+  mean_oracle_pct_improvement_when_differ: number | null
+}
+
+export interface Gap1Panel {
+  label: string
+  classification: string
+  rationale: string
+  nontrivial_selection_difference_rate: number
+  mean_oracle_percent_improvement_when_differ: number
+  mean_spearman_static_vs_airpath: number
+  representative_disagreements: Gap1Disagreement[]
+  gap1_conclusion_changed_vs_p0_2a?: boolean
+  by_clock?: Gap1ClockRow[]
+}
+
+export interface Gap1WorkedExample {
+  departure: string
+  forecast_origin: string
+  segment_passage: string
+  hour_used: string
+  note: string
+}
+
+export interface Gap1Exhibit {
+  pack_name: string
+  uses_simulated_onroad_pm: boolean
+  scientific_logic_modified: boolean
+  question: string
+  desired_quantity: string
+  available_substitution: string
+  not_available: string[]
+  data_required_for_street_pm: string[]
+  worked_example: Gap1WorkedExample
+  ceiling_rule: string
+  exposure_definition: string
+  exposure_unit: string
+  forecaster: string
+  spatial_model: string
+  freeze_gap1_conclusion: string
+  p0_2a: Gap1Panel
+  p0_2b: Gap1Panel
+  paper_claim_allowed: string
+  paper_claim_forbidden: string[]
+}

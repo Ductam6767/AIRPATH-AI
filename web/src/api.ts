@@ -1,5 +1,6 @@
 import type {
   ApiErrorBody,
+  Gap1Exhibit,
   RoutesResponse,
   ScenariosResponse,
   TravelMode,
@@ -52,6 +53,25 @@ export async function fetchScenarios(
     throw await parseError(response)
   }
   return (await response.json()) as ScenariosResponse
+}
+
+export async function fetchGap1Exhibit(
+  signal?: AbortSignal,
+): Promise<Gap1Exhibit> {
+  let response: Response
+  try {
+    response = await fetch(`${API_BASE}/research/gap1`, { signal })
+  } catch {
+    throw new DemoApiError(
+      'Cannot reach the AIRPATH demo API. Start the FastAPI backend on port 8000.',
+      0,
+      'api_unavailable',
+    )
+  }
+  if (!response.ok) {
+    throw await parseError(response)
+  }
+  return (await response.json()) as Gap1Exhibit
 }
 
 export async function fetchRoutes(

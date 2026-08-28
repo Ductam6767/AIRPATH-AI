@@ -16,6 +16,7 @@ interface SidebarProps {
   onDeltaChange: (value: number) => void
   onFindRoutes: () => void
   onOpenMethodology: () => void
+  onOpenGap1: () => void
 }
 
 export function Sidebar({
@@ -31,6 +32,7 @@ export function Sidebar({
   onDeltaChange,
   onFindRoutes,
   onOpenMethodology,
+  onOpenGap1,
 }: SidebarProps) {
   const origins = uniqueOrigins(scenarios)
   const destinations = originKey
@@ -110,6 +112,9 @@ export function Sidebar({
 
         <button type="button" className="linkish" onClick={onOpenMethodology}>
           How AIRPATH works
+        </button>
+        <button type="button" className="linkish" onClick={onOpenGap1}>
+          Gap 1 research exhibit
         </button>
       </div>
 

@@ -14,6 +14,9 @@ from pydantic import BaseModel, ConfigDict, Field
 
 REPO_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 DEFAULT_DEMO_DIR: Final[Path] = REPO_ROOT / "data" / "processed" / "web_demo"
+DEFAULT_GAP1_PATH: Final[Path] = (
+    REPO_ROOT / "data" / "processed" / "gap1_research" / "exhibit.json"
+)
 SUPPORTED_MODES: Final[frozenset[str]] = frozenset({"walking", "motorbike"})
 LOCAL_DEV_ORIGINS: Final[tuple[str, ...]] = (
     "http://localhost:5173",
@@ -109,6 +112,18 @@ def _load_json(path: Path) -> dict[str, Any]:
 
 
 @lru_cache(maxsize=1)
+def load_gap1_exhibit(path: str | None = None) -> dict[str, Any]:
+    """Load frozen Gap 1 Direction-A exhibit (no engine execution)."""
+    exhibit_path = Path(path) if path else DEFAULT_GAP1_PATH
+    if not exhibit_path.is_file():
+        raise FileNotFoundError(f"Gap 1 exhibit missing: {exhibit_path}")
+    payload = _load_json(exhibit_path)
+    if payload.get("uses_simulated_onroad_pm") is True:
+        raise ValueError("Gap 1 exhibit must not use simulated on-road PM.")
+    return payload
+
+
+@lru_cache(maxsize=1)
 def load_demo_pack(demo_dir: str | None = None) -> dict[str, Any]:
     """Load self-contained demo JSON once (no research-engine execution)."""
     root = Path(demo_dir) if demo_dir else DEFAULT_DEMO_DIR
@@ -179,6 +194,8 @@ def create_app(
         return {
             "service": "airpath-demo-api",
             "health": "/health",
+            "demo_scenarios": "/demo/scenarios",
+            "research_gap1": "/research/gap1",
             "note": "This is the API, not the map UI. Open the Static Site URL.",
         }
 
@@ -358,6 +375,15 @@ def create_app(
             alternatives=[to_public_route(row) for row in alternatives_raw],
             metadata=response_metadata,
         )
+
+    @app.get("/research/gap1")
+    def research_gap1() -> dict[str, Any]:
+        try:
+            return load_gap1_exhibit()
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     return app
 
