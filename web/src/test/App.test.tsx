@@ -103,7 +103,7 @@ describe('AIRPATH frontend', () => {
     expect(
       screen.getByText(/time-weighted PM2.5 proxy/i),
     ).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa' })).toBeInTheDocument()
     expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Motorbike' })).toHaveAttribute(
       'aria-pressed',

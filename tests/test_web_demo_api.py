@@ -120,6 +120,11 @@ def test_demo_scenarios(client: TestClient) -> None:
         "midday",
         "evening_peak",
     ]
+    assert "origin" not in first["origin"]["label"].lower()
+    assert " · " in first["origin"]["label"]
+    opening_labels = opening[0]
+    assert opening_labels["origin"]["label"] == "Hẻm Cao Thắng · Hòa Hưng"
+    assert opening_labels["destination"]["label"] == "Khu phố 11 · Phú Lâm"
 
 
 def test_shortlist_keeps_only_lower_exposure_alternatives() -> None:

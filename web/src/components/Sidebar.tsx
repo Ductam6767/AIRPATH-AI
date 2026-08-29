@@ -130,8 +130,9 @@ export function Sidebar({
       </div>
 
       <p className="sidebar-footnote muted small">
-        Coordinates stay in secondary metadata (option titles and map popups). This
-        demo does not search the live city network.
+        From/To names are OSM street labels from the demo API. Coordinates stay in
+        option titles and map popups. This demo does not search the live city
+        network.
       </p>
     </aside>
   )

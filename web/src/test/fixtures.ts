@@ -5,12 +5,12 @@ export const mockScenarios: ScenariosResponse = {
     {
       scenario_id: 'od_01',
       origin: {
-        label: 'od_01 origin',
+        label: 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa',
         latitude: 10.7992,
         longitude: 106.6612,
       },
       destination: {
-        label: 'od_01 destination',
+        label: 'Nguyễn Văn Đậu · Đức Nhuận',
         latitude: 10.8056,
         longitude: 106.6871,
       },

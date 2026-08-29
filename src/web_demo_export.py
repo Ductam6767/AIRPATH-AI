@@ -47,6 +47,9 @@ FREEZE_MANIFEST_PATH: Final[Path] = (
 WAY_LOOKUP_PATH: Final[Path] = (
     REPO_ROOT / "data" / "processed" / "web_demo" / "osm_way_traffic_attributes.json"
 )
+STREET_NAMES_PATH: Final[Path] = (
+    REPO_ROOT / "data" / "processed" / "web_demo" / "endpoint_street_names.json"
+)
 
 DEMO_DEPARTURE_TIME: Final[str] = "2022-02-27T06:00:00"
 DEMO_FORECASTING_ORIGIN: Final[str] = "2022-02-27T05:00:00"
@@ -144,6 +147,31 @@ def _optional_slot(value: object) -> str | None:
     if not text or text.lower() == "none" or text.lower() == "nan":
         return None
     return text
+
+
+def load_endpoint_street_labels(
+    path: Path = STREET_NAMES_PATH,
+) -> dict[tuple[str, str], str]:
+    """OSM Nominatim reverse-geocode labels for demo From/To dropdowns."""
+    if not path.is_file():
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    labels: dict[tuple[str, str], str] = {}
+    for row in payload.get("endpoints", []):
+        sid = str(row.get("scenario_id", ""))
+        kind = str(row.get("kind", ""))
+        label = str(row.get("label", "")).strip()
+        if sid and kind and label:
+            labels[(sid, kind)] = label
+    return labels
+
+
+def _endpoint_label(
+    street_labels: dict[tuple[str, str], str],
+    scenario_id: str,
+    kind: str,
+) -> str:
+    return street_labels.get((scenario_id, kind), f"{scenario_id} {kind}")
 
 
 def _mode_rules(mode: str) -> dict[str, float]:
@@ -415,19 +443,21 @@ def build_demo_pack(
         scan_by_window[time_window] = scan
 
     default_scan = scan_by_window[DEFAULT_TIME_WINDOW]
+    street_labels = load_endpoint_street_labels()
 
     scenarios: list[dict[str, object]] = []
     for row in selected_od.itertuples(index=False):
+        scenario_id = str(row.scenario_id)
         scenarios.append(
             {
-                "scenario_id": str(row.scenario_id),
+                "scenario_id": scenario_id,
                 "origin": {
-                    "label": f"{row.scenario_id} origin",
+                    "label": _endpoint_label(street_labels, scenario_id, "origin"),
                     "latitude": float(row.origin_latitude),
                     "longitude": float(row.origin_longitude),
                 },
                 "destination": {
-                    "label": f"{row.scenario_id} destination",
+                    "label": _endpoint_label(street_labels, scenario_id, "destination"),
                     "latitude": float(row.destination_latitude),
                     "longitude": float(row.destination_longitude),
                 },
@@ -468,6 +498,7 @@ def build_demo_pack(
                 "segment_exposure_comparison_0600.csv.gz"
             ),
             "osm_traffic_lookup": str(WAY_LOOKUP_PATH.relative_to(REPO_ROOT)),
+            "endpoint_street_names": str(STREET_NAMES_PATH.relative_to(REPO_ROOT)),
             "freeze_manifest": str(freeze_manifest_path.relative_to(REPO_ROOT))
             if freeze_manifest_path.is_file()
             else None,

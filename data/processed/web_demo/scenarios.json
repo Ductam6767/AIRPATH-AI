@@ -3,12 +3,12 @@
     {
       "scenario_id": "od_26",
       "origin": {
-        "label": "od_26 origin",
+        "label": "Lô SL Cư xá Phú Lâm A · Phú Lâm",
         "latitude": 10.749940910728707,
         "longitude": 106.63058143958231
       },
       "destination": {
-        "label": "od_26 destination",
+        "label": "Đường số 6 · Bình Thới",
         "latitude": 10.76189362005488,
         "longitude": 106.64769292246834
       },
@@ -37,12 +37,12 @@
     {
       "scenario_id": "od_22",
       "origin": {
-        "label": "od_22 origin",
+        "label": "Đường Số 100 Bình Thới · Hòa Bình",
         "latitude": 10.768373149137515,
         "longitude": 106.64866934081056
       },
       "destination": {
-        "label": "od_22 destination",
+        "label": "Đặng Nguyên Cẩn · Phú Lâm",
         "latitude": 10.752829740555551,
         "longitude": 106.63195436635417
       },
@@ -71,12 +71,12 @@
     {
       "scenario_id": "od_28",
       "origin": {
-        "label": "od_28 origin",
+        "label": "Hẻm Võ Thành Trang · Bảy Hiền",
         "latitude": 10.790060825724904,
         "longitude": 106.64884728294992
       },
       "destination": {
-        "label": "od_28 destination",
+        "label": "Hoàng Văn Thụ · Đức Nhuận",
         "latitude": 10.800218360033266,
         "longitude": 106.67220923018309
       },
@@ -105,12 +105,12 @@
     {
       "scenario_id": "od_01",
       "origin": {
-        "label": "od_01 origin",
+        "label": "Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa",
         "latitude": 10.79920439306918,
         "longitude": 106.66115000810552
       },
       "destination": {
-        "label": "od_01 destination",
+        "label": "Nguyễn Văn Đậu · Đức Nhuận",
         "latitude": 10.805572971047097,
         "longitude": 106.68707545410574
       },
@@ -139,12 +139,12 @@
     {
       "scenario_id": "od_23",
       "origin": {
-        "label": "od_23 origin",
+        "label": "Hẻm Hoàng Hoa Thám · Tân Bình",
         "latitude": 10.803075074305696,
         "longitude": 106.64675559927
       },
       "destination": {
-        "label": "od_23 destination",
+        "label": "Đường D8 · Diên Hồng",
         "latitude": 10.775472637154722,
         "longitude": 106.66149459345698
       },
@@ -173,12 +173,12 @@
     {
       "scenario_id": "od_12",
       "origin": {
-        "label": "od_12 origin",
+        "label": "Hẻm Tô Hiến Thành · Hòa Hưng",
         "latitude": 10.777587693333428,
         "longitude": 106.66634819963508
       },
       "destination": {
-        "label": "od_12 destination",
+        "label": "Đặng Văn Sâm · Đức Nhuận",
         "latitude": 10.811534241698942,
         "longitude": 106.6744742795683
       },
@@ -207,12 +207,12 @@
     {
       "scenario_id": "od_11",
       "origin": {
-        "label": "od_11 origin",
+        "label": "Trường Sơn · Tân Sơn Hòa",
         "latitude": 10.813094204700738,
         "longitude": 106.66550535728128
       },
       "destination": {
-        "label": "od_11 destination",
+        "label": "Đường Số 6 · Tân Sơn Nhì",
         "latitude": 10.799864951291744,
         "longitude": 106.62542977979922
       },
@@ -241,12 +241,12 @@
     {
       "scenario_id": "od_05",
       "origin": {
-        "label": "od_05 origin",
+        "label": "Hẻm Cao Thắng · Hòa Hưng",
         "latitude": 10.775500302968537,
         "longitude": 106.67417471011515
       },
       "destination": {
-        "label": "od_05 destination",
+        "label": "Khu phố 11 · Phú Lâm",
         "latitude": 10.751489340242742,
         "longitude": 106.62861919680236
       },
