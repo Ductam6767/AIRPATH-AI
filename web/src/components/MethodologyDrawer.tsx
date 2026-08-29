@@ -67,8 +67,9 @@ export function MethodologyDrawer({ open, onClose }: MethodologyDrawerProps) {
           <li>Road PM2.5 in this demo is simulated, not measured on each street.</li>
           <li>
             Busy-road pollution is a traffic-class proxy (OSM highway type, lanes,
-            junctions, morning peak) inspired by mobile-monitoring frameworks — not
-            live congestion and not a Chinese probe-vehicle dataset.
+            junctions, time of day) inspired by mobile-monitoring frameworks — not
+            live congestion and not a Chinese probe-vehicle dataset. Morning /
+            midday / evening only change the arterial multiplier.
           </li>
           <li>
             Exposure is a time-weighted proxy — not inhaled dose, medical risk, or

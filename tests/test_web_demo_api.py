@@ -68,6 +68,11 @@ def test_build_demo_pack_uses_model_c_and_geometry() -> None:
     assert len(sample["geometry"][0]) == 2
     assert "predicted_exposure_reduction_percent" in sample
     assert sample["is_feasible"] is True
+    assert {str(route["time_window"]) for route in routes} == {
+        "morning_peak",
+        "midday",
+        "evening_peak",
+    }
     assert all(
         route["is_fastest"] or route["predicted_exposure_reduction_percent"] > 0.5
         for route in routes
@@ -82,7 +87,7 @@ def test_write_demo_pack_roundtrip(tmp_path: Path) -> None:
     metadata = json.loads(paths["metadata"].read_text(encoding="utf-8"))
     assert len(scenarios["scenarios"]) == 8
     assert len(routes["routes"]) == len(pack["routes"])
-    assert metadata["pack_name"] == "airpath_web_demo_v2"
+    assert metadata["pack_name"] == "airpath_web_demo_v3"
 
 
 def test_health(client: TestClient) -> None:
@@ -91,7 +96,7 @@ def test_health(client: TestClient) -> None:
     payload = response.json()
     assert payload["status"] == "ok"
     assert payload["service"] == "airpath-demo-api"
-    assert payload["demo_pack"] == "airpath_web_demo_v2"
+    assert payload["demo_pack"] == "airpath_web_demo_v3"
 
 
 def test_demo_scenarios(client: TestClient) -> None:
@@ -110,6 +115,16 @@ def test_demo_scenarios(client: TestClient) -> None:
     opening = [row for row in payload["scenarios"] if row.get("opening_example")]
     assert len(opening) == 1
     assert opening[0]["scenario_id"] == "od_05"
+    assert first["supported_time_windows"] == [
+        "morning_peak",
+        "midday",
+        "evening_peak",
+    ]
+    assert "origin" not in first["origin"]["label"].lower()
+    assert " · " in first["origin"]["label"]
+    opening_labels = opening[0]
+    assert opening_labels["origin"]["label"] == "Hẻm Cao Thắng · Hòa Hưng"
+    assert opening_labels["destination"]["label"] == "Khu phố 11 · Phú Lâm"
 
 
 def test_shortlist_keeps_only_lower_exposure_alternatives() -> None:
@@ -339,10 +354,12 @@ def test_valid_route_request(client: TestClient) -> None:
         "scenario_id",
         "mode",
         "delta_minutes",
+        "time_window",
         "fastest_route",
         "alternatives",
         "metadata",
     }
+    assert payload["time_window"] == "morning_peak"
     fastest = payload["fastest_route"]
     assert fastest["is_fastest"] is True
     assert fastest["route_type"] == "fastest"
@@ -394,6 +411,22 @@ def test_invalid_delta(client: TestClient) -> None:
     )
     assert response.status_code == 400
     assert response.json()["detail"]["error"] == "unsupported_delta_minutes"
+
+
+def test_time_windows_are_demo_congestion_proxy(client: TestClient) -> None:
+    params = {"scenario_id": "od_05", "mode": "motorbike", "delta_minutes": 5}
+    morning = client.get("/demo/routes", params={**params, "time_window": "morning_peak"})
+    midday = client.get("/demo/routes", params={**params, "time_window": "midday"})
+    evening = client.get("/demo/routes", params={**params, "time_window": "evening_peak"})
+    assert morning.status_code == 200
+    assert midday.status_code == 200
+    assert evening.status_code == 200
+    assert morning.json()["time_window"] == "morning_peak"
+    assert midday.json()["metadata"]["congestion_proxy"] is True
+    assert evening.json()["metadata"]["demo_hour"] == 18
+    rejected = client.get("/demo/routes", params={**params, "time_window": "night"})
+    assert rejected.status_code == 400
+    assert rejected.json()["detail"]["error"] == "unsupported_time_window"
 
 
 def test_malformed_query_missing_params(client: TestClient) -> None:

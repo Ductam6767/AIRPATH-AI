@@ -14,7 +14,14 @@ from pydantic import BaseModel, ConfigDict, Field
 
 REPO_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 DEFAULT_DEMO_DIR: Final[Path] = REPO_ROOT / "data" / "processed" / "web_demo"
+DEFAULT_GAP1_PATH: Final[Path] = (
+    REPO_ROOT / "data" / "processed" / "gap1_research" / "exhibit.json"
+)
 SUPPORTED_MODES: Final[frozenset[str]] = frozenset({"walking", "motorbike"})
+SUPPORTED_TIME_WINDOWS: Final[frozenset[str]] = frozenset(
+    {"morning_peak", "midday", "evening_peak"}
+)
+DEFAULT_TIME_WINDOW: Final[str] = "morning_peak"
 LOCAL_DEV_ORIGINS: Final[tuple[str, ...]] = (
     "http://localhost:5173",
     "http://127.0.0.1:5173",
@@ -54,6 +61,9 @@ class Scenario(BaseModel):
     demo_distance_rank: int
     selection_method: str
     opening_example: bool = False
+    supported_time_windows: list[str] = Field(
+        default_factory=lambda: ["morning_peak", "midday", "evening_peak"]
+    )
 
 
 class ScenariosResponse(BaseModel):
@@ -89,6 +99,7 @@ class RoutesResponse(BaseModel):
     scenario_id: str
     mode: str
     delta_minutes: float
+    time_window: str = "morning_peak"
     fastest_route: RouteRecord
     alternatives: list[RouteRecord]
     metadata: dict[str, Any] = Field(default_factory=dict)
@@ -109,6 +120,18 @@ def _load_json(path: Path) -> dict[str, Any]:
 
 
 @lru_cache(maxsize=1)
+def load_gap1_exhibit(path: str | None = None) -> dict[str, Any]:
+    """Load frozen Gap 1 Direction-A exhibit (no engine execution)."""
+    exhibit_path = Path(path) if path else DEFAULT_GAP1_PATH
+    if not exhibit_path.is_file():
+        raise FileNotFoundError(f"Gap 1 exhibit missing: {exhibit_path}")
+    payload = _load_json(exhibit_path)
+    if payload.get("uses_simulated_onroad_pm") is True:
+        raise ValueError("Gap 1 exhibit must not use simulated on-road PM.")
+    return payload
+
+
+@lru_cache(maxsize=1)
 def load_demo_pack(demo_dir: str | None = None) -> dict[str, Any]:
     """Load self-contained demo JSON once (no research-engine execution)."""
     root = Path(demo_dir) if demo_dir else DEFAULT_DEMO_DIR
@@ -122,12 +145,13 @@ def load_demo_pack(demo_dir: str | None = None) -> dict[str, Any]:
     if not isinstance(routes, list) or not routes:
         raise ValueError("routes.json must contain a non-empty routes list.")
     by_scenario = {str(item["scenario_id"]): item for item in scenarios}
-    index: dict[tuple[str, str, float], list[dict[str, Any]]] = {}
+    index: dict[tuple[str, str, float, str], list[dict[str, Any]]] = {}
     for route in routes:
         key = (
             str(route["scenario_id"]),
             str(route["mode"]),
             float(route["delta_minutes"]),
+            str(route.get("time_window", DEFAULT_TIME_WINDOW)),
         )
         index.setdefault(key, []).append(route)
     for key, group in index.items():
@@ -179,6 +203,8 @@ def create_app(
         return {
             "service": "airpath-demo-api",
             "health": "/health",
+            "demo_scenarios": "/demo/scenarios",
+            "research_gap1": "/research/gap1",
             "note": "This is the API, not the map UI. Open the Static Site URL.",
         }
 
@@ -203,6 +229,10 @@ def create_app(
         delta_minutes: float = Query(
             ...,
             description="Maximum extra minutes vs fastest route",
+        ),
+        time_window: str = Query(
+            DEFAULT_TIME_WINDOW,
+            description="Demo congestion window: morning_peak, midday, or evening_peak",
         ),
     ) -> RoutesResponse:
         pack = load_demo_pack(resolved_dir)
@@ -264,8 +294,31 @@ def create_app(
                 },
             )
 
-        key = (scenario_id, mode_normalized, float(matched_delta))
-        routes_index: dict[tuple[str, str, float], list[dict[str, Any]]] = pack[
+        window_normalized = time_window.strip().lower()
+        supported_windows = {
+            str(item).lower()
+            for item in scenario.get(
+                "supported_time_windows", list(SUPPORTED_TIME_WINDOWS)
+            )
+        }
+        if (
+            window_normalized not in SUPPORTED_TIME_WINDOWS
+            or window_normalized not in supported_windows
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "error": "unsupported_time_window",
+                    "message": (
+                        f"Unsupported time_window '{time_window}'. "
+                        f"Use one of: {sorted(supported_windows)}."
+                    ),
+                    "supported_time_windows": sorted(supported_windows),
+                },
+            )
+
+        key = (scenario_id, mode_normalized, float(matched_delta), window_normalized)
+        routes_index: dict[tuple[str, str, float, str], list[dict[str, Any]]] = pack[
             "routes_index"
         ]
         group = routes_index.get(key)
@@ -277,7 +330,7 @@ def create_app(
                     "message": (
                         "No frozen demo routes for "
                         f"scenario_id={scenario_id}, mode={mode_normalized}, "
-                        f"delta_minutes={matched_delta}."
+                        f"delta_minutes={matched_delta}, time_window={window_normalized}."
                     ),
                 },
             )
@@ -333,6 +386,16 @@ def create_app(
             "exposure_unit": metadata.get("exposure_unit"),
             "departure_time": metadata.get("departure_time"),
             "forecasting_origin": metadata.get("forecasting_origin"),
+            "time_window": window_normalized,
+            "demo_hour": next(
+                (
+                    item.get("hour")
+                    for item in metadata.get("time_window_hours", [])
+                    if isinstance(item, dict) and item.get("id") == window_normalized
+                ),
+                None,
+            ),
+            "congestion_proxy": True,
             "research_warning": metadata.get("research_warning"),
             "available_feasible_alternatives": fastest_raw.get(
                 "available_feasible_alternatives"
@@ -354,10 +417,20 @@ def create_app(
             scenario_id=scenario_id,
             mode=mode_normalized,
             delta_minutes=float(matched_delta),
+            time_window=window_normalized,
             fastest_route=to_public_route(fastest_raw),
             alternatives=[to_public_route(row) for row in alternatives_raw],
             metadata=response_metadata,
         )
+
+    @app.get("/research/gap1")
+    def research_gap1() -> dict[str, Any]:
+        try:
+            return load_gap1_exhibit()
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     return app
 

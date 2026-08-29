@@ -41,11 +41,11 @@ describe('labels', () => {
     const scenario: Scenario = {
       ...base,
       scenario_id: 'od_05',
-      origin: { label: 'Park Gate', latitude: 10.75, longitude: 106.63 },
-      destination: { label: 'Market Hall', latitude: 10.78, longitude: 106.68 },
+      origin: { label: 'Hẻm Cao Thắng · Hòa Hưng', latitude: 10.75, longitude: 106.63 },
+      destination: { label: 'Khu phố 11 · Phú Lâm', latitude: 10.78, longitude: 106.68 },
     }
-    expect(originLabel(scenario)).toBe('Park Gate')
-    expect(destinationLabel(scenario)).toBe('Market Hall')
+    expect(originLabel(scenario)).toBe('Hẻm Cao Thắng · Hòa Hưng')
+    expect(destinationLabel(scenario)).toBe('Khu phố 11 · Phú Lâm')
   })
 
   it('names route cards without medical language', () => {

@@ -1,7 +1,9 @@
 import type {
   ApiErrorBody,
+  Gap1Exhibit,
   RoutesResponse,
   ScenariosResponse,
+  TimeWindow,
   TravelMode,
 } from './types'
 import { API_BASE } from './constants'
@@ -54,11 +56,31 @@ export async function fetchScenarios(
   return (await response.json()) as ScenariosResponse
 }
 
+export async function fetchGap1Exhibit(
+  signal?: AbortSignal,
+): Promise<Gap1Exhibit> {
+  let response: Response
+  try {
+    response = await fetch(`${API_BASE}/research/gap1`, { signal })
+  } catch {
+    throw new DemoApiError(
+      'Cannot reach the AIRPATH demo API. Start the FastAPI backend on port 8000.',
+      0,
+      'api_unavailable',
+    )
+  }
+  if (!response.ok) {
+    throw await parseError(response)
+  }
+  return (await response.json()) as Gap1Exhibit
+}
+
 export async function fetchRoutes(
   params: {
     scenarioId: string
     mode: TravelMode
     deltaMinutes: number
+    timeWindow?: TimeWindow | string
   },
   signal?: AbortSignal,
 ): Promise<RoutesResponse> {
@@ -66,6 +88,7 @@ export async function fetchRoutes(
     scenario_id: params.scenarioId,
     mode: params.mode,
     delta_minutes: String(params.deltaMinutes),
+    time_window: params.timeWindow ?? 'morning_peak',
   })
   let response: Response
   try {

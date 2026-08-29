@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import userEvent from '@testing-library/user-event'
 import App from '../App'
 import {
+  mockGap1Exhibit,
   mockRoutesEmptyAlts,
   mockRoutesHigherExposure,
   mockRoutesWithAlts,
@@ -62,6 +63,9 @@ function stubApi(options?: {
         }
         return jsonResponse(routesPayload)
       }
+      if (url.includes('/research/gap1')) {
+        return jsonResponse(mockGap1Exhibit)
+      }
       return jsonResponse({ detail: 'not found' }, 404)
     }),
   )
@@ -99,9 +103,13 @@ describe('AIRPATH frontend', () => {
     expect(
       screen.getByText(/time-weighted PM2.5 proxy/i),
     ).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa' })).toBeInTheDocument()
     expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Motorbike' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+    expect(screen.getByRole('button', { name: 'Morning peak' })).toHaveAttribute(
       'aria-pressed',
       'true',
     )
@@ -199,6 +207,32 @@ describe('AIRPATH frontend', () => {
     render(<App />)
     expect(
       await screen.findByText(/demo API is unavailable/i),
+    ).toBeInTheDocument()
+  })
+
+  it('opens the Gap 1 exhibit without simulated street PM', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    await user.click(screen.getByRole('button', { name: 'Gap 1 research exhibit' }))
+    expect(
+      await screen.findByRole('heading', {
+        name: 'Gap 1 — static snapshot vs arrival-time hour',
+      }),
+    ).toBeInTheDocument()
+    expect(screen.getAllByText(/MIXED\/WEAK/).length).toBeGreaterThan(0)
+    expect(screen.getByText(/If a reviewer asks/i)).toBeInTheDocument()
+    expect(screen.getByText(/Simulated on-road PM used: no/)).toBeInTheDocument()
+    expect(
+      screen.getByText('AIRPATH knows PM2.5 on street D at the arrival minute.'),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('The product map simulated traffic-class PM is a Gap 1 result.'),
+    ).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Back to route demo' }))
+    expect(
+      await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
     ).toBeInTheDocument()
   })
 })

@@ -189,6 +189,9 @@ export function friendlyApiError(err: unknown): string {
   if (code === 'unsupported_delta_minutes') {
     return 'That extra-time value is not supported. Use 0, 1, 2, 3, 5, or 10 minutes.'
   }
+  if (code === 'unsupported_time_window') {
+    return 'That time-of-day window is not in the demo dataset.'
+  }
   if (code === 'route_request_outside_demo_dataset') {
     return 'No precomputed route is available for this combination.'
   }

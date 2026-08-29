@@ -1,16 +1,16 @@
-import type { RoutesResponse, ScenariosResponse } from '../types'
+import type { Gap1Exhibit, RoutesResponse, ScenariosResponse } from '../types'
 
 export const mockScenarios: ScenariosResponse = {
   scenarios: [
     {
       scenario_id: 'od_01',
       origin: {
-        label: 'od_01 origin',
+        label: 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa',
         latitude: 10.7992,
         longitude: 106.6612,
       },
       destination: {
-        label: 'od_01 destination',
+        label: 'Nguyễn Văn Đậu · Đức Nhuận',
         latitude: 10.8056,
         longitude: 106.6871,
       },
@@ -104,4 +104,104 @@ export const mockRoutesEmptyAlts: RoutesResponse = {
     empty_alternatives_message:
       'No lower-exposure alternative fits your current time limit. Try allowing a few more minutes.',
   },
+}
+
+export const mockGap1Exhibit: Gap1Exhibit = {
+  pack_name: 'airpath_gap1_direction_a_v1',
+  uses_simulated_onroad_pm: false,
+  scientific_logic_modified: false,
+  question:
+    'Does ranking the same candidate routes by hourly arrival-time exposure change the constrained selection relative to a static departure-time PM snapshot?',
+  desired_quantity:
+    'PM2.5 at the road segment at the exact minute the traveller arrives there.',
+  available_substitution:
+    'Ceiling the segment ETA to the next HealthyAir hour, then IDW p=1 from six station forecasts.',
+  not_available: ['On-road / mobile-monitoring PM2.5 at the segment'],
+  data_required_for_street_pm: [
+    'PM2.5 sampled on or beside the roadway, time-aligned to the trajectory',
+  ],
+  worked_example: {
+    departure: '06:00',
+    forecast_origin: '05:00',
+    segment_passage: '06:17',
+    hour_used: '07:00',
+    note: '06:17 is not interpolated. The supported HealthyAir hour is 07:00.',
+  },
+  ceiling_rule:
+    'Exact hourly ETA stays on that hour. Any other ETA is ceiled to the next exact hour.',
+  exposure_definition: 'sum_pm25_times_duration_minutes',
+  exposure_unit: '(µg/m³)·min',
+  forecaster: 'C_xgboost_current_pm',
+  spatial_model: 'idw_p1',
+  freeze_gap1_conclusion:
+    'MIXED/WEAK evidence that hourly forecast-bucket-aware exposure changes route decisions relative to a static departure-time snapshot (P0-2A/P0-2B).',
+  p0_2a: {
+    label: 'Single morning departure (2022-02-28 06:00)',
+    classification: 'B. MIXED EVIDENCE',
+    rationale: 'Selections sometimes differ, but oracle gains are weak.',
+    nontrivial_selection_difference_rate: 0.0633,
+    mean_oracle_percent_improvement_when_differ: 0.1077,
+    mean_spearman_static_vs_airpath: 0.992,
+    representative_disagreements: [
+      {
+        scenario_id: 'od_02',
+        mode: 'motorbike',
+        delta_minutes: 5,
+        fastest_route_id: 'motorbike-1',
+        static_selected_route_id: 'motorbike-2',
+        airpath_selected_route_id: 'motorbike-1',
+        oracle_percent_improvement_airpath_over_static: 0.071,
+      },
+    ],
+  },
+  p0_2b: {
+    label: 'Five clock times on 2022-02-27',
+    classification: 'B. MIXED EVIDENCE',
+    rationale: 'Pooled difference rate is lower than P0-2A.',
+    nontrivial_selection_difference_rate: 0.0133,
+    mean_oracle_percent_improvement_when_differ: 0.02,
+    mean_spearman_static_vs_airpath: 0.997,
+    by_clock: [
+      {
+        clock_time: '06:00',
+        departure_time: '2022-02-27 06:00:00',
+        nontrivial_selection_difference_rate: 0.05,
+        mean_spearman: 0.99,
+        mean_oracle_pct_improvement_when_differ: 0.04,
+        mean_abs_pct_exposure_diff: 3.8,
+        band: 'morning_peak',
+      },
+    ],
+    representative_disagreements: [],
+  },
+  how_to_prove_rare: {
+    meaning: 'Rare means the chosen route changes, not that the exposure number is the same.',
+    recipe: 'Count selections_differ among delta>0 rows.',
+    reviewer_sentence:
+      'On P0-2A the two methods pick different routes in 19 of 300 cells (6.33%).',
+    p0_2a: {
+      differ_count: 19,
+      nontrivial_count: 300,
+      rate: 0.0633,
+      by_mode: [],
+    },
+    p0_2b: {
+      differ_count: 20,
+      nontrivial_count: 1500,
+      rate: 0.0133,
+      by_mode: [],
+    },
+  },
+  peak_hour_with_current_data: {
+    what_is_identifiable: 'City-wide hour from six stations.',
+    what_is_not_identifiable: 'Which specific street is congested.',
+    result: 'Disagreements exist only at 06:00 and 08:00.',
+    future_when_street_data_exists: 'Learn E[PM | segment, hour, mode] from on-road measurements.',
+  },
+  paper_claim_allowed:
+    'Hourly forecast-bucket-aware exposure rarely changes constrained route selection versus a static snapshot (MIXED/WEAK).',
+  paper_claim_forbidden: [
+    'AIRPATH knows PM2.5 on street D at the arrival minute.',
+    'The product map simulated traffic-class PM is a Gap 1 result.',
+  ],
 }

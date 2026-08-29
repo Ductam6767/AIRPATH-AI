@@ -1,5 +1,5 @@
 {
-  "pack_name": "airpath_web_demo_v2",
+  "pack_name": "airpath_web_demo_v3",
   "forecaster": "C_xgboost_current_pm",
   "spatial_model": "idw_p1_plus_simulated_onroad_traffic_increment",
   "exposure_definition": "sum_pm25_times_duration_minutes",
@@ -7,12 +7,31 @@
   "departure_time": "2022-02-27T06:00:00",
   "forecasting_origin": "2022-02-27T05:00:00",
   "demo_hour": 6,
+  "default_time_window": "morning_peak",
+  "time_window_hours": [
+    {
+      "id": "morning_peak",
+      "hour": 6,
+      "congestion_proxy": true
+    },
+    {
+      "id": "midday",
+      "hour": 12,
+      "congestion_proxy": true
+    },
+    {
+      "id": "evening_peak",
+      "hour": 18,
+      "congestion_proxy": true
+    }
+  ],
   "source_artifacts": {
     "candidates": "data/processed/temporal_gap_analysis/candidate_routes.csv",
     "od_scenarios": "data/processed/temporal_gap_analysis/od_scenarios.csv",
     "background_segments": "data/processed/temporal_gap_analysis/segment_exposure_comparison_0600.csv.gz",
     "osm_traffic_lookup": "data/processed/web_demo/osm_way_traffic_attributes.json",
-    "freeze_manifest": "data/processed/final_robustness/freeze_manifest.json"
+    "freeze_manifest": "data/processed/final_robustness/freeze_manifest.json",
+    "endpoint_street_names": "data/processed/web_demo/endpoint_street_names.json"
   },
   "scenario_selection": {
     "count": 8,
@@ -31,7 +50,7 @@
   "pollution_simulation": {
     "enabled": true,
     "background": "Frozen Model-C AIRPATH segment PM (IDW p=1 from six stations).",
-    "on_road_increment": "Deterministic OSM highway-class / lanes / junction / 06:00 arterial peak multipliers. Inspired by Chinese mobile-monitoring (\u8d70\u822a\u76d1\u6d4b) frameworks that combine fixed-station background with on-road traffic intensity. Not those vehicle datasets, not live congestion counts.",
+    "on_road_increment": "Deterministic OSM highway-class / lanes / junction / hour-of-day arterial multipliers (morning peak, midday, evening peak). Inspired by Chinese mobile-monitoring (走航监测) frameworks that combine fixed-station background with on-road traffic intensity. Not those vehicle datasets, not live congestion counts. The station-IDW background remains the 06:00 field for all windows.",
     "optimizer_rule_unchanged": true,
     "research_engine_modified": false
   },
@@ -39,6 +58,23 @@
     "nontrivial_cases": 80,
     "cases_with_lower_exposure_alternative": 41,
     "cases_with_three_lower_exposure_alternatives": 6
+  },
+  "demo_tradeoff_scan_by_window": {
+    "morning_peak": {
+      "nontrivial_cases": 80,
+      "cases_with_lower_exposure_alternative": 41,
+      "cases_with_three_lower_exposure_alternatives": 6
+    },
+    "midday": {
+      "nontrivial_cases": 80,
+      "cases_with_lower_exposure_alternative": 40,
+      "cases_with_three_lower_exposure_alternatives": 6
+    },
+    "evening_peak": {
+      "nontrivial_cases": 80,
+      "cases_with_lower_exposure_alternative": 41,
+      "cases_with_three_lower_exposure_alternatives": 6
+    }
   },
   "supported_modes": [
     "walking",
@@ -52,16 +88,21 @@
     5.0,
     10.0
   ],
-  "exposure_unit": "(\u00b5g/m\u00b3)\u00b7min",
-  "research_warning": "Demo road PM2.5 is simulated: station-forecast IDW background plus a traffic-class increment from OSM highway type, lanes, junctions, and a morning-peak factor. It is inspired by mobile-monitoring (\u8d70\u822a\u76d1\u6d4b) frameworks, not measured by pollution-probe vehicles, and is not live traffic. Exposure is a time-weighted PM2.5 proxy, not inhaled dose or medical risk. Pilot area only.",
+  "supported_time_windows": [
+    "morning_peak",
+    "midday",
+    "evening_peak"
+  ],
+  "exposure_unit": "(µg/m³)·min",
+  "research_warning": "Demo road PM2.5 is simulated: station-forecast IDW background plus a traffic-class increment from OSM highway type, lanes, junctions, and a morning-peak factor. It is inspired by mobile-monitoring (走航监测) frameworks, not measured by pollution-probe vehicles, and is not live traffic. Time-of-day (morning peak / midday / evening peak) only changes the arterial congestion multiplier; the station-IDW background stays the 06:00 field. Exposure is a time-weighted PM2.5 proxy, not inhaled dose or medical risk. Pilot area only.",
   "limitations": [
     "Hourly HealthyAir resolution; segment ETA maps to hourly forecast buckets.",
-    "Six-station pilot support (stations 2\u20136 polygon).",
+    "Six-station pilot support (stations 2–6 polygon).",
     "On-road PM in this demo pack is simulated, not measured on each street.",
-    "No live traffic model; congestion is proxied by OSM class, lanes, junctions, and hour.",
-    "Alternatives are up to three slower, lower-exposure time-archetypes among generated routes (closer-to-fastest, second-fastest, near the time budget). Missing archetypes are omitted \u2014 not a globally optimal cleanest path.",
+    "No live traffic model; congestion is proxied by OSM class, lanes, junctions, and hour-of-day.",
+    "Alternatives are up to three slower, lower-exposure time-archetypes among generated routes (closer-to-fastest, second-fastest, near the time budget). Missing archetypes are omitted — not a globally optimal cleanest path.",
     "Not a medical recommendation or inhaled-dose estimate."
   ],
-  "route_count": 164,
+  "route_count": 492,
   "scientific_logic_modified": false
 }
