@@ -75,6 +75,27 @@ python3 -m pytest
 The UI under `web/` renders frozen demo API results only. It does **not**
 recompute forecasts, IDW, exposure, ETA, or routing in the browser.
 
+## MOBILE-1: Capacitor Android app (same UI + safety assistant)
+
+The `web/` package also builds a **native Android shell** (Capacitor) with:
+
+- Walking / Cycling / E-bike mobility labels (frozen API modes)
+- **Safety assistant** — maneuver + speed ladder from route polyline
+- BLE JSON to ESP32 (simulated or Web Bluetooth on Chrome Android)
+
+**Full build guide (APK on your PC, ESP32 firmware, what is left for you):**
+
+`docs/MOBILE_APP_BUILD.md`
+
+Quick start:
+
+```bash
+cd web
+npm install
+npm run cap:sync          # build:mobile + sync android/
+npx cap open android      # Build APK in Android Studio
+```
+
 ```bash
 # terminal 1 — API
 python3 -m uvicorn api.main:app --reload --port 8000

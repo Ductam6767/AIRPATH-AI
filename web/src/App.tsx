@@ -1,12 +1,22 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { fetchRoutes, fetchScenarios } from './api'
-import { DELTA_MINUTES } from './constants'
+import { AssistPanel } from './components/AssistPanel'
 import { MethodologyDrawer } from './components/MethodologyDrawer'
+import {
+  mobilityToApiMode,
+  type MobilityChoice,
+} from './components/ModeToggle'
 import { RouteCards } from './components/RouteCards'
 import { RouteMap } from './components/RouteMap'
 import { Sidebar } from './components/Sidebar'
 import { StatusBanner } from './components/StatusBanner'
-import type { RouteRecord, RoutesResponse, Scenario, TravelMode } from './types'
+import { isNativeApp } from './capacitor/init'
+import { DELTA_MINUTES } from './constants'
+import {
+  type AssistMode,
+  useAssistNavigation,
+} from './hooks/useAssistNavigation'
+import type { RouteRecord, RoutesResponse, Scenario } from './types'
 import {
   destinationsForOrigin,
   findScenarioId,
@@ -18,14 +28,21 @@ export default function App() {
   const [scenarios, setScenarios] = useState<Scenario[]>([])
   const [originKey, setOriginKey] = useState('')
   const [destinationKey, setDestinationKey] = useState('')
-  const [mode, setMode] = useState<TravelMode>('walking')
+  const [mobility, setMobility] = useState<MobilityChoice>('walking')
+  const mode = mobilityToApiMode(mobility)
   const [deltaMinutes, setDeltaMinutes] = useState<(typeof DELTA_MINUTES)[number]>(3)
   const [routesPayload, setRoutesPayload] = useState<RoutesResponse | null>(null)
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null)
+  const [assistMode, setAssistMode] = useState<AssistMode>('off')
   const [initialLoading, setInitialLoading] = useState(true)
   const [loadingRoutes, setLoadingRoutes] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [methodologyOpen, setMethodologyOpen] = useState(false)
+  const [nativeShell, setNativeShell] = useState(false)
+
+  useEffect(() => {
+    void isNativeApp().then(setNativeShell)
+  }, [])
 
   const selectedScenario = useMemo(() => {
     const id = findScenarioId(scenarios, originKey, destinationKey)
@@ -36,6 +53,16 @@ export default function App() {
     if (!routesPayload) return []
     return [routesPayload.fastest_route, ...routesPayload.alternatives]
   }, [routesPayload])
+
+  const selectedRoute = useMemo(
+    () => displayedRoutes.find((r) => r.route_id === selectedRouteId) ?? null,
+    [displayedRoutes, selectedRouteId],
+  )
+
+  const { snapshot: assistSnapshot, reset: resetAssist } = useAssistNavigation(
+    selectedRoute,
+    assistMode,
+  )
 
   useEffect(() => {
     const controller = new AbortController()
@@ -81,6 +108,8 @@ export default function App() {
       const payload = await fetchRoutes({ scenarioId, mode, deltaMinutes })
       setRoutesPayload(payload)
       setSelectedRouteId(payload.fastest_route.route_id)
+      setAssistMode('off')
+      resetAssist()
     } catch (err) {
       setError(friendlyApiError(err))
       setRoutesPayload(null)
@@ -88,7 +117,7 @@ export default function App() {
     } finally {
       setLoadingRoutes(false)
     }
-  }, [scenarios, originKey, destinationKey, mode, deltaMinutes])
+  }, [scenarios, originKey, destinationKey, mode, deltaMinutes, resetAssist])
 
   useEffect(() => {
     if (!selectedScenario || initialLoading) return
@@ -103,7 +132,7 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell">
+    <div className={nativeShell ? 'app-shell app-shell--native' : 'app-shell'}>
       <a className="skip-link" href="#route-results">
         Skip to route comparison
       </a>
@@ -111,12 +140,12 @@ export default function App() {
         scenarios={scenarios}
         originKey={originKey}
         destinationKey={destinationKey}
-        mode={mode}
+        mobility={mobility}
         deltaMinutes={deltaMinutes}
         loadingRoutes={loadingRoutes}
         onOriginChange={handleOriginChange}
         onDestinationChange={setDestinationKey}
-        onModeChange={setMode}
+        onMobilityChange={setMobility}
         onDeltaChange={(value) =>
           setDeltaMinutes(value as (typeof DELTA_MINUTES)[number])
         }
@@ -145,12 +174,20 @@ export default function App() {
         />
 
         {routesPayload ? (
-          <RouteCards
-            fastest={routesPayload.fastest_route}
-            alternatives={routesPayload.alternatives}
-            selectedRouteId={selectedRouteId}
-            onSelectRoute={setSelectedRouteId}
-          />
+          <>
+            <RouteCards
+              fastest={routesPayload.fastest_route}
+              alternatives={routesPayload.alternatives}
+              selectedRouteId={selectedRouteId}
+              onSelectRoute={setSelectedRouteId}
+            />
+            <AssistPanel
+              snapshot={assistSnapshot}
+              assistMode={assistMode}
+              onAssistModeChange={setAssistMode}
+              onReset={resetAssist}
+            />
+          </>
         ) : !initialLoading && !loadingRoutes && !error ? (
           <StatusBanner tone="info">
             Choose a From/To pair and press Compare routes to compare travel time

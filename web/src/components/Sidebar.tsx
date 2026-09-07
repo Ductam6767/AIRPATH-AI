@@ -1,4 +1,5 @@
-import type { Scenario, TravelMode } from '../types'
+import type { Scenario } from '../types'
+import type { MobilityChoice } from './ModeToggle'
 import { destinationsForOrigin, uniqueOrigins } from '../utils/labels'
 import { DeltaSlider } from './DeltaSlider'
 import { ModeToggle } from './ModeToggle'
@@ -7,12 +8,12 @@ interface SidebarProps {
   scenarios: Scenario[]
   originKey: string
   destinationKey: string
-  mode: TravelMode
+  mobility: MobilityChoice
   deltaMinutes: number
   loadingRoutes: boolean
   onOriginChange: (key: string) => void
   onDestinationChange: (key: string) => void
-  onModeChange: (mode: TravelMode) => void
+  onMobilityChange: (choice: MobilityChoice) => void
   onDeltaChange: (value: number) => void
   onFindRoutes: () => void
   onOpenMethodology: () => void
@@ -22,12 +23,12 @@ export function Sidebar({
   scenarios,
   originKey,
   destinationKey,
-  mode,
+  mobility,
   deltaMinutes,
   loadingRoutes,
   onOriginChange,
   onDestinationChange,
-  onModeChange,
+  onMobilityChange,
   onDeltaChange,
   onFindRoutes,
   onOpenMethodology,
@@ -89,7 +90,11 @@ export function Sidebar({
           </select>
         </label>
 
-        <ModeToggle value={mode} onChange={onModeChange} disabled={loadingRoutes} />
+        <ModeToggle
+          value={mobility}
+          onChange={onMobilityChange}
+          disabled={loadingRoutes}
+        />
 
         <DeltaSlider
           value={deltaMinutes}

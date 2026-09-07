@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AIRPATH-AI</string>
+    <string name="title_activity_main">AIRPATH-AI</string>
+    <string name="package_name">vn.edu.airpath.ai</string>
+    <string name="custom_url_scheme">vn.edu.airpath.ai</string>
+</resources>
