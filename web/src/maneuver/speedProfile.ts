@@ -10,11 +10,11 @@ export function suggestedSpeedKmh(distanceToManeuverM: number): number {
   return 20
 }
 
-/** Ordered steps for UI display (e.g. ↓40 → ↓30). */
+/** Remaining ladder including current target (e.g. ↓30 → ↓25 → ↓20). */
 export function speedStepsAhead(distanceToManeuverM: number): number[] {
   const target = suggestedSpeedKmh(distanceToManeuverM)
   const ladder = [45, 40, 30, 25, 20]
   const idx = ladder.indexOf(target)
-  if (idx <= 0) return [target]
-  return ladder.slice(0, idx + 1)
+  if (idx < 0) return [target]
+  return ladder.slice(idx)
 }

@@ -9,6 +9,14 @@ import {
   mockScenarios,
 } from './fixtures'
 
+vi.mock('../offline/localDemo', async () => {
+  const { mockRoutesWithAlts, mockScenarios } = await import('./fixtures')
+  return {
+    localFetchScenarios: async () => mockScenarios,
+    localFetchRoutes: async () => mockRoutesWithAlts,
+  }
+})
+
 vi.mock('../components/RouteMap', () => ({
   RouteMap: ({
     routes,
@@ -188,11 +196,12 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
   })
 
-  it('shows a friendly error when the API is unavailable', async () => {
+  it('falls back to the bundled demo pack when the API is unavailable', async () => {
     stubApi({ scenariosFail: true })
     render(<App />)
     expect(
-      await screen.findByText(/demo API is unavailable/i),
+      await screen.findByText(/bundled demo pack/i),
     ).toBeInTheDocument()
+    expect(await screen.findByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
   })
 })

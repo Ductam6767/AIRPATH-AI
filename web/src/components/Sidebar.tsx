@@ -1,3 +1,4 @@
+import { useI18n } from '../i18n/LanguageContext'
 import type { Scenario } from '../types'
 import type { MobilityChoice } from './ModeToggle'
 import { destinationsForOrigin, uniqueOrigins } from '../utils/labels'
@@ -33,6 +34,7 @@ export function Sidebar({
   onFindRoutes,
   onOpenMethodology,
 }: SidebarProps) {
+  const { t, lang, setLang } = useI18n()
   const origins = uniqueOrigins(scenarios)
   const destinations = originKey
     ? destinationsForOrigin(scenarios, originKey)
@@ -41,22 +43,33 @@ export function Sidebar({
   return (
     <aside className="sidebar" aria-label="Trip controls">
       <div className="brand-block">
-        <p className="brand">AIRPATH-AI</p>
-        <h1 className="hero-line">
-          Compare routes by travel time and predicted PM2.5 exposure.
-        </h1>
-        <p className="muted">
-          Compare the fastest route with other feasible candidates under a time
-          limit you choose. A lower-exposure option is not guaranteed.
-        </p>
-        <p className="pilot-chip">
-          Pilot area · hourly data · precomputed scenarios · not live routing
-        </p>
+        <div className="brand-row">
+          <p className="brand">AIRPATH-AI</p>
+          <div className="lang-toggle" role="group" aria-label="Language">
+            <button
+              type="button"
+              className={lang === 'en' ? 'lang-btn is-active' : 'lang-btn'}
+              onClick={() => setLang('en')}
+            >
+              {t.langEn}
+            </button>
+            <button
+              type="button"
+              className={lang === 'vi' ? 'lang-btn is-active' : 'lang-btn'}
+              onClick={() => setLang('vi')}
+            >
+              {t.langVi}
+            </button>
+          </div>
+        </div>
+        <h1 className="hero-line">{t.hero}</h1>
+        <p className="muted">{t.heroSub}</p>
+        <p className="pilot-chip">{t.chip}</p>
       </div>
 
       <div className="control-stack">
         <label className="field" htmlFor="origin-select">
-          <span>From</span>
+          <span>{t.from}</span>
           <select
             id="origin-select"
             value={originKey}
@@ -71,7 +84,7 @@ export function Sidebar({
         </label>
 
         <label className="field" htmlFor="destination-select">
-          <span>To</span>
+          <span>{t.to}</span>
           <select
             id="destination-select"
             value={destinationKey}
@@ -108,18 +121,15 @@ export function Sidebar({
           onClick={onFindRoutes}
           disabled={loadingRoutes || !originKey || !destinationKey}
         >
-          {loadingRoutes ? 'Comparing routes…' : 'Compare routes'}
+          {loadingRoutes ? t.comparing : t.compare}
         </button>
 
         <button type="button" className="linkish" onClick={onOpenMethodology}>
-          How AIRPATH works
+          {t.howItWorks}
         </button>
       </div>
 
-      <p className="sidebar-footnote muted small">
-        Coordinates stay in secondary metadata (option titles and map popups). This
-        demo does not search the live city network.
-      </p>
+      <p className="sidebar-footnote muted small">{t.footnote}</p>
     </aside>
   )
 }

@@ -8,14 +8,19 @@ This guide covers what the **Pro-tier mobile milestone** delivered in-repo and w
 |---------|--------|
 | Capacitor Android shell (`web/capacitor.config.ts`) | Ready |
 | Mobile build (`npm run build:mobile`) with bundled API URL | Ready |
-| Responsive layout + safe-area CSS | Ready |
+| **Offline fallback** to frozen `data/processed/web_demo` JSON | Ready |
+| EN / VI language toggle | Ready |
+| In-app **N-run trial log** + CSV export | Ready |
+| Responsive layout + safe-area CSS + first-run disclaimer | Ready |
 | PWA manifest (`public/manifest.webmanifest`) | Ready |
 | **Mobility modes** UI: Walking / Cycling / E-bike | Ready (API: walking or motorbike ETAs) |
-| **Safety assistant** panel | Ready |
+| **Safety assistant** panel + map progress marker | Ready |
 | Maneuver extraction from route polyline | Ready |
-| Speed ladder 45→40→30→25→20 by distance | Ready |
-| BLE JSON transport (simulated + Web Bluetooth) | Ready |
-| Unit tests for maneuver/speed logic | Ready |
+| Speed ladder remaining steps (e.g. ↓30 → ↓25 → ↓20) | Ready |
+| BLE JSON transport (simulated + persisted GATT after pair) | Ready |
+| Android location + Bluetooth permissions | Ready |
+| OSM map tiles (no Carto API key) | Ready |
+| Unit tests (maneuver, trials, bundled pack, UI) | Ready |
 
 The app still uses the **frozen demo API** — no live XGBoost/IDW on device.
 
@@ -26,6 +31,10 @@ Default production API (`.env.mobile`):
 ---
 
 ## What YOU do locally (lower tier / after Pro)
+
+See **`docs/WHAT_REMAINS.md`** for the short checklist.
+
+The cloud agent **cannot install APK on your phone**. You still need Android Studio once.
 
 ### A. Build & install APK (Android) — ~30–60 min first time
 
@@ -48,7 +57,7 @@ In Android Studio:
 
 Or: **Run** with USB debugging.
 
-**If API fails on phone:** ensure Render API is up; rebuild with your URL:
+**If API fails on phone:** the app **falls back to the bundled pack** automatically. To force a custom API URL:
 
 ```bash
 VITE_API_URL=https://YOUR-API.onrender.com npm run build:mobile
@@ -127,7 +136,7 @@ Replace polyline demo with live maneuvers when you have API key + time **after**
 | Issue | Fix |
 |-------|-----|
 | Blank map tiles on phone | Needs internet; OSM tiles load over HTTPS |
-| “Cannot reach API” | Set `VITE_API_URL`, rebuild, `cap sync` |
+| “Cannot reach API” | App should fall back to bundled pack; if not, rebuild `cap:sync` |
 | Leaflet markers wrong size | Already using divIcon — OK on WebView |
 | BLE pair fails | Use **Demo play** + `localStorage`; flash ESP32 UART UUIDs |
 | GPS live inaccurate | Expected on coarse polyline snap — use Demo play for video |

@@ -1,21 +1,25 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { fetchRoutes, fetchScenarios } from './api'
+import { fetchRoutes, fetchScenarios, getDemoDataSource } from './api'
 import { AssistPanel } from './components/AssistPanel'
 import { MethodologyDrawer } from './components/MethodologyDrawer'
 import {
   mobilityToApiMode,
   type MobilityChoice,
 } from './components/ModeToggle'
+import { OnboardingCard, shouldShowOnboarding } from './components/OnboardingCard'
 import { RouteCards } from './components/RouteCards'
 import { RouteMap } from './components/RouteMap'
 import { Sidebar } from './components/Sidebar'
 import { StatusBanner } from './components/StatusBanner'
+import { TrialLogPanel } from './components/TrialLogPanel'
 import { isNativeApp } from './capacitor/init'
 import { DELTA_MINUTES } from './constants'
+import { LanguageProvider, useI18n } from './i18n/LanguageContext'
 import {
   type AssistMode,
   useAssistNavigation,
 } from './hooks/useAssistNavigation'
+import { pointAlongRoute } from './maneuver/geo'
 import type { RouteRecord, RoutesResponse, Scenario } from './types'
 import {
   destinationsForOrigin,
@@ -24,7 +28,8 @@ import {
   uniqueOrigins,
 } from './utils/labels'
 
-export default function App() {
+function AppInner() {
+  const { t } = useI18n()
   const [scenarios, setScenarios] = useState<Scenario[]>([])
   const [originKey, setOriginKey] = useState('')
   const [destinationKey, setDestinationKey] = useState('')
@@ -39,6 +44,10 @@ export default function App() {
   const [error, setError] = useState<string | null>(null)
   const [methodologyOpen, setMethodologyOpen] = useState(false)
   const [nativeShell, setNativeShell] = useState(false)
+  const [dataSource, setDataSource] = useState<'api' | 'bundled'>('api')
+  const [onboardOpen, setOnboardOpen] = useState(
+    () => import.meta.env.MODE !== 'test' && shouldShowOnboarding(),
+  )
 
   useEffect(() => {
     void isNativeApp().then(setNativeShell)
@@ -64,6 +73,11 @@ export default function App() {
     assistMode,
   )
 
+  const progressLatLng = useMemo(() => {
+    if (assistMode === 'off' || !selectedRoute) return null
+    return pointAlongRoute(selectedRoute.geometry, assistSnapshot.distanceAlongM)
+  }, [assistMode, selectedRoute, assistSnapshot.distanceAlongM])
+
   useEffect(() => {
     const controller = new AbortController()
     ;(async () => {
@@ -73,6 +87,7 @@ export default function App() {
         const payload = await fetchScenarios(controller.signal)
         const list = payload.scenarios ?? []
         setScenarios(list)
+        setDataSource(getDemoDataSource())
         const origins = uniqueOrigins(list)
         const firstOrigin = origins[0]
         if (firstOrigin) {
@@ -107,6 +122,7 @@ export default function App() {
     try {
       const payload = await fetchRoutes({ scenarioId, mode, deltaMinutes })
       setRoutesPayload(payload)
+      setDataSource(getDemoDataSource())
       setSelectedRouteId(payload.fastest_route.route_id)
       setAssistMode('off')
       resetAssist()
@@ -134,7 +150,7 @@ export default function App() {
   return (
     <div className={nativeShell ? 'app-shell app-shell--native' : 'app-shell'}>
       <a className="skip-link" href="#route-results">
-        Skip to route comparison
+        {t.skipToRoutes}
       </a>
       <Sidebar
         scenarios={scenarios}
@@ -157,13 +173,17 @@ export default function App() {
 
       <main className="main-panel" id="route-results">
         {initialLoading ? (
-          <StatusBanner tone="loading">Loading demo scenarios…</StatusBanner>
+          <StatusBanner tone="loading">{t.loadingScenarios}</StatusBanner>
         ) : null}
 
         {error ? <StatusBanner tone="error">{error}</StatusBanner> : null}
 
+        {!initialLoading && !error && dataSource === 'bundled' ? (
+          <StatusBanner tone="info">{t.bundledNote}</StatusBanner>
+        ) : null}
+
         {!initialLoading && !error && loadingRoutes ? (
-          <StatusBanner tone="loading">Loading precomputed routes…</StatusBanner>
+          <StatusBanner tone="loading">{t.loadingRoutes}</StatusBanner>
         ) : null}
 
         <RouteMap
@@ -171,6 +191,7 @@ export default function App() {
           routes={displayedRoutes}
           selectedRouteId={selectedRouteId}
           onSelectRoute={setSelectedRouteId}
+          progressLatLng={progressLatLng}
         />
 
         {routesPayload ? (
@@ -187,12 +208,10 @@ export default function App() {
               onAssistModeChange={setAssistMode}
               onReset={resetAssist}
             />
+            <TrialLogPanel />
           </>
         ) : !initialLoading && !loadingRoutes && !error ? (
-          <StatusBanner tone="info">
-            Choose a From/To pair and press Compare routes to compare travel time
-            and predicted PM2.5 exposure.
-          </StatusBanner>
+          <StatusBanner tone="info">{t.choosePair}</StatusBanner>
         ) : null}
       </main>
 
@@ -200,6 +219,15 @@ export default function App() {
         open={methodologyOpen}
         onClose={() => setMethodologyOpen(false)}
       />
+      <OnboardingCard open={onboardOpen} onClose={() => setOnboardOpen(false)} />
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <AppInner />
+    </LanguageProvider>
   )
 }

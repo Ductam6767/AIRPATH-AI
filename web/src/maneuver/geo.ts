@@ -42,3 +42,25 @@ export function cumulativeDistances(geometry: [number, number][]): number[] {
   }
   return out
 }
+
+/** Interpolate [lat, lon] at a distance along the polyline. */
+export function pointAlongRoute(
+  geometry: [number, number][],
+  distanceAlongM: number,
+): [number, number] | null {
+  if (geometry.length === 0) return null
+  if (geometry.length === 1 || distanceAlongM <= 0) return geometry[0]!
+  const cum = cumulativeDistances(geometry)
+  const max = cum[cum.length - 1] ?? 0
+  if (distanceAlongM >= max) return geometry[geometry.length - 1]!
+  for (let i = 1; i < cum.length; i += 1) {
+    if (cum[i]! >= distanceAlongM) {
+      const span = cum[i]! - cum[i - 1]!
+      const t = span <= 0 ? 0 : (distanceAlongM - cum[i - 1]!) / span
+      const a = geometry[i - 1]!
+      const b = geometry[i]!
+      return [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])]
+    }
+  }
+  return geometry[geometry.length - 1]!
+}

@@ -33,11 +33,19 @@ const destinationIcon = L.divIcon({
   iconAnchor: [14, 14],
 })
 
+const progressIcon = L.divIcon({
+  className: 'od-marker od-marker--progress',
+  html: '<span aria-hidden="true">●</span>',
+  iconSize: [22, 22],
+  iconAnchor: [11, 11],
+})
+
 interface RouteMapProps {
   scenario: Scenario | null
   routes: RouteRecord[]
   selectedRouteId: string | null
   onSelectRoute: (routeId: string) => void
+  progressLatLng?: [number, number] | null
 }
 
 function FitRoutes({
@@ -101,6 +109,7 @@ export function RouteMap({
   routes,
   selectedRouteId,
   onSelectRoute,
+  progressLatLng,
 }: RouteMapProps) {
   const ordered = [...routes].sort((a, b) => {
     const aSel = a.route_id === selectedRouteId ? 1 : 0
@@ -116,10 +125,9 @@ export function RouteMap({
         className="route-map"
         scrollWheelZoom
       >
-        {/* Carto Positron — public demo tiles, no API key */}
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <FitRoutes routes={routes} scenario={scenario} />
         {ordered.map((route) => {
@@ -172,6 +180,11 @@ export function RouteMap({
               </Popup>
             </Marker>
           </>
+        ) : null}
+        {progressLatLng ? (
+          <Marker position={progressLatLng} icon={progressIcon}>
+            <Popup>Demo / GPS progress</Popup>
+          </Marker>
         ) : null}
       </MapContainer>
       <div className="map-legend">

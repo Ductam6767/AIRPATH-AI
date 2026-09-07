@@ -1,8 +1,10 @@
 # AIRPATH-AI web frontend (WEB-2 + MOBILE-1)
 
-Map-first React prototype that **only renders** the frozen FastAPI demo pack.
-The same codebase builds a **Capacitor Android app** with a maneuver safety
-assistant — see `../docs/MOBILE_APP_BUILD.md`.
+Map-first React prototype that **renders** the frozen FastAPI demo pack, with a
+**Capacitor Android app**, EN/VI UI, offline pack fallback, maneuver assistant,
+and an in-app **N-run trial log**.
+
+See `../docs/MOBILE_APP_BUILD.md` and `../docs/WHAT_REMAINS.md`.
 
 ## Stack
 

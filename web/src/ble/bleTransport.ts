@@ -1,16 +1,20 @@
 import type { AssistPayload } from '../maneuver/types'
 
-/** Minimal Web Bluetooth typing (Chrome Android). */
 interface BluetoothRemoteGATT {
   requestDevice(options: {
     filters: { services: string[] }[]
     optionalServices?: string[]
-  }): Promise<{ name?: string; gatt?: { connect(): Promise<BluetoothGattServer> } }>
+  }): Promise<{
+    name?: string
+    gatt?: { connect(): Promise<BluetoothGattServer> }
+  }>
 }
 
 interface BluetoothGattServer {
   getPrimaryService(uuid: string): Promise<{
-    getCharacteristic(uuid: string): Promise<{ writeValue(data: BufferSource): Promise<void> }>
+    getCharacteristic(uuid: string): Promise<{
+      writeValue(data: BufferSource): Promise<void>
+    }>
   }>
 }
 
@@ -42,6 +46,10 @@ let state: BleTransportState = {
 
 const listeners = new Set<Listener>()
 
+let cachedWrite:
+  | ((data: BufferSource) => Promise<void>)
+  | null = null
+
 function emit() {
   for (const l of listeners) l({ ...state })
 }
@@ -60,35 +68,91 @@ function encodePayload(payload: AssistPayload): string {
   return JSON.stringify(payload)
 }
 
-/** Send assist JSON to ESP32 (Web Bluetooth) or simulate for dev / APK without pairing. */
+function getBluetooth(): BluetoothRemoteGATT | undefined {
+  const nav = typeof navigator !== 'undefined' ? navigator : undefined
+  if (nav && 'bluetooth' in nav) {
+    return (nav as Navigator & { bluetooth: BluetoothRemoteGATT }).bluetooth
+  }
+  return undefined
+}
+
+export async function pairBleDevice(): Promise<void> {
+  const bt = getBluetooth()
+  if (!bt) {
+    throw new Error('Web Bluetooth is not available in this browser.')
+  }
+  const device = await bt.requestDevice({
+    filters: [{ services: [AIRPATH_BLE_SERVICE] }],
+    optionalServices: [AIRPATH_BLE_SERVICE],
+  })
+  const server = await device.gatt?.connect()
+  const service = await server?.getPrimaryService(AIRPATH_BLE_SERVICE)
+  const tx = await service?.getCharacteristic(AIRPATH_BLE_TX_CHAR)
+  if (!tx) {
+    throw new Error('AIRPATH BLE characteristic not found.')
+  }
+  cachedWrite = (data) => tx.writeValue(data)
+  state = {
+    ...state,
+    status: 'web_bluetooth',
+    deviceName: device.name ?? 'AIRPATH-Assist',
+    lastError: null,
+  }
+  emit()
+}
+
+async function writePayload(payload: AssistPayload): Promise<void> {
+  if (!cachedWrite) {
+    throw new Error('BLE not paired.')
+  }
+  const enc = new TextEncoder()
+  await cachedWrite(enc.encode(encodePayload(payload)))
+  state = { ...state, lastPayload: payload, status: 'web_bluetooth', lastError: null }
+  emit()
+}
+
+function simulate(payload: AssistPayload): void {
+  state = {
+    ...state,
+    lastPayload: payload,
+    lastError: null,
+    status: cachedWrite ? 'web_bluetooth' : 'simulated',
+  }
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('airpath_last_assist', encodePayload(payload))
+  }
+  if (import.meta.env.DEV) {
+    console.info('[AIRPATH assist]', payload)
+  }
+  emit()
+}
+
+/** Send assist JSON to a paired ESP32, or simulate when unpaired. */
 export async function sendAssistPayload(
   payload: AssistPayload,
   options?: { preferBluetooth?: boolean },
 ): Promise<void> {
   state = { ...state, lastPayload: payload, lastError: null }
 
-  const preferBt = options?.preferBluetooth ?? false
-  const nav = typeof navigator !== 'undefined' ? navigator : undefined
-  const bt = nav && 'bluetooth' in nav ? (nav as Navigator & { bluetooth: BluetoothRemoteGATT }).bluetooth : undefined
-
-  if (preferBt && bt) {
+  if (cachedWrite) {
     try {
-      // One-shot write per payload; full GATT session caching is left for Đ's firmware loop.
-      const device = await bt.requestDevice({
-        filters: [{ services: [AIRPATH_BLE_SERVICE] }],
-        optionalServices: [AIRPATH_BLE_SERVICE],
-      })
-      const server = await device.gatt?.connect()
-      const service = await server?.getPrimaryService(AIRPATH_BLE_SERVICE)
-      const tx = await service?.getCharacteristic(AIRPATH_BLE_TX_CHAR)
-      const enc = new TextEncoder()
-      await tx?.writeValue(enc.encode(encodePayload(payload)))
+      await writePayload(payload)
+      return
+    } catch (err) {
+      cachedWrite = null
       state = {
         ...state,
-        status: 'web_bluetooth',
-        deviceName: device.name ?? 'BLE device',
+        status: 'error',
+        lastError: err instanceof Error ? err.message : String(err),
       }
       emit()
+    }
+  }
+
+  if (options?.preferBluetooth) {
+    try {
+      await pairBleDevice()
+      await writePayload(payload)
       return
     } catch (err) {
       state = {
@@ -101,17 +165,11 @@ export async function sendAssistPayload(
     }
   }
 
-  state = { ...state, status: 'simulated', deviceName: null }
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem('airpath_last_assist', encodePayload(payload))
-  }
-  if (import.meta.env.DEV) {
-    console.info('[AIRPATH assist]', payload)
-  }
-  emit()
+  simulate(payload)
 }
 
 export function resetBleTransport(): void {
+  cachedWrite = null
   state = {
     status: 'idle',
     lastPayload: null,

@@ -801,8 +801,135 @@ code {
   padding-top: max(1.4rem, env(safe-area-inset-top));
 }
 
-.app-shell--native .main-panel {
-  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+.od-marker--progress {
+  background: var(--eco);
+  font-size: 0.7rem;
+}
+
+.brand-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.lang-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.lang-btn {
+  border: 0;
+  background: #fff;
+  padding: 0.28rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.lang-btn.is-active {
+  background: var(--navy);
+  color: #fff;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.trial-panel {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.05rem 1.1rem;
+}
+
+.trial-panel__header h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  color: var(--navy);
+}
+
+.trial-form {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0.75rem 0;
+}
+
+.trial-form__row {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+}
+
+.trial-radio {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.trial-summary {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.trial-summary th,
+.trial-summary td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.4rem 0.35rem;
+  text-align: left;
+}
+
+.onboard-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  background: rgba(11, 31, 51, 0.45);
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+}
+
+.onboard-card {
+  width: min(420px, 100%);
+  background: #fff;
+  border-radius: 18px;
+  padding: 1.25rem 1.3rem 1.35rem;
+  box-shadow: 0 16px 40px rgba(11, 31, 51, 0.2);
+}
+
+.onboard-card h2 {
+  margin: 0 0 0.6rem;
+  font-family: 'Fraunces', Georgia, serif;
+  color: var(--navy);
+}
+
+.onboard-card p {
+  margin: 0 0 1rem;
+  color: var(--text);
+}
+
+.trial-form .field input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.65rem 0.75rem;
 }
 
 @media (max-width: 520px) {

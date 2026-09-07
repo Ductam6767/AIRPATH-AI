@@ -64,6 +64,14 @@ export function MethodologyDrawer({ open, onClose }: MethodologyDrawerProps) {
           </li>
           <li>This UI uses precomputed demo scenarios from the frozen research pack.</li>
           <li>
+            If the live API is unreachable, the app falls back to the bundled demo
+            pack so a phone demo still works.
+          </li>
+          <li>
+            The safety assistant follows the selected polyline (demo play or GPS).
+            It is not Google Maps navigation and does not invent live traffic lights.
+          </li>
+          <li>
             A lower-exposure feasible alternative is not guaranteed; on the frozen
             research panel it is uncommon, and any predicted reduction is typically
             small.

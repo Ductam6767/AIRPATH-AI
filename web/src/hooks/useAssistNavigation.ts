@@ -125,26 +125,38 @@ export function useAssistNavigation(
     }
     if (!navigator.geolocation) return
 
-    watchRef.current = navigator.geolocation.watchPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords
-        const geom = selectedRoute.geometry
-        const cum = cumulativeDistances(geom)
-        let bestIdx = 0
-        let bestDist = Infinity
-        for (let i = 0; i < geom.length; i += 1) {
-          const d = distanceM([latitude, longitude], geom[i]!)
-          if (d < bestDist) {
-            bestDist = d
-            bestIdx = i
+    let cancelled = false
+    void (async () => {
+      try {
+        const { Geolocation } = await import('@capacitor/geolocation')
+        await Geolocation.requestPermissions()
+      } catch {
+        /* web / plugin missing */
+      }
+      if (cancelled || !navigator.geolocation) return
+      watchRef.current = navigator.geolocation.watchPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords
+          const geom = selectedRoute.geometry
+          const cum = cumulativeDistances(geom)
+          let bestIdx = 0
+          let bestDist = Infinity
+          for (let i = 0; i < geom.length; i += 1) {
+            const d = distanceM([latitude, longitude], geom[i]!)
+            if (d < bestDist) {
+              bestDist = d
+              bestIdx = i
+            }
           }
-        }
-        setDistanceAlongM(cum[bestIdx] ?? 0)
-      },
-      () => {},
-      { enableHighAccuracy: true, maximumAge: 2000, timeout: 10000 },
-    )
+          setDistanceAlongM(cum[bestIdx] ?? 0)
+        },
+        () => {},
+        { enableHighAccuracy: true, maximumAge: 2000, timeout: 10000 },
+      )
+    })()
+
     return () => {
+      cancelled = true
       if (watchRef.current) navigator.geolocation.clearWatch(watchRef.current)
     }
   }, [mode, selectedRoute])

@@ -1,4 +1,5 @@
 import type { TravelMode } from '../types'
+import { useI18n } from '../i18n/LanguageContext'
 
 /** UI mobility labels map to frozen API modes (walking | motorbike). */
 export type MobilityChoice = 'walking' | 'cycling' | 'ebike'
@@ -18,17 +19,18 @@ interface ModeToggleProps {
 }
 
 export function ModeToggle({ value, onChange, disabled }: ModeToggleProps) {
+  const { t } = useI18n()
   return (
     <fieldset className="mode-toggle" disabled={disabled}>
-      <legend>Mobility (pilot)</legend>
-      <div className="mode-toggle__grid" role="radiogroup" aria-label="Mobility mode">
+      <legend>{t.mobility}</legend>
+      <div className="mode-toggle__grid" role="radiogroup" aria-label={t.mobility}>
         <button
           type="button"
           className={value === 'walking' ? 'mode-btn is-active' : 'mode-btn'}
           aria-pressed={value === 'walking'}
           onClick={() => onChange('walking')}
         >
-          Walking
+          {t.walking}
         </button>
         <button
           type="button"
@@ -36,7 +38,7 @@ export function ModeToggle({ value, onChange, disabled }: ModeToggleProps) {
           aria-pressed={value === 'cycling'}
           onClick={() => onChange('cycling')}
         >
-          Cycling
+          {t.cycling}
         </button>
         <button
           type="button"
@@ -44,13 +46,10 @@ export function ModeToggle({ value, onChange, disabled }: ModeToggleProps) {
           aria-pressed={value === 'ebike'}
           onClick={() => onChange('ebike')}
         >
-          E-bike
+          {t.ebike}
         </button>
       </div>
-      <p className="small muted mode-footnote">
-        Cycling uses walking-speed routes in this demo pack; e-bike uses motorbike
-        ETAs.
-      </p>
+      <p className="small muted mode-footnote">{t.modeFootnote}</p>
     </fieldset>
   )
 }

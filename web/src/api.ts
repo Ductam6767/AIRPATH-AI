@@ -5,6 +5,16 @@ import type {
   TravelMode,
 } from './types'
 import { API_BASE } from './constants'
+import { localFetchRoutes, localFetchScenarios } from './offline/localDemo'
+
+export type DemoDataSource = 'api' | 'bundled'
+
+let lastDataSource: DemoDataSource = 'api'
+let preferBundled = false
+
+export function getDemoDataSource(): DemoDataSource {
+  return lastDataSource
+}
 
 export class DemoApiError extends Error {
   status: number
@@ -35,26 +45,32 @@ async function parseError(response: Response): Promise<DemoApiError> {
   return new DemoApiError(message, response.status, code)
 }
 
-export async function fetchScenarios(
-  signal?: AbortSignal,
-): Promise<ScenariosResponse> {
-  let response: Response
-  try {
-    response = await fetch(`${API_BASE}/demo/scenarios`, { signal })
-  } catch {
-    throw new DemoApiError(
-      'Cannot reach the AIRPATH demo API. Start the FastAPI backend on port 8000.',
-      0,
-      'api_unavailable',
-    )
+function withTimeout(signal: AbortSignal | undefined, ms: number): AbortSignal {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), ms)
+  const onAbort = () => {
+    clearTimeout(timer)
+    controller.abort()
   }
+  signal?.addEventListener('abort', onAbort)
+  controller.signal.addEventListener('abort', () => {
+    clearTimeout(timer)
+    signal?.removeEventListener('abort', onAbort)
+  })
+  return controller.signal
+}
+
+async function fetchLiveScenarios(signal?: AbortSignal): Promise<ScenariosResponse> {
+  const response = await fetch(`${API_BASE}/demo/scenarios`, {
+    signal: withTimeout(signal, 6000),
+  })
   if (!response.ok) {
     throw await parseError(response)
   }
   return (await response.json()) as ScenariosResponse
 }
 
-export async function fetchRoutes(
+async function fetchLiveRoutes(
   params: {
     scenarioId: string
     mode: TravelMode
@@ -67,20 +83,77 @@ export async function fetchRoutes(
     mode: params.mode,
     delta_minutes: String(params.deltaMinutes),
   })
-  let response: Response
-  try {
-    response = await fetch(`${API_BASE}/demo/routes?${query.toString()}`, {
-      signal,
-    })
-  } catch {
-    throw new DemoApiError(
-      'Cannot reach the AIRPATH demo API. Start the FastAPI backend on port 8000.',
-      0,
-      'api_unavailable',
-    )
-  }
+  const response = await fetch(`${API_BASE}/demo/routes?${query.toString()}`, {
+    signal: withTimeout(signal, 8000),
+  })
   if (!response.ok) {
     throw await parseError(response)
   }
   return (await response.json()) as RoutesResponse
+}
+
+export async function fetchScenarios(
+  signal?: AbortSignal,
+): Promise<ScenariosResponse> {
+  try {
+    const live = await fetchLiveScenarios(signal)
+    preferBundled = false
+    lastDataSource = 'api'
+    return live
+  } catch (err) {
+    if (signal?.aborted) throw err
+    try {
+      const bundled = await localFetchScenarios()
+      preferBundled = true
+      lastDataSource = 'bundled'
+      return bundled
+    } catch {
+      throw new DemoApiError(
+        'Cannot reach the AIRPATH demo API. Start the FastAPI backend on port 8000.',
+        0,
+        'api_unavailable',
+      )
+    }
+  }
+}
+
+export async function fetchRoutes(
+  params: {
+    scenarioId: string
+    mode: TravelMode
+    deltaMinutes: number
+  },
+  signal?: AbortSignal,
+): Promise<RoutesResponse> {
+  if (preferBundled) {
+    try {
+      const bundled = await localFetchRoutes(params)
+      lastDataSource = 'bundled'
+      return bundled
+    } catch {
+      throw new DemoApiError(
+        'Cannot reach the AIRPATH demo API. Start the FastAPI backend on port 8000.',
+        0,
+        'api_unavailable',
+      )
+    }
+  }
+  try {
+    const live = await fetchLiveRoutes(params, signal)
+    lastDataSource = 'api'
+    return live
+  } catch (err) {
+    if (signal?.aborted) throw err
+    try {
+      const bundled = await localFetchRoutes(params)
+      lastDataSource = 'bundled'
+      return bundled
+    } catch {
+      throw new DemoApiError(
+        'Cannot reach the AIRPATH demo API. Start the FastAPI backend on port 8000.',
+        0,
+        'api_unavailable',
+      )
+    }
+  }
 }
