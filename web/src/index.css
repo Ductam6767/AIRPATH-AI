@@ -305,6 +305,72 @@ a:focus-visible {
   grid-row: 2;
 }
 
+.place-picker {
+  position: relative;
+  min-width: 0;
+}
+
+.place-picker__button {
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.78rem 0.85rem;
+  min-height: 48px;
+  background: #fff;
+  color: var(--text);
+  text-align: left;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.place-picker__button--placeholder {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.place-picker__list {
+  position: absolute;
+  z-index: 8;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  max-height: min(52vh, 320px);
+  overflow: auto;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(18, 24, 38, 0.14);
+}
+
+.place-picker__option {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  padding: 0.7rem 0.75rem;
+  min-height: 44px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.place-picker__option.is-selected,
+.place-picker__option:hover,
+.place-picker__option:focus-visible {
+  background: var(--soft-green);
+}
+
 .search-bar__swap {
   grid-column: 2;
   grid-row: 1 / 3;

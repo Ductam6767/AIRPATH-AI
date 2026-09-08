@@ -1,9 +1,10 @@
 import { IS_MOBILE_BUILD } from '../constants'
 import { useI18n } from '../i18n/LanguageContext'
 import type { Scenario, TimeWindow, TravelMode } from '../types'
-import { matchDemoPair, placesCompatibleWith } from '../utils/labels'
+import { matchDemoPair, uniquePlaces } from '../utils/labels'
 import { DeltaSlider } from './DeltaSlider'
 import { ModeToggle, type MobilityChoice } from './ModeToggle'
+import { PlacePicker } from './PlacePicker'
 import { TimeWindowToggle } from './TimeWindowToggle'
 import { TravelModeToggle } from './TravelModeToggle'
 
@@ -47,30 +48,21 @@ export function SearchBar({
   onFindRoutes,
 }: SearchBarProps) {
   const { t } = useI18n()
-  const fromPlaces = placesCompatibleWith(scenarios, destinationKey, 'from')
-  const toPlaces = placesCompatibleWith(scenarios, originKey, 'to')
+  const places = uniquePlaces(scenarios)
+  const fromPlaces = places.filter((place) => place.key !== destinationKey)
+  const toPlaces = places.filter((place) => place.key !== originKey)
   const matched = Boolean(matchDemoPair(scenarios, originKey, destinationKey))
 
   return (
     <section className={compact ? 'search-bar search-bar--compact' : 'search-bar'}>
       <div className="search-bar__ends">
-        <label className="field" htmlFor="origin-select">
-          <span>{t.from}</span>
-          <select
-            id="origin-select"
-            name="origin"
-            value={originKey}
-            onChange={(event) => onOriginChange(event.target.value)}
-            aria-label={t.from}
-          >
-            <option value="">{t.chooseOrigin}</option>
-            {fromPlaces.map((place) => (
-              <option key={place.key} value={place.key} title={place.secondary}>
-                {place.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <PlacePicker
+          label={t.from}
+          placeholder={t.chooseOrigin}
+          value={originKey}
+          places={fromPlaces}
+          onChange={onOriginChange}
+        />
 
         <div className="search-bar__swap">
           <button
@@ -84,23 +76,13 @@ export function SearchBar({
           </button>
         </div>
 
-        <label className="field" htmlFor="destination-select">
-          <span>{t.to}</span>
-          <select
-            id="destination-select"
-            name="destination"
-            value={destinationKey}
-            onChange={(event) => onDestinationChange(event.target.value)}
-            aria-label={t.to}
-          >
-            <option value="">{t.chooseDestination}</option>
-            {toPlaces.map((place) => (
-              <option key={place.key} value={place.key} title={place.secondary}>
-                {place.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <PlacePicker
+          label={t.to}
+          placeholder={t.chooseDestination}
+          value={destinationKey}
+          places={toPlaces}
+          onChange={onDestinationChange}
+        />
       </div>
 
       {compact ? null : (
