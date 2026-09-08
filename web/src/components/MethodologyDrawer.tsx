@@ -51,6 +51,12 @@ export function MethodologyDrawer({ open, onClose }: MethodologyDrawerProps) {
             predicted exposure among feasible candidates. AIRPATH compares those
             feasible alternatives rather than guaranteeing a cleaner route.
           </li>
+          <li>
+            This screen opens 16 precomputed origin–destination trips (16 of 30
+            P0-2B scenarios), spaced by straight-line distance rank so short and
+            long trips are both shown. They were not filtered on exposure reduction
+            or map aesthetics.
+          </li>
         </ol>
         <h3>Limitations</h3>
         <ul className="drawer__limits">
@@ -61,6 +67,11 @@ export function MethodologyDrawer({ open, onClose }: MethodologyDrawerProps) {
           <li>
             Exposure is a time-weighted proxy — not inhaled dose, medical risk, or
             medical advice.
+          </li>
+          <li>
+            Each start has one stored destination, or the reverse of that same
+            polyline. Choosing From infers that partner. This is a frozen demo pack,
+            not live A-to-B city search.
           </li>
           <li>This UI uses precomputed demo scenarios from the frozen research pack.</li>
           <li>

@@ -299,6 +299,16 @@ export function placesCompatibleWith(
   )
 }
 
+export function soleCompatiblePlace(
+  scenarios: Scenario[],
+  otherKey: string,
+  as: 'from' | 'to',
+): { key: string; label: string; secondary: string } | null {
+  if (!otherKey) return null
+  const places = placesCompatibleWith(scenarios, otherKey, as)
+  return places.length === 1 ? places[0] : null
+}
+
 function sortPlaces<T extends { label: string }>(places: T[]): T[] {
   return [...places].sort((a, b) =>
     a.label.localeCompare(b.label, 'vi', { sensitivity: 'base' }),

@@ -18,6 +18,7 @@ import {
   uniquePlaces,
   originsForDestination,
   placesCompatibleWith,
+  soleCompatiblePlace,
   tripsKeepingFrom,
   tripsKeepingTo,
 } from '../utils/labels'
@@ -120,6 +121,19 @@ describe('labels', () => {
     ).toEqual(
       expect.arrayContaining(['Origin A', 'Dest A', 'Park Gate', 'Market Hall']),
     )
+    expect(
+      soleCompatiblePlace([first, second], scenarioOriginKey(first), 'to')?.label,
+    ).toBe('Dest A')
+    expect(soleCompatiblePlace([first, second], '', 'to')).toBeNull()
+    const hub: Scenario = {
+      ...base,
+      scenario_id: 'od_09',
+      origin: first.origin,
+      destination: second.destination,
+    }
+    expect(
+      soleCompatiblePlace([first, hub], scenarioOriginKey(first), 'to'),
+    ).toBeNull()
   })
 
   it('looks up a precomputed pair without inferring destination from origin', () => {

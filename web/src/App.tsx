@@ -47,6 +47,7 @@ import {
   parsePlaceKey,
   pickRecommendedRoute,
   scenarioForRequestedEnds,
+  soleCompatiblePlace,
 } from './utils/labels'
 
 type AppFlow = 'plan' | 'compare' | 'navigate' | 'gap1'
@@ -236,12 +237,16 @@ function AppInner() {
 
   const handleOriginChange = (key: string) => {
     setOriginKey(key)
-    if (
-      key &&
-      destinationKey &&
-      (key === destinationKey || !matchDemoPair(scenarios, key, destinationKey))
-    ) {
-      setDestinationKey('')
+    if (key) {
+      const soleTo = soleCompatiblePlace(scenarios, key, 'to')
+      if (soleTo) {
+        setDestinationKey(soleTo.key)
+      } else if (
+        destinationKey &&
+        (key === destinationKey || !matchDemoPair(scenarios, key, destinationKey))
+      ) {
+        setDestinationKey('')
+      }
     }
     setHasCompared(false)
     setRoutesPayload(null)
@@ -252,12 +257,16 @@ function AppInner() {
 
   const handleDestinationChange = (key: string) => {
     setDestinationKey(key)
-    if (
-      key &&
-      originKey &&
-      (key === originKey || !matchDemoPair(scenarios, originKey, key))
-    ) {
-      setOriginKey('')
+    if (key) {
+      const soleFrom = soleCompatiblePlace(scenarios, key, 'from')
+      if (soleFrom) {
+        setOriginKey(soleFrom.key)
+      } else if (
+        originKey &&
+        (key === originKey || !matchDemoPair(scenarios, originKey, key))
+      ) {
+        setOriginKey('')
+      }
     }
     setHasCompared(false)
     setRoutesPayload(null)

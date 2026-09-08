@@ -5,7 +5,7 @@ export const STRINGS = {
     skipToRoutes: 'Skip to route comparison',
     hero: 'Health-aware navigation',
     heroSub:
-      'Choose a route that balances travel time and estimated PM2.5 exposure.',
+      'Compare feasible alternatives on a precomputed trip. Not live city routing.',
     chip: 'Research prototype · not live city routing',
     whereTo: 'Where do you want to go?',
     currentLocation: 'Current location',
@@ -105,7 +105,9 @@ export const STRINGS = {
     loadingScenarios: 'Loading demo scenarios…',
     loadingRoutes: 'Loading precomputed routes…',
     choosePair:
-      'From and To start with every working demo place. After you pick one end, the other list only keeps places that already have a route. Compare then draws it.',
+      'This pack holds 16 stored trips (16 of 30 P0-2B ODs, spaced by distance rank — not cherry-picked for exposure). Choose From or To; the other end fills the one computed partner. Compare then ranks frozen alternatives.',
+    packHasOnePartner:
+      'This start has one stored destination in the demo pack (or the reverse of that same path). Compare ranks those frozen alternatives — it does not invent a live A-to-B city route.',
     bundledNote: 'Using bundled demo pack (offline / API fallback). Not live air quality.',
     liveApiNote: 'Connected to demo API.',
     langEn: 'EN',
@@ -163,7 +165,7 @@ export const STRINGS = {
     skipToRoutes: 'Nhảy tới so sánh tuyến',
     hero: 'Dẫn đường cân nhắc sức khỏe',
     heroSub:
-      'Chọn tuyến cân bằng thời gian đi và phơi nhiễm PM2.5 ước lượng.',
+      'So sánh các tuyến khả thi trên một chuyến đã tính sẵn. Không định tuyến live.',
     chip: 'Nguyên mẫu nghiên cứu · không định tuyến live',
     whereTo: 'Bạn muốn đi đâu?',
     currentLocation: 'Vị trí hiện tại',
@@ -263,7 +265,9 @@ export const STRINGS = {
     loadingScenarios: 'Đang tải kịch bản demo…',
     loadingRoutes: 'Đang tải tuyến đã tính sẵn…',
     choosePair:
-      'From và To lúc đầu hiện mọi chỗ demo chạy được. Chọn một đầu xong, list kia chỉ còn chỗ đã có tuyến. Bấm So sánh tuyến để vẽ.',
+      'Gói này có 16 chuyến đã tính (16/30 OD P0-2B, lấy theo hạng khoảng cách — không chọn vì phơi nhiễm đẹp). Chọn Điểm đi hoặc Điểm đến; đầu kia điền đúng đối tác đã tính. So sánh tuyến xếp hạng các phương án đóng băng.',
+    packHasOnePartner:
+      'Điểm này có đúng một điểm kia đã tính trong gói demo (hoặc chiều ngược cùng đường). So sánh tuyến xếp hạng các phương án đóng băng — không tạo tuyến live A→B.',
     bundledNote: 'Đang dùng gói demo đóng trong app (offline / API lỗi). Không phải không khí realtime.',
     liveApiNote: 'Đã kết nối API demo.',
     langEn: 'EN',
