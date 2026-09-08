@@ -113,7 +113,7 @@ describe('AIRPATH frontend', () => {
       within(to).getByRole('option', { name: 'Destination 01' }),
     ).toBeInTheDocument()
     expect(within(to).getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
-    expect(within(to).getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
+    expect(within(to).queryByRole('option', { name: 'Park Gate' })).not.toBeInTheDocument()
     await user.selectOptions(to, 'Destination 01')
     await user.selectOptions(screen.getByLabelText('From'), 'Origin 01')
     await user.click(screen.getByRole('button', { name: 'Compare routes' }))
@@ -134,10 +134,11 @@ describe('AIRPATH frontend', () => {
     expect(to).toHaveDisplayValue('Destination 01')
     expect(within(to).getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
     expect(within(to).queryByRole('option', { name: 'Park Gate' })).not.toBeInTheDocument()
-    expect(within(from).getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
+    expect(within(from).queryByRole('option', { name: 'Market Hall' })).not.toBeInTheDocument()
+    expect(within(from).getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
   })
 
-  it('swaps From and To without inferring a new destination', async () => {
+  it('does not swap into a reverse pair that is not in the demo pack', async () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
@@ -145,20 +146,23 @@ describe('AIRPATH frontend', () => {
     const to = screen.getByLabelText('To')
     await user.selectOptions(from, 'Origin 01')
     await user.selectOptions(to, 'Destination 01')
-    await user.click(screen.getByRole('button', { name: 'Swap origin and destination' }))
-    expect(from).toHaveDisplayValue('Destination 01')
-    expect(to).toHaveDisplayValue('Origin 01')
+    expect(screen.getByRole('button', { name: 'Swap origin and destination' })).toBeDisabled()
+    expect(from).toHaveDisplayValue('Origin 01')
+    expect(to).toHaveDisplayValue('Destination 01')
   })
 
-  it('explains when a freely chosen pair is not in the demo pack', async () => {
+  it('lets a demo-destination chip complete an unmatched pair', async () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
     await user.selectOptions(await screen.findByLabelText('From'), 'Origin 01')
     await user.selectOptions(screen.getByLabelText('To'), 'Market Hall')
+    expect(screen.getByText(/not in the demo dataset/i)).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Destination 01' }))
+    expect(screen.getByLabelText('To')).toHaveDisplayValue('Destination 01')
     await user.click(screen.getByRole('button', { name: 'Compare routes' }))
     expect(
-      await screen.findByText(/not in the demo dataset/i),
+      await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
     ).toBeInTheDocument()
   })
 
@@ -175,7 +179,7 @@ describe('AIRPATH frontend', () => {
       within(screen.getByLabelText('From')).getByRole('option', { name: 'Origin 01' }),
     ).toBeInTheDocument()
     expect(
-      within(screen.getByLabelText('To')).getByRole('option', { name: 'Park Gate' }),
+      within(screen.getByLabelText('To')).getByRole('option', { name: 'Market Hall' }),
     ).toBeInTheDocument()
     await chooseDefaultTrip()
     expect(
@@ -292,7 +296,7 @@ describe('AIRPATH frontend', () => {
     stubApi({ scenariosFail: true })
     render(<App />)
     expect(
-      await screen.findByText(/demo API is unavailable/i),
-    ).toBeInTheDocument()
+      (await screen.findAllByText(/demo API is unavailable/i)).length,
+    ).toBeGreaterThan(0)
   })
 })

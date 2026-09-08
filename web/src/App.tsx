@@ -221,6 +221,11 @@ function AppInner() {
   }
 
   const handleSwapEnds = () => {
+    const reversed = findScenarioId(scenarios, destinationKey, originKey)
+    if (!reversed) {
+      setError(t.swapUnavailable)
+      return
+    }
     setOriginKey(destinationKey)
     setDestinationKey(originKey)
     setRoutesPayload(null)
@@ -382,6 +387,8 @@ function AppInner() {
                     void loadRoutes()
                   }}
                 />
+
+                {error ? <StatusBanner tone="error">{error}</StatusBanner> : null}
 
                 {routesPayload ? (
                   <>

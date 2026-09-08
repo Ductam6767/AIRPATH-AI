@@ -11,7 +11,7 @@
   --border: #e2e0da;
   --card: #ffffff;
   --radius: 18px;
-  --sheet-peek: min(52dvh, 480px);
+  --sheet-peek: min(64dvh, 560px);
   --sheet-expanded: min(78dvh, 720px);
   --topbar-h: 72px;
   font-family: 'DM Sans', system-ui, sans-serif;
@@ -312,6 +312,39 @@ a:focus-visible {
   align-items: center;
   justify-content: center;
   margin: 0;
+}
+
+.search-bar__compare {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+}
+
+.pair-hint {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.pair-hint__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.pair-hint__chip {
+  border: 1px solid var(--border);
+  background: var(--soft-green);
+  color: var(--navy);
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+  min-height: 36px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 @media (min-width: 360px) {

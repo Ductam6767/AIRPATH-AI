@@ -12,7 +12,9 @@ import {
   scenarioDestKey,
   scenarioNumber,
   scenarioOriginKey,
+  uniqueDestinations,
   uniquePlaces,
+  originsForDestination,
 } from '../utils/labels'
 import type { RouteRecord, Scenario } from '../types'
 
@@ -71,6 +73,27 @@ describe('labels', () => {
       expect.arrayContaining(['Origin 01', 'Destination 01', 'Park Gate', 'Market Hall']),
     )
     expect(places).toHaveLength(4)
+  })
+
+  it('lists destinations independently of the selected origin', () => {
+    const first: Scenario = {
+      ...base,
+      scenario_id: 'od_01',
+      origin: { label: 'Origin A', latitude: 10.79, longitude: 106.66 },
+      destination: { label: 'Dest A', latitude: 10.8, longitude: 106.68 },
+    }
+    const second: Scenario = {
+      ...base,
+      scenario_id: 'od_05',
+      origin: { label: 'Park Gate', latitude: 10.75, longitude: 106.63 },
+      destination: { label: 'Market Hall', latitude: 10.78, longitude: 106.68 },
+    }
+    expect(uniqueDestinations([first, second]).map((place) => place.label)).toEqual(
+      expect.arrayContaining(['Dest A', 'Market Hall']),
+    )
+    expect(originsForDestination([first, second], scenarioDestKey(second))[0]?.label).toBe(
+      'Park Gate',
+    )
   })
 
   it('looks up a precomputed pair without inferring destination from origin', () => {

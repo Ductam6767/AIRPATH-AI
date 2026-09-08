@@ -57,6 +57,12 @@ export const STRINGS = {
     chooseOrigin: 'Choose origin',
     chooseDestination: 'Choose destination',
     swapEnds: 'Swap origin and destination',
+    swapUnavailable:
+      'Reverse direction is not in the demo dataset. Keep this origin and destination, or pick a suggested demo pair.',
+    unmatchedPair:
+      'This origin and destination pair is not in the demo dataset.',
+    demoGoesTo: 'Demo route from here:',
+    demoStartsAt: 'Demo route to here starts at:',
     from: 'From',
     to: 'To',
     travelMode: 'Mode',
@@ -91,7 +97,7 @@ export const STRINGS = {
     loadingScenarios: 'Loading demo scenarios…',
     loadingRoutes: 'Loading precomputed routes…',
     choosePair:
-      'Choose any origin and destination, then Compare routes. Only precomputed pilot pairs return a route — this is not live city search.',
+      'Choose From and To independently, then Compare routes. Each origin has a precomputed destination in this pilot pack — this is not live city search.',
     bundledNote: 'Using bundled demo pack (offline / API fallback). Not live air quality.',
     liveApiNote: 'Connected to demo API.',
     langEn: 'EN',
@@ -201,6 +207,12 @@ export const STRINGS = {
     chooseOrigin: 'Chọn điểm đi',
     chooseDestination: 'Chọn điểm đến',
     swapEnds: 'Đảo điểm đi và điểm đến',
+    swapUnavailable:
+      'Chiều ngược lại không có trong gói demo. Giữ cặp này, hoặc chọn cặp demo được gợi ý.',
+    unmatchedPair:
+      'Cặp điểm đi và điểm đến này không có trong bộ dữ liệu demo.',
+    demoGoesTo: 'Tuyến demo từ đây đến:',
+    demoStartsAt: 'Tuyến demo tới đây xuất phát từ:',
     from: 'Điểm đi',
     to: 'Điểm đến',
     travelMode: 'Phương tiện',
@@ -235,7 +247,7 @@ export const STRINGS = {
     loadingScenarios: 'Đang tải kịch bản demo…',
     loadingRoutes: 'Đang tải tuyến đã tính sẵn…',
     choosePair:
-      'Chọn tự do điểm đi và điểm đến, rồi So sánh tuyến. Chỉ các cặp pilot đã tính sẵn mới có tuyến — không phải tìm kiếm thành phố live.',
+      'Chọn Điểm đi và Điểm đến độc lập, rồi So sánh tuyến. Mỗi điểm đi trong gói pilot có một điểm đến đã tính sẵn — không phải tìm kiếm thành phố live.',
     bundledNote: 'Đang dùng gói demo đóng trong app (offline / API lỗi). Không phải không khí realtime.',
     liveApiNote: 'Đã kết nối API demo.',
     langEn: 'EN',

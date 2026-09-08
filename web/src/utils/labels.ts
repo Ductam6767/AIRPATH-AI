@@ -181,6 +181,12 @@ export function uniquePlaces(scenarios: Scenario[]): {
   )
 }
 
+function sortPlaces<T extends { label: string }>(places: T[]): T[] {
+  return [...places].sort((a, b) =>
+    a.label.localeCompare(b.label, 'vi', { sensitivity: 'base' }),
+  )
+}
+
 export function uniqueOrigins(scenarios: Scenario[]): {
   key: string
   label: string
@@ -205,7 +211,37 @@ export function uniqueOrigins(scenarios: Scenario[]): {
       })
     }
   }
-  return [...map.values()]
+  return sortPlaces([...map.values()])
+}
+
+export function uniqueDestinations(scenarios: Scenario[]): {
+  key: string
+  label: string
+  secondary: string
+  scenarioIds: string[]
+}[] {
+  const map = new Map<
+    string,
+    { key: string; label: string; secondary: string; scenarioIds: string[] }
+  >()
+  for (const scenario of scenarios) {
+    const key = scenarioDestKey(scenario)
+    const existing = map.get(key)
+    if (existing) {
+      existing.scenarioIds.push(scenario.scenario_id)
+    } else {
+      map.set(key, {
+        key,
+        label: destinationLabel(scenario),
+        secondary: formatCoord(
+          scenario.destination.latitude,
+          scenario.destination.longitude,
+        ),
+        scenarioIds: [scenario.scenario_id],
+      })
+    }
+  }
+  return sortPlaces([...map.values()])
 }
 
 export function destinationsForOrigin(
@@ -218,6 +254,20 @@ export function destinationsForOrigin(
       key: scenarioDestKey(s),
       label: destinationLabel(s),
       secondary: formatCoord(s.destination.latitude, s.destination.longitude),
+      scenarioId: s.scenario_id,
+    }))
+}
+
+export function originsForDestination(
+  scenarios: Scenario[],
+  destKey: string,
+): { key: string; label: string; secondary: string; scenarioId: string }[] {
+  return scenarios
+    .filter((s) => scenarioDestKey(s) === destKey)
+    .map((s) => ({
+      key: scenarioOriginKey(s),
+      label: originLabel(s),
+      secondary: formatCoord(s.origin.latitude, s.origin.longitude),
       scenarioId: s.scenario_id,
     }))
 }
