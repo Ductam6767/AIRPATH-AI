@@ -196,12 +196,11 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
   })
 
-  it('falls back to the bundled demo pack when the API is unavailable', async () => {
+  it('shows an API error when scenarios fail on the web build', async () => {
     stubApi({ scenariosFail: true })
     render(<App />)
     expect(
-      await screen.findByText(/bundled demo pack/i),
+      await screen.findByText(/demo API is unavailable/i),
     ).toBeInTheDocument()
-    expect(await screen.findByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
   })
 })

@@ -1,10 +1,12 @@
 import type {
   ApiErrorBody,
+  Gap1Exhibit,
   RoutesResponse,
   ScenariosResponse,
+  TimeWindow,
   TravelMode,
 } from './types'
-import { API_BASE } from './constants'
+import { API_BASE, IS_MOBILE_BUILD } from './constants'
 import { localFetchRoutes, localFetchScenarios } from './offline/localDemo'
 
 export type DemoDataSource = 'api' | 'bundled'
@@ -75,6 +77,7 @@ async function fetchLiveRoutes(
     scenarioId: string
     mode: TravelMode
     deltaMinutes: number
+    timeWindow?: TimeWindow | string
   },
   signal?: AbortSignal,
 ): Promise<RoutesResponse> {
@@ -82,6 +85,7 @@ async function fetchLiveRoutes(
     scenario_id: params.scenarioId,
     mode: params.mode,
     delta_minutes: String(params.deltaMinutes),
+    time_window: params.timeWindow ?? 'morning_peak',
   })
   const response = await fetch(`${API_BASE}/demo/routes?${query.toString()}`, {
     signal: withTimeout(signal, 8000),
@@ -90,6 +94,18 @@ async function fetchLiveRoutes(
     throw await parseError(response)
   }
   return (await response.json()) as RoutesResponse
+}
+
+export async function fetchGap1Exhibit(
+  signal?: AbortSignal,
+): Promise<Gap1Exhibit> {
+  const response = await fetch(`${API_BASE}/research/gap1`, {
+    signal: withTimeout(signal, 8000),
+  })
+  if (!response.ok) {
+    throw await parseError(response)
+  }
+  return (await response.json()) as Gap1Exhibit
 }
 
 export async function fetchScenarios(
@@ -102,6 +118,15 @@ export async function fetchScenarios(
     return live
   } catch (err) {
     if (signal?.aborted) throw err
+    if (!IS_MOBILE_BUILD) {
+      throw err instanceof DemoApiError
+        ? err
+        : new DemoApiError(
+            'Cannot reach the AIRPATH demo API. Start the FastAPI backend on port 8000.',
+            0,
+            'api_unavailable',
+          )
+    }
     try {
       const bundled = await localFetchScenarios()
       preferBundled = true
@@ -122,10 +147,11 @@ export async function fetchRoutes(
     scenarioId: string
     mode: TravelMode
     deltaMinutes: number
+    timeWindow?: TimeWindow | string
   },
   signal?: AbortSignal,
 ): Promise<RoutesResponse> {
-  if (preferBundled) {
+  if (preferBundled && IS_MOBILE_BUILD) {
     try {
       const bundled = await localFetchRoutes(params)
       lastDataSource = 'bundled'
@@ -144,8 +170,18 @@ export async function fetchRoutes(
     return live
   } catch (err) {
     if (signal?.aborted) throw err
+    if (!IS_MOBILE_BUILD) {
+      throw err instanceof DemoApiError
+        ? err
+        : new DemoApiError(
+            'Cannot reach the AIRPATH demo API. Start the FastAPI backend on port 8000.',
+            0,
+            'api_unavailable',
+          )
+    }
     try {
       const bundled = await localFetchRoutes(params)
+      preferBundled = true
       lastDataSource = 'bundled'
       return bundled
     } catch {

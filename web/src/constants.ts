@@ -1,4 +1,11 @@
 export const DELTA_MINUTES = [0, 1, 2, 3, 5, 10] as const
+export const TIME_WINDOWS = [
+  { id: 'morning_peak', label: 'Morning peak' },
+  { id: 'midday', label: 'Midday' },
+  { id: 'evening_peak', label: 'Evening peak' },
+] as const
+
+export const IS_MOBILE_BUILD = import.meta.env.MODE === 'mobile'
 
 export const COLORS = {
   navy: '#0B1F33',

@@ -9,12 +9,26 @@ export const STRINGS = {
     chip: 'Pilot area · hourly data · precomputed scenarios · not live routing',
     from: 'From',
     to: 'To',
+    travelMode: 'Mode',
+    motorbike: 'Motorbike',
     mobility: 'Mobility (pilot)',
     walking: 'Walking',
     cycling: 'Cycling',
     ebike: 'E-bike',
     modeFootnote:
       'Cycling uses walking-speed routes in this demo pack; e-bike uses motorbike ETAs.',
+    timeWindowLegend: 'Time of day (demo congestion proxy)',
+    timeWindowHelp:
+      'Changes the arterial traffic multiplier only. Station background stays the 06:00 field. Not a measurement of which street is jammed.',
+    timeWindowLabel: (id: string) => {
+      if (id === 'morning_peak') return 'Morning peak'
+      if (id === 'midday') return 'Midday'
+      if (id === 'evening_peak') return 'Evening peak'
+      return id
+    },
+    gap1Link: 'Gap 1 research exhibit',
+    gap1Loading: 'Loading Gap 1 exhibit…',
+    gap1Empty: 'Gap 1 exhibit is not loaded yet.',
     maxTime: 'Maximum additional time',
     allowUpTo: (n: number) => `Allow up to +${n} min`,
     deltaHelp: (n: number) =>
@@ -89,12 +103,26 @@ export const STRINGS = {
     chip: 'Vùng pilot · dữ liệu theo giờ · kịch bản đóng băng · không định tuyến live',
     from: 'Điểm đi',
     to: 'Điểm đến',
+    travelMode: 'Phương tiện',
+    motorbike: 'Xe máy',
     mobility: 'Phương tiện (pilot)',
     walking: 'Đi bộ',
     cycling: 'Xe đạp',
     ebike: 'Xe điện',
     modeFootnote:
       'Xe đạp dùng ETA đi bộ trong gói demo; xe điện dùng ETA xe máy.',
+    timeWindowLegend: 'Khung giờ (proxy tắc nghẽn demo)',
+    timeWindowHelp:
+      'Chỉ đổi hệ số tắc nghẽn động mạch. Nền trạm giữ field 06:00. Không đo tắc thực tế từng đường.',
+    timeWindowLabel: (id: string) => {
+      if (id === 'morning_peak') return 'Giờ cao điểm sáng'
+      if (id === 'midday') return 'Trưa'
+      if (id === 'evening_peak') return 'Chiều tối'
+      return id
+    },
+    gap1Link: 'Triển lãm nghiên cứu Gap 1',
+    gap1Loading: 'Đang tải triển lãm Gap 1…',
+    gap1Empty: 'Triển lãm Gap 1 chưa được tải.',
     maxTime: 'Thời gian thêm tối đa',
     allowUpTo: (n: number) => `Cho phép thêm tối đa +${n} phút`,
     deltaHelp: (n: number) =>
