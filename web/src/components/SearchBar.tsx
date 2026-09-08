@@ -1,7 +1,12 @@
 import { IS_MOBILE_BUILD } from '../constants'
 import { useI18n } from '../i18n/LanguageContext'
 import type { Scenario, TimeWindow, TravelMode } from '../types'
-import { uniquePlaces } from '../utils/labels'
+import {
+  matchDemoPair,
+  tripsKeepingFrom,
+  tripsKeepingTo,
+  uniquePlaces,
+} from '../utils/labels'
 import { DeltaSlider } from './DeltaSlider'
 import { ModeToggle, type MobilityChoice } from './ModeToggle'
 import { TimeWindowToggle } from './TimeWindowToggle'
@@ -20,11 +25,56 @@ interface SearchBarProps {
   onOriginChange: (key: string) => void
   onDestinationChange: (key: string) => void
   onSwapEnds: () => void
+  onSelectPair: (fromKey: string, toKey: string) => void
   onModeChange: (mode: TravelMode) => void
   onMobilityChange: (choice: MobilityChoice) => void
   onTimeWindowChange: (value: TimeWindow) => void
   onDeltaChange: (value: number) => void
   onFindRoutes: () => void
+}
+
+function PlaceOptions({
+  places,
+  matchedKeys,
+  demoGroup,
+  otherGroup,
+}: {
+  places: { key: string; label: string; secondary: string }[]
+  matchedKeys: Set<string>
+  demoGroup: string
+  otherGroup: string
+}) {
+  if (matchedKeys.size === 0) {
+    return places.map((place) => (
+      <option key={place.key} value={place.key} title={place.secondary}>
+        {place.label}
+      </option>
+    ))
+  }
+  const matched = places.filter((place) => matchedKeys.has(place.key))
+  const other = places.filter((place) => !matchedKeys.has(place.key))
+  return (
+    <>
+      {matched.length > 0 ? (
+        <optgroup label={demoGroup}>
+          {matched.map((place) => (
+            <option key={place.key} value={place.key} title={place.secondary}>
+              {place.label}
+            </option>
+          ))}
+        </optgroup>
+      ) : null}
+      {other.length > 0 ? (
+        <optgroup label={otherGroup}>
+          {other.map((place) => (
+            <option key={place.key} value={place.key} title={place.secondary}>
+              {place.label}
+            </option>
+          ))}
+        </optgroup>
+      ) : null}
+    </>
+  )
 }
 
 export function SearchBar({
@@ -40,6 +90,7 @@ export function SearchBar({
   onOriginChange,
   onDestinationChange,
   onSwapEnds,
+  onSelectPair,
   onModeChange,
   onMobilityChange,
   onTimeWindowChange,
@@ -50,6 +101,28 @@ export function SearchBar({
   const places = uniquePlaces(scenarios)
   const fromPlaces = places.filter((place) => place.key !== destinationKey)
   const toPlaces = places.filter((place) => place.key !== originKey)
+  const unmatched = Boolean(
+    originKey &&
+      destinationKey &&
+      originKey !== destinationKey &&
+      !matchDemoPair(scenarios, originKey, destinationKey),
+  )
+  const fromMatched = new Set(
+    destinationKey
+      ? fromPlaces
+          .filter((place) => matchDemoPair(scenarios, place.key, destinationKey))
+          .map((place) => place.key)
+      : [],
+  )
+  const toMatched = new Set(
+    originKey
+      ? toPlaces
+          .filter((place) => matchDemoPair(scenarios, originKey, place.key))
+          .map((place) => place.key)
+      : [],
+  )
+  const keepFrom = tripsKeepingFrom(scenarios, originKey)
+  const keepTo = tripsKeepingTo(scenarios, destinationKey)
 
   return (
     <section className={compact ? 'search-bar search-bar--compact' : 'search-bar'}>
@@ -64,11 +137,12 @@ export function SearchBar({
             aria-label={t.from}
           >
             <option value="">{t.chooseOrigin}</option>
-            {fromPlaces.map((item) => (
-              <option key={item.key} value={item.key} title={item.secondary}>
-                {item.label}
-              </option>
-            ))}
+            <PlaceOptions
+              places={fromPlaces}
+              matchedKeys={fromMatched}
+              demoGroup={t.demoRouteGroup}
+              otherGroup={t.otherPlaceGroup}
+            />
           </select>
         </label>
 
@@ -94,18 +168,42 @@ export function SearchBar({
             aria-label={t.to}
           >
             <option value="">{t.chooseDestination}</option>
-            {toPlaces.map((place) => (
-              <option
-                key={place.key}
-                value={place.key}
-                title={place.secondary}
-              >
-                {place.label}
-              </option>
-            ))}
+            <PlaceOptions
+              places={toPlaces}
+              matchedKeys={toMatched}
+              demoGroup={t.demoRouteGroup}
+              otherGroup={t.otherPlaceGroup}
+            />
           </select>
         </label>
       </div>
+
+      {unmatched ? (
+        <div className="pair-hint">
+          {keepFrom.map((trip) => (
+            <p key={`from-${trip.toKey}`} className="pair-hint__row">
+              <button
+                type="button"
+                className="pair-hint__chip"
+                onClick={() => onSelectPair(originKey, trip.toKey)}
+              >
+                {t.keepFromTrip(trip.toLabel)}
+              </button>
+            </p>
+          ))}
+          {keepTo.map((trip) => (
+            <p key={`to-${trip.fromKey}`} className="pair-hint__row">
+              <button
+                type="button"
+                className="pair-hint__chip"
+                onClick={() => onSelectPair(trip.fromKey, destinationKey)}
+              >
+                {t.keepToTrip(trip.fromLabel)}
+              </button>
+            </p>
+          ))}
+        </div>
+      ) : null}
 
       {compact ? null : (
         <>

@@ -165,8 +165,48 @@ export function matchDemoPair(
   return null
 }
 
-export function reverseRouteGeometry(route: RouteRecord): RouteRecord {
-  return { ...route, geometry: [...route.geometry].reverse() }
+export function tripsKeepingFrom(
+  scenarios: Scenario[],
+  fromKey: string,
+): { toKey: string; toLabel: string }[] {
+  if (!fromKey) return []
+  const seen = new Set<string>()
+  const trips: { toKey: string; toLabel: string }[] = []
+  for (const scenario of scenarios) {
+    const origin = scenarioOriginKey(scenario)
+    const dest = scenarioDestKey(scenario)
+    if (origin === fromKey && !seen.has(dest)) {
+      seen.add(dest)
+      trips.push({ toKey: dest, toLabel: destinationLabel(scenario) })
+    }
+    if (dest === fromKey && !seen.has(origin)) {
+      seen.add(origin)
+      trips.push({ toKey: origin, toLabel: originLabel(scenario) })
+    }
+  }
+  return trips
+}
+
+export function tripsKeepingTo(
+  scenarios: Scenario[],
+  toKey: string,
+): { fromKey: string; fromLabel: string }[] {
+  if (!toKey) return []
+  const seen = new Set<string>()
+  const trips: { fromKey: string; fromLabel: string }[] = []
+  for (const scenario of scenarios) {
+    const origin = scenarioOriginKey(scenario)
+    const dest = scenarioDestKey(scenario)
+    if (dest === toKey && !seen.has(origin)) {
+      seen.add(origin)
+      trips.push({ fromKey: origin, fromLabel: originLabel(scenario) })
+    }
+    if (origin === toKey && !seen.has(dest)) {
+      seen.add(dest)
+      trips.push({ fromKey: dest, fromLabel: destinationLabel(scenario) })
+    }
+  }
+  return trips
 }
 
 export function scenarioForRequestedEnds(

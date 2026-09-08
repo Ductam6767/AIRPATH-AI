@@ -240,6 +240,16 @@ function AppInner() {
     setFlow('plan')
   }
 
+  const handleSelectPair = (fromKey: string, toKey: string) => {
+    setOriginKey(fromKey)
+    setDestinationKey(toKey)
+    setRoutesPayload(null)
+    setSelectedRouteId(null)
+    setError(null)
+    setHasRequested(true)
+    setFlow('compare')
+  }
+
   const openGap1 = useCallback(async () => {
     setFlow('gap1')
     if (gap1Exhibit || gap1Loading) return
@@ -380,6 +390,7 @@ function AppInner() {
                   onOriginChange={handleOriginChange}
                   onDestinationChange={handleDestinationChange}
                   onSwapEnds={handleSwapEnds}
+                  onSelectPair={handleSelectPair}
                   onModeChange={setMode}
                   onMobilityChange={setMobility}
                   onTimeWindowChange={setTimeWindow}

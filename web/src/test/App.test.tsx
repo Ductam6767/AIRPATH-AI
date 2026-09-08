@@ -174,6 +174,14 @@ describe('AIRPATH frontend', () => {
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
     ).not.toBeInTheDocument()
+    await user.click(
+      screen.getByRole('button', { name: 'Keep From — demo To: Destination 01' }),
+    )
+    expect(
+      await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).toBeInTheDocument()
+    expect(from).toHaveDisplayValue('Origin 01')
+    expect(to).toHaveDisplayValue('Destination 01')
   })
 
   it('renders API route comparison from backend response', async () => {

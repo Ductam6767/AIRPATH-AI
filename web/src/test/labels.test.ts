@@ -16,6 +16,8 @@ import {
   uniqueDestinations,
   uniquePlaces,
   originsForDestination,
+  tripsKeepingFrom,
+  tripsKeepingTo,
 } from '../utils/labels'
 import type { RouteRecord, Scenario } from '../types'
 
@@ -95,6 +97,12 @@ describe('labels', () => {
     expect(originsForDestination([first, second], scenarioDestKey(second))[0]?.label).toBe(
       'Park Gate',
     )
+    expect(tripsKeepingFrom([first, second], scenarioOriginKey(first))).toEqual([
+      { toKey: scenarioDestKey(first), toLabel: 'Dest A' },
+    ])
+    expect(tripsKeepingTo([first, second], scenarioDestKey(second))).toEqual([
+      { fromKey: scenarioOriginKey(second), fromLabel: 'Park Gate' },
+    ])
   })
 
   it('looks up a precomputed pair without inferring destination from origin', () => {
