@@ -133,14 +133,15 @@ describe('AIRPATH frontend', () => {
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
     ).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'From' }))
-    expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
+    expect(screen.queryByRole('option', { name: 'Park Gate' })).not.toBeInTheDocument()
     await user.click(screen.getByRole('option', { name: 'Origin 01' }))
     expect(
       await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
     ).toBeInTheDocument()
   })
 
-  it('keeps To empty after From is chosen and still lists every demo place', async () => {
+  it('keeps To empty after From is chosen and only lists a feasible To', async () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
@@ -153,9 +154,8 @@ describe('AIRPATH frontend', () => {
     await user.click(to)
     expect(screen.queryByRole('option', { name: 'Choose destination' })).not.toBeInTheDocument()
     expect(screen.getByRole('option', { name: 'Destination 01' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
-    expect(screen.queryByRole('option', { name: 'Origin 01' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('option', { name: 'Market Hall' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('option', { name: 'Park Gate' })).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Compare routes' })).toBeDisabled()
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
@@ -178,20 +178,20 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
   })
 
-  it('does not draw an unmatched pair and does not swap in another trip', async () => {
+  it('omits infeasible places from the other list instead of letting them be chosen', async () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
     await screen.findByRole('button', { name: 'From' })
     await choosePlace(user, 'From', 'Origin 01')
-    await choosePlace(user, 'To', 'Market Hall')
+    await user.click(screen.getByRole('button', { name: 'To' }))
+    expect(screen.queryByRole('option', { name: 'Market Hall' })).not.toBeInTheDocument()
+    await user.click(screen.getByRole('option', { name: 'Destination 01' }))
     expect(screen.getByRole('button', { name: 'From' })).toHaveTextContent('Origin 01')
-    expect(screen.getByRole('button', { name: 'To' })).toHaveTextContent('Market Hall')
-    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'To' })).toHaveTextContent('Destination 01')
     expect(
-      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
-    ).not.toBeInTheDocument()
-    expect(screen.queryByText(/No demo route between these two places/i)).not.toBeInTheDocument()
+      await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).toBeInTheDocument()
   })
 
   it('renders API route comparison from backend response', async () => {

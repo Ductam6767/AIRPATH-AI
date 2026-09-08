@@ -1,7 +1,7 @@
 import { IS_MOBILE_BUILD } from '../constants'
 import { useI18n } from '../i18n/LanguageContext'
 import type { Scenario, TimeWindow, TravelMode } from '../types'
-import { matchDemoPair, uniquePlaces } from '../utils/labels'
+import { matchDemoPair, placesCompatibleWith } from '../utils/labels'
 import { DeltaSlider } from './DeltaSlider'
 import { ModeToggle, type MobilityChoice } from './ModeToggle'
 import { PlacePicker } from './PlacePicker'
@@ -48,9 +48,8 @@ export function SearchBar({
   onFindRoutes,
 }: SearchBarProps) {
   const { t } = useI18n()
-  const places = uniquePlaces(scenarios)
-  const fromPlaces = places.filter((place) => place.key !== destinationKey)
-  const toPlaces = places.filter((place) => place.key !== originKey)
+  const fromPlaces = placesCompatibleWith(scenarios, destinationKey, 'from')
+  const toPlaces = placesCompatibleWith(scenarios, originKey, 'to')
   const matched = Boolean(matchDemoPair(scenarios, originKey, destinationKey))
 
   return (
