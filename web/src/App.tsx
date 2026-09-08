@@ -43,10 +43,10 @@ import type {
 import {
   friendlyApiError,
   lookupPlace,
+  matchDemoPair,
   parsePlaceKey,
   pickRecommendedRoute,
   scenarioForRequestedEnds,
-  tripsKeepingFrom,
 } from './utils/labels'
 
 type AppFlow = 'plan' | 'compare' | 'navigate' | 'gap1'
@@ -100,12 +100,6 @@ function AppInner() {
   const toPlace = useMemo(
     () => lookupPlace(scenarios, destinationKey),
     [scenarios, destinationKey],
-  )
-  const bothChosen = Boolean(originKey && destinationKey)
-  const unmatchedPair = bothChosen && !selectedScenario
-  const suggestedDestinations = useMemo(
-    () => (originKey ? tripsKeepingFrom(scenarios, originKey) : []),
-    [scenarios, originKey],
   )
 
   const displayedRoutes: RouteRecord[] = useMemo(() => {
@@ -187,6 +181,13 @@ function AppInner() {
       resetAssist()
       setFlow((current) => (current === 'navigate' ? current : 'compare'))
     } catch (err) {
+      const code =
+        err && typeof err === 'object' && 'code' in err ? String(err.code) : ''
+      if (code === 'unknown_endpoint_pair' || code === 'unknown_scenario_id') {
+        setRoutesPayload(null)
+        setSelectedRouteId(null)
+        return
+      }
       setError(friendlyApiError(err))
       setRoutesPayload(null)
       setSelectedRouteId(null)
@@ -235,7 +236,11 @@ function AppInner() {
 
   const handleOriginChange = (key: string) => {
     setOriginKey(key)
-    if (key && key === destinationKey) {
+    if (
+      key &&
+      destinationKey &&
+      (key === destinationKey || !matchDemoPair(scenarios, key, destinationKey))
+    ) {
       setDestinationKey('')
     }
     setHasCompared(false)
@@ -247,7 +252,11 @@ function AppInner() {
 
   const handleDestinationChange = (key: string) => {
     setDestinationKey(key)
-    if (key && key === originKey) {
+    if (
+      key &&
+      originKey &&
+      (key === originKey || !matchDemoPair(scenarios, originKey, key))
+    ) {
       setOriginKey('')
     }
     setHasCompared(false)
@@ -268,31 +277,11 @@ function AppInner() {
   }
 
   const handleCompare = () => {
-    setFlow('compare')
-    if (!originKey || !destinationKey) {
-      setError(t.choosePair)
-      setHasCompared(false)
-      setRoutesPayload(null)
-      setSelectedRouteId(null)
-      return
-    }
-    if (!selectedScenario) {
-      setError(t.unmatchedPair)
-      setRoutesPayload(null)
-      setSelectedRouteId(null)
-      setHasCompared(false)
-      return
-    }
+    if (!selectedScenario) return
     setError(null)
     setHasCompared(true)
+    setFlow('compare')
     void loadRoutes()
-  }
-
-  const applySuggestedDestination = (toKey: string) => {
-    setDestinationKey(toKey)
-    setError(null)
-    setHasCompared(true)
-    setFlow('compare')
   }
 
   const openGap1 = useCallback(async () => {
@@ -447,25 +436,6 @@ function AppInner() {
 
                 <div id="compare-feedback">
                   {error ? <StatusBanner tone="error">{error}</StatusBanner> : null}
-
-                  {unmatchedPair && flow === 'compare' && suggestedDestinations.length > 0 ? (
-                    <div className="pair-hint">
-                      <p className="pair-hint__note">{t.demoGoesTo}</p>
-                      <div className="pair-hint__row">
-                        {suggestedDestinations.map((trip) => (
-                          <button
-                            key={trip.toKey}
-                            type="button"
-                            className="pair-hint__chip"
-                            aria-label={t.setToTrip(trip.toLabel)}
-                            onClick={() => applySuggestedDestination(trip.toKey)}
-                          >
-                            {trip.toLabel}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  ) : null}
                 </div>
 
                 {routesPayload ? (

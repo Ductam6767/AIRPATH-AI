@@ -111,7 +111,7 @@ describe('AIRPATH frontend', () => {
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
     ).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeDisabled()
   })
 
   it('lets destination be chosen without first picking origin', async () => {
@@ -128,6 +128,9 @@ describe('AIRPATH frontend', () => {
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
     ).not.toBeInTheDocument()
+    expect(
+      within(screen.getByLabelText('From')).queryByRole('option', { name: 'Park Gate' }),
+    ).not.toBeInTheDocument()
     await user.selectOptions(screen.getByLabelText('From'), 'Origin 01')
     await user.click(screen.getByRole('button', { name: 'Compare routes' }))
     expect(
@@ -135,7 +138,7 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
   })
 
-  it('keeps every demo place in To after From is chosen and does not draw yet', async () => {
+  it('keeps To empty after From is chosen and only lists a working To', async () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
@@ -145,10 +148,9 @@ describe('AIRPATH frontend', () => {
     expect(from).toHaveDisplayValue('Origin 01')
     expect(to).toHaveDisplayValue('Choose destination')
     expect(within(to).getByRole('option', { name: 'Destination 01' })).toBeInTheDocument()
-    expect(within(to).getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
-    expect(within(to).getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
-    expect(within(to).queryByRole('option', { name: 'Origin 01' })).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeEnabled()
+    expect(within(to).queryByRole('option', { name: 'Market Hall' })).not.toBeInTheDocument()
+    expect(within(to).queryByRole('option', { name: 'Park Gate' })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeDisabled()
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
     ).not.toBeInTheDocument()
@@ -182,7 +184,7 @@ describe('AIRPATH frontend', () => {
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
     ).not.toBeInTheDocument()
-    expect(within(to).getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
+    expect(within(to).queryByRole('option', { name: 'Market Hall' })).not.toBeInTheDocument()
     await user.selectOptions(to, 'Destination 01')
     expect(from).toHaveDisplayValue('Origin 01')
     expect(to).toHaveDisplayValue('Destination 01')
@@ -195,25 +197,21 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
   })
 
-  it('tells the user when Compare has no demo route instead of doing nothing', async () => {
+  it('omits places that have no demo route instead of showing an error', async () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
     await screen.findByLabelText('From')
     await user.selectOptions(screen.getByLabelText('From'), 'Origin 01')
-    await user.selectOptions(screen.getByLabelText('To'), 'Market Hall')
-    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
     expect(
-      screen.getAllByText(/No demo route between these two places/i).length,
-    ).toBeGreaterThan(0)
-    expect(
-      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
+      within(screen.getByLabelText('To')).queryByRole('option', { name: 'Market Hall' }),
     ).not.toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Set To: Destination 01' }))
+    await user.selectOptions(screen.getByLabelText('To'), 'Destination 01')
+    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
     expect(
       await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
     ).toBeInTheDocument()
-    expect(screen.getByLabelText('To')).toHaveDisplayValue('Destination 01')
+    expect(screen.queryByText(/No demo route between these two places/i)).not.toBeInTheDocument()
   })
 
   it('renders API route comparison from backend response', async () => {
