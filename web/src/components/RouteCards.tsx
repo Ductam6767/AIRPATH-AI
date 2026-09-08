@@ -63,7 +63,7 @@ export function RouteCards({
   const hasLowerExposureAlt = hasLowerPredictedExposureAlternative(alternatives)
 
   return (
-    <section className="route-cards" aria-label="Route comparison">
+    <section className="route-cards" aria-label="Route comparison" id="route-comparison">
       <div className="route-cards__header">
         <h2>Route comparison</h2>
         <p className="muted small">{EXPOSURE_NOTE}</p>

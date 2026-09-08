@@ -51,7 +51,6 @@ export function SearchBar({
   const places = uniquePlaces(scenarios)
   const fromPlaces = places.filter((place) => place.key !== destinationKey)
   const toPlaces = places.filter((place) => place.key !== originKey)
-  const bothChosen = Boolean(originKey && destinationKey && originKey !== destinationKey)
 
   return (
     <section className={compact ? 'search-bar search-bar--compact' : 'search-bar'}>
@@ -91,7 +90,7 @@ export function SearchBar({
             type="button"
             className="primary-btn search-bar__compare"
             onClick={onFindRoutes}
-            disabled={loadingRoutes || !bothChosen}
+            disabled={loadingRoutes}
           >
             {loadingRoutes ? t.comparing : t.compare}
           </button>

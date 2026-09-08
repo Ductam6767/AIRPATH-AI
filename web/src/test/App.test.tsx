@@ -54,15 +54,15 @@ async function choosePlace(
   field: 'From' | 'To',
   optionName: string,
 ) {
-  await user.click(screen.getByRole('button', { name: field }))
-  await user.click(await screen.findByRole('option', { name: optionName }))
+  await user.selectOptions(screen.getByLabelText(field), optionName)
 }
 
 async function chooseDefaultTrip() {
   const user = userEvent.setup()
-  await screen.findByRole('button', { name: 'From' })
+  await screen.findByLabelText('From')
   await choosePlace(user, 'From', 'Origin 01')
   await choosePlace(user, 'To', 'Destination 01')
+  await user.click(screen.getByRole('button', { name: 'Compare routes' }))
   await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
   return user
 }
@@ -99,43 +99,37 @@ describe('AIRPATH frontend', () => {
   })
 
   it('does not auto-select a trip or load routes', async () => {
-    const user = userEvent.setup()
     stubApi()
     render(<App />)
     expect(await screen.findByText('AIRPATH-AI')).toBeInTheDocument()
-    const from = screen.getByRole('button', { name: 'From' })
-    const to = screen.getByRole('button', { name: 'To' })
-    expect(from).toHaveTextContent('Choose origin')
-    expect(to).toHaveTextContent('Choose destination')
-    await user.click(from)
-    expect(screen.queryByRole('option', { name: 'Choose origin' })).not.toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
+    const from = screen.getByLabelText('From')
+    const to = screen.getByLabelText('To')
+    expect(from).toHaveDisplayValue('Choose origin')
+    expect(to).toHaveDisplayValue('Choose destination')
+    expect(within(from).getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
+    expect(within(from).getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
     ).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeEnabled()
   })
 
   it('lets destination be chosen without first picking origin', async () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
-    const to = await screen.findByRole('button', { name: 'To' })
+    const to = await screen.findByLabelText('To')
     expect(to).not.toBeDisabled()
-    await user.click(to)
-    expect(screen.getByRole('option', { name: 'Destination 01' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
-    await user.click(screen.getByRole('option', { name: 'Destination 01' }))
-    expect(screen.getByRole('button', { name: 'From' })).toHaveTextContent('Choose origin')
+    expect(within(to).getByRole('option', { name: 'Destination 01' })).toBeInTheDocument()
+    expect(within(to).getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
+    expect(within(to).getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
+    await user.selectOptions(to, 'Destination 01')
+    expect(screen.getByLabelText('From')).toHaveDisplayValue('Choose origin')
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
     ).not.toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'From' }))
-    expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
-    await user.click(screen.getByRole('option', { name: 'Origin 01' }))
+    await user.selectOptions(screen.getByLabelText('From'), 'Origin 01')
+    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
     expect(
       await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
     ).toBeInTheDocument()
@@ -145,19 +139,16 @@ describe('AIRPATH frontend', () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
-    await screen.findByRole('button', { name: 'From' })
-    await choosePlace(user, 'From', 'Origin 01')
-    const from = screen.getByRole('button', { name: 'From' })
-    const to = screen.getByRole('button', { name: 'To' })
-    expect(from).toHaveTextContent('Origin 01')
-    expect(to).toHaveTextContent('Choose destination')
-    await user.click(to)
-    expect(screen.queryByRole('option', { name: 'Choose destination' })).not.toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Destination 01' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
-    expect(screen.queryByRole('option', { name: 'Origin 01' })).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeDisabled()
+    const from = await screen.findByLabelText('From')
+    const to = screen.getByLabelText('To')
+    await user.selectOptions(from, 'Origin 01')
+    expect(from).toHaveDisplayValue('Origin 01')
+    expect(to).toHaveDisplayValue('Choose destination')
+    expect(within(to).getByRole('option', { name: 'Destination 01' })).toBeInTheDocument()
+    expect(within(to).getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
+    expect(within(to).getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
+    expect(within(to).queryByRole('option', { name: 'Origin 01' })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeEnabled()
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
     ).not.toBeInTheDocument()
@@ -167,35 +158,62 @@ describe('AIRPATH frontend', () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
-    await screen.findByRole('button', { name: 'From' })
+    await screen.findByLabelText('From')
     await choosePlace(user, 'From', 'Origin 01')
     await choosePlace(user, 'To', 'Destination 01')
+    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
     await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
     await user.click(screen.getByRole('button', { name: 'Swap origin and destination' }))
-    expect(screen.getByRole('button', { name: 'From' })).toHaveTextContent('Destination 01')
-    expect(screen.getByRole('button', { name: 'To' })).toHaveTextContent('Origin 01')
+    expect(screen.getByLabelText('From')).toHaveDisplayValue('Destination 01')
+    expect(screen.getByLabelText('To')).toHaveDisplayValue('Origin 01')
+    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
     expect(
       await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
     ).toBeInTheDocument()
   })
 
-  it('draws the route only after both From and To are chosen', async () => {
+  it('draws the route after Compare is clicked with both ends chosen', async () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
-    await screen.findByRole('button', { name: 'From' })
-    await choosePlace(user, 'From', 'Origin 01')
+    const from = await screen.findByLabelText('From')
+    const to = screen.getByLabelText('To')
+    await user.selectOptions(from, 'Origin 01')
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
     ).not.toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'To' }))
-    expect(screen.getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
-    await user.click(screen.getByRole('option', { name: 'Destination 01' }))
-    expect(screen.getByRole('button', { name: 'From' })).toHaveTextContent('Origin 01')
-    expect(screen.getByRole('button', { name: 'To' })).toHaveTextContent('Destination 01')
+    expect(within(to).getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
+    await user.selectOptions(to, 'Destination 01')
+    expect(from).toHaveDisplayValue('Origin 01')
+    expect(to).toHaveDisplayValue('Destination 01')
+    expect(
+      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
     expect(
       await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
     ).toBeInTheDocument()
+  })
+
+  it('tells the user when Compare has no demo route instead of doing nothing', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    await screen.findByLabelText('From')
+    await user.selectOptions(screen.getByLabelText('From'), 'Origin 01')
+    await user.selectOptions(screen.getByLabelText('To'), 'Market Hall')
+    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
+    expect(
+      screen.getAllByText(/No demo route between these two places/i).length,
+    ).toBeGreaterThan(0)
+    expect(
+      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Set To: Destination 01' }))
+    expect(
+      await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByLabelText('To')).toHaveDisplayValue('Destination 01')
   })
 
   it('renders API route comparison from backend response', async () => {
@@ -207,13 +225,12 @@ describe('AIRPATH frontend', () => {
     expect(
       screen.getByRole('button', { name: 'Compare routes' }),
     ).toBeInTheDocument()
-    const user = userEvent.setup()
-    await user.click(await screen.findByRole('button', { name: 'From' }))
-    expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Close' }))
-    await user.click(screen.getByRole('button', { name: 'To' }))
-    expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Close' }))
+    expect(
+      within(screen.getByLabelText('From')).getByRole('option', { name: 'Origin 01' }),
+    ).toBeInTheDocument()
+    expect(
+      within(screen.getByLabelText('To')).getByRole('option', { name: 'Park Gate' }),
+    ).toBeInTheDocument()
     await chooseDefaultTrip()
     expect(
       screen.getByRole('button', { name: /Fastest, 40 minutes/i }),
@@ -326,12 +343,12 @@ describe('AIRPATH frontend', () => {
   })
 
   it('falls back to the bundled demo pack when the API is unavailable', async () => {
-    const user = userEvent.setup()
     stubApi({ scenariosFail: true })
     render(<App />)
     expect(await screen.findByText(/bundled demo pack/i)).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'From' }))
-    expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
+    expect(
+      within(screen.getByLabelText('From')).getByRole('option', { name: 'Origin 01' }),
+    ).toBeInTheDocument()
     expect(screen.queryByText(/demo API is unavailable/i)).not.toBeInTheDocument()
   })
 })

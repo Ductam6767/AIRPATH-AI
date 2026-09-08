@@ -46,6 +46,7 @@ import {
   parsePlaceKey,
   pickRecommendedRoute,
   scenarioForRequestedEnds,
+  tripsKeepingFrom,
 } from './utils/labels'
 
 type AppFlow = 'plan' | 'compare' | 'navigate' | 'gap1'
@@ -76,6 +77,7 @@ function AppInner() {
   const [gap1Loading, setGap1Loading] = useState(false)
   const [gap1Error, setGap1Error] = useState<string | null>(null)
   const [labOpen, setLabOpen] = useState(false)
+  const [hasCompared, setHasCompared] = useState(false)
   const [onboardOpen, setOnboardOpen] = useState(
     () =>
       IS_MOBILE_BUILD &&
@@ -98,6 +100,12 @@ function AppInner() {
   const toPlace = useMemo(
     () => lookupPlace(scenarios, destinationKey),
     [scenarios, destinationKey],
+  )
+  const bothChosen = Boolean(originKey && destinationKey)
+  const unmatchedPair = bothChosen && !selectedScenario
+  const suggestedDestinations = useMemo(
+    () => (originKey ? tripsKeepingFrom(scenarios, originKey) : []),
+    [scenarios, originKey],
   )
 
   const displayedRoutes: RouteRecord[] = useMemo(() => {
@@ -196,7 +204,7 @@ function AppInner() {
   ])
 
   useEffect(() => {
-    if (initialLoading) return
+    if (initialLoading || !hasCompared) return
     if (!selectedScenario) {
       setRoutesPayload(null)
       setSelectedRouteId(null)
@@ -204,6 +212,7 @@ function AppInner() {
     }
     void loadRoutes()
   }, [
+    hasCompared,
     selectedScenario?.scenario_id,
     originKey,
     destinationKey,
@@ -213,11 +222,25 @@ function AppInner() {
     initialLoading,
   ]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (flow !== 'compare') return
+    const targetId = routesPayload ? 'route-comparison' : 'compare-feedback'
+    window.requestAnimationFrame(() => {
+      const node = document.getElementById(targetId)
+      if (node && typeof node.scrollIntoView === 'function') {
+        node.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    })
+  }, [flow, routesPayload, error])
+
   const handleOriginChange = (key: string) => {
     setOriginKey(key)
     if (key && key === destinationKey) {
       setDestinationKey('')
     }
+    setHasCompared(false)
+    setRoutesPayload(null)
+    setSelectedRouteId(null)
     setError(null)
     setFlow('plan')
   }
@@ -227,6 +250,9 @@ function AppInner() {
     if (key && key === originKey) {
       setOriginKey('')
     }
+    setHasCompared(false)
+    setRoutesPayload(null)
+    setSelectedRouteId(null)
     setError(null)
     setFlow('plan')
   }
@@ -234,8 +260,39 @@ function AppInner() {
   const handleSwapEnds = () => {
     setOriginKey(destinationKey)
     setDestinationKey(originKey)
+    setHasCompared(false)
+    setRoutesPayload(null)
+    setSelectedRouteId(null)
     setError(null)
     setFlow('plan')
+  }
+
+  const handleCompare = () => {
+    setFlow('compare')
+    if (!originKey || !destinationKey) {
+      setError(t.choosePair)
+      setHasCompared(false)
+      setRoutesPayload(null)
+      setSelectedRouteId(null)
+      return
+    }
+    if (!selectedScenario) {
+      setError(t.unmatchedPair)
+      setRoutesPayload(null)
+      setSelectedRouteId(null)
+      setHasCompared(false)
+      return
+    }
+    setError(null)
+    setHasCompared(true)
+    void loadRoutes()
+  }
+
+  const applySuggestedDestination = (toKey: string) => {
+    setDestinationKey(toKey)
+    setError(null)
+    setHasCompared(true)
+    setFlow('compare')
   }
 
   const openGap1 = useCallback(async () => {
@@ -385,15 +442,31 @@ function AppInner() {
                   onDeltaChange={(value) =>
                     setDeltaMinutes(value as (typeof DELTA_MINUTES)[number])
                   }
-                  onFindRoutes={() => {
-                    if (!selectedScenario) return
-                    setError(null)
-                    setFlow('compare')
-                    void loadRoutes()
-                  }}
+                  onFindRoutes={handleCompare}
                 />
 
-                {error ? <StatusBanner tone="error">{error}</StatusBanner> : null}
+                <div id="compare-feedback">
+                  {error ? <StatusBanner tone="error">{error}</StatusBanner> : null}
+
+                  {unmatchedPair && flow === 'compare' && suggestedDestinations.length > 0 ? (
+                    <div className="pair-hint">
+                      <p className="pair-hint__note">{t.demoGoesTo}</p>
+                      <div className="pair-hint__row">
+                        {suggestedDestinations.map((trip) => (
+                          <button
+                            key={trip.toKey}
+                            type="button"
+                            className="pair-hint__chip"
+                            aria-label={t.setToTrip(trip.toLabel)}
+                            onClick={() => applySuggestedDestination(trip.toKey)}
+                          >
+                            {trip.toLabel}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
 
                 {routesPayload ? (
                   <>
@@ -441,10 +514,7 @@ function AppInner() {
                     </button>
                     {labOpen ? <TrialLogPanel /> : null}
                   </>
-                ) : !initialLoading &&
-                  !loadingRoutes &&
-                  !error &&
-                  (!originKey || !destinationKey || selectedScenario) ? (
+                ) : !initialLoading && !loadingRoutes && !error ? (
                   <StatusBanner tone="info">{t.choosePair}</StatusBanner>
                 ) : null}
               </>
