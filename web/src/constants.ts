@@ -8,14 +8,14 @@ export const TIME_WINDOWS = [
 export const IS_MOBILE_BUILD = import.meta.env.MODE === 'mobile'
 
 export const COLORS = {
-  navy: '#0B1F33',
-  sky: '#3B82F6',
-  eco: '#22C55E',
-  softGreen: '#EAF7EF',
-  offWhite: '#F7F6F1',
-  text: '#172033',
-  muted: '#6B7280',
-  border: '#DDE3E8',
+  navy: '#121826',
+  sky: '#2563EB',
+  eco: '#0F766E',
+  softGreen: '#E7F3F0',
+  offWhite: '#F5F4F1',
+  text: '#121826',
+  muted: '#5C6570',
+  border: '#E2E0DA',
   altMuted: '#94A3B8',
 } as const
 

@@ -44,11 +44,29 @@ export function scenarioPairLabel(scenario: Scenario): string {
   return `${originLabel(scenario)} → ${destinationLabel(scenario)}`
 }
 
-export function routeCardTitle(route: RouteRecord): string {
+export function formatDistanceKm(meters: number): string {
+  if (!Number.isFinite(meters) || meters <= 0) return '—'
+  const km = meters / 1000
+  const rounded = km < 10 ? Math.round(km * 10) / 10 : Math.round(km)
+  return Number.isInteger(rounded) ? `${rounded} km` : `${rounded.toFixed(1)} km`
+}
+
+export type ProductRouteKind = 'fastest' | 'health' | 'balanced'
+
+export function productRouteKind(route: RouteRecord): ProductRouteKind {
   if (route.is_fastest || route.route_type === 'fastest') {
-    return 'Fastest'
+    return 'fastest'
   }
-  return `AIRPATH alternative ${route.rank}`
+  return isLowerPredictedExposure(route.predicted_exposure_reduction_percent)
+    ? 'health'
+    : 'balanced'
+}
+
+export function routeCardTitle(route: RouteRecord): string {
+  const kind = productRouteKind(route)
+  if (kind === 'fastest') return 'Fastest'
+  if (kind === 'health') return 'Health-first'
+  return 'Balanced'
 }
 
 export function isLowerPredictedExposure(percent: number): boolean {
@@ -62,6 +80,22 @@ export function routeKindLabel(route: RouteRecord): string {
   return isLowerPredictedExposure(route.predicted_exposure_reduction_percent)
     ? 'Lower predicted exposure'
     : 'Feasible alternative'
+}
+
+export function pickRecommendedRoute(
+  fastest: RouteRecord,
+  alternatives: RouteRecord[],
+): RouteRecord {
+  const health = alternatives.filter((route) =>
+    isLowerPredictedExposure(route.predicted_exposure_reduction_percent),
+  )
+  if (health.length === 0) return fastest
+  return health.reduce((best, route) =>
+    route.predicted_exposure_reduction_percent >
+    best.predicted_exposure_reduction_percent
+      ? route
+      : best,
+  )
 }
 
 export function reductionBadgeText(percent: number): string | null {

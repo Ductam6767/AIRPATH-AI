@@ -1,10 +1,13 @@
 import type { RouteRecord } from '../types'
 import { EXPOSURE_NOTE } from '../constants'
+import { useI18n } from '../i18n/LanguageContext'
 import {
+  formatDistanceKm,
   formatExposure,
   formatMinutes,
   hasLowerPredictedExposureAlternative,
   isLowerPredictedExposure,
+  productRouteKind,
   reductionBadgeText,
   routeCardTitle,
   routeKindLabel,
@@ -14,7 +17,9 @@ interface RouteCardsProps {
   fastest: RouteRecord | null
   alternatives: RouteRecord[]
   selectedRouteId: string | null
+  recommendedRouteId: string | null
   onSelectRoute: (routeId: string) => void
+  compact?: boolean
 }
 
 function ExposureBar({
@@ -41,8 +46,11 @@ export function RouteCards({
   fastest,
   alternatives,
   selectedRouteId,
+  recommendedRouteId,
   onSelectRoute,
+  compact = false,
 }: RouteCardsProps) {
+  const { t } = useI18n()
   if (!fastest) {
     return null
   }
@@ -52,8 +60,7 @@ export function RouteCards({
     ...all.map((route) => route.predicted_exposure_index),
     1,
   )
-  const hasLowerExposureAlt =
-    hasLowerPredictedExposureAlternative(alternatives)
+  const hasLowerExposureAlt = hasLowerPredictedExposureAlternative(alternatives)
 
   return (
     <section className="route-cards" aria-label="Route comparison">
@@ -62,10 +69,12 @@ export function RouteCards({
         <p className="muted small">{EXPOSURE_NOTE}</p>
       </div>
 
-      <ul className="route-card-list">
+      <ul className={`route-card-list${compact ? ' route-card-list--compact' : ''}`}>
         {all.map((route) => {
           const selected = route.route_id === selectedRouteId
+          const recommended = route.route_id === recommendedRouteId
           const title = routeCardTitle(route)
+          const kind = productRouteKind(route)
           const extra = route.is_fastest
             ? '+0 min'
             : `+${formatMinutes(route.additional_time_vs_fastest_minutes)} min`
@@ -83,20 +92,21 @@ export function RouteCards({
               <button
                 type="button"
                 className={`route-card ${selected ? 'is-selected' : ''} ${
-                  route.is_fastest ? 'is-fastest' : 'is-alternative'
-                }`}
+                  recommended ? 'is-recommended' : ''
+                } ${route.is_fastest ? 'is-fastest' : 'is-alternative'}`}
                 aria-pressed={selected}
                 aria-label={`${title}, ${formatMinutes(route.travel_time_minutes)} minutes, ${extra}, predicted exposure ${formatExposure(route.predicted_exposure_index)}${!route.is_fastest && reduction ? `, ${reduction}` : ''}`}
                 onClick={() => onSelectRoute(route.route_id)}
               >
                 <div className="route-card__kicker">
+                  {recommended ? (
+                    <span className="kind kind--recommended">{t.recommended}</span>
+                  ) : null}
                   <span
                     className={
-                      route.is_fastest
+                      kind === 'fastest'
                         ? 'kind kind--fastest'
-                        : isLowerPredictedExposure(
-                              route.predicted_exposure_reduction_percent,
-                            )
+                        : kind === 'health'
                           ? 'kind kind--alt'
                           : 'kind kind--neutral'
                     }
@@ -111,6 +121,7 @@ export function RouteCards({
                     {formatMinutes(route.travel_time_minutes)} min
                   </span>
                 </div>
+                <p className="route-card__distance">{formatDistanceKm(route.distance_m)}</p>
                 <div className="route-card__meta">
                   <span className="chip">{extra}</span>
                   {!route.is_fastest && reduction ? (

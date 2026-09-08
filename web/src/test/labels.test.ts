@@ -4,6 +4,7 @@ import {
   hasLowerPredictedExposureAlternative,
   isLowerPredictedExposure,
   originLabel,
+  pickRecommendedRoute,
   reductionBadgeText,
   routeCardTitle,
   routeKindLabel,
@@ -63,7 +64,10 @@ describe('labels', () => {
     }
     const alt: RouteRecord = { ...fastest, route_id: 'w-2', route_type: 'AIRPATH alternative', rank: 1, is_fastest: false }
     expect(routeCardTitle(fastest)).toBe('Fastest')
-    expect(routeCardTitle(alt)).toBe('AIRPATH alternative 1')
+    expect(routeCardTitle(alt)).toBe('Balanced')
+    expect(
+      routeCardTitle({ ...alt, predicted_exposure_reduction_percent: 28 }),
+    ).toBe('Health-first')
   })
 
   it('uses Lower predicted exposure only when exposure is actually lower', () => {
@@ -113,5 +117,31 @@ describe('labels', () => {
       ]),
     ).toBe(false)
     expect(hasLowerPredictedExposureAlternative([])).toBe(false)
+  })
+
+  it('recommends the lower-exposure alternative when one exists', () => {
+    const fastest: RouteRecord = {
+      route_id: 'w-1',
+      route_type: 'fastest',
+      rank: 0,
+      is_fastest: true,
+      is_feasible: true,
+      travel_time_minutes: 20,
+      additional_time_vs_fastest_minutes: 0,
+      predicted_exposure_index: 1000,
+      predicted_exposure_reduction_percent: 0,
+      distance_m: 1000,
+      geometry: [],
+    }
+    const health: RouteRecord = {
+      ...fastest,
+      route_id: 'w-2',
+      is_fastest: false,
+      route_type: 'AIRPATH alternative',
+      predicted_exposure_index: 720,
+      predicted_exposure_reduction_percent: 28,
+    }
+    expect(pickRecommendedRoute(fastest, [health]).route_id).toBe('w-2')
+    expect(pickRecommendedRoute(fastest, []).route_id).toBe('w-1')
   })
 })

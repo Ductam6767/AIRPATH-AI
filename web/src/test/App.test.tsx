@@ -85,20 +85,17 @@ describe('AIRPATH frontend', () => {
     render(<App />)
 
     expect(await screen.findByText('AIRPATH-AI')).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', {
-        name: 'Compare routes by travel time and predicted PM2.5 exposure.',
-      }),
-    ).toBeInTheDocument()
+    expect(screen.getByText('Health-aware navigation')).toBeInTheDocument()
     expect(
       screen.getByRole('button', { name: 'Compare routes' }),
     ).toBeInTheDocument()
     expect(
       await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
     ).toBeInTheDocument()
-    expect(screen.getByText(/AIRPATH alternative 1/i)).toBeInTheDocument()
-    expect(screen.getByText(/28% lower predicted exposure/i)).toBeInTheDocument()
+    expect(screen.getByText('Health-first')).toBeInTheDocument()
+    expect(screen.getAllByText(/28% lower predicted exposure/i).length).toBeGreaterThan(0)
     expect(screen.getByText('Lower predicted exposure')).toBeInTheDocument()
+    expect(screen.getByText(/Why this route/i)).toBeInTheDocument()
     expect(
       screen.getByText(
         /AIRPATH compares feasible route alternatives rather than guaranteeing a cleaner route/i,
@@ -129,13 +126,13 @@ describe('AIRPATH frontend', () => {
     stubApi()
     render(<App />)
     await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
-    expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-1')
-
-    const altCard = screen.getByRole('button', {
-      name: /AIRPATH alternative 1/i,
-    })
-    await user.click(altCard)
     expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-2')
+
+    const fastestCard = screen.getByRole('button', {
+      name: /Fastest, 40 minutes/i,
+    })
+    await user.click(fastestCard)
+    expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-1')
   })
 
   it('shows empty-alternatives message without empty cards', async () => {
@@ -194,6 +191,16 @@ describe('AIRPATH frontend', () => {
         /AIRPATH compares those feasible alternatives rather than guaranteeing a cleaner route/i,
       ),
     ).toBeInTheDocument()
+  })
+
+  it('starts navigation without leaving the real route data', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    await user.click(screen.getByRole('button', { name: 'Start navigation' }))
+    expect(screen.getByText('Turn-signal assist')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'End navigation' })).toBeInTheDocument()
   })
 
   it('shows an API error when scenarios fail on the web build', async () => {

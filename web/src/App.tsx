@@ -5,19 +5,25 @@ import {
   fetchScenarios,
   getDemoDataSource,
 } from './api'
+import { AIAnalysis } from './components/AIAnalysis'
 import { AssistPanel } from './components/AssistPanel'
+import { BottomSheet } from './components/BottomSheet'
 import { Gap1Research } from './components/Gap1Research'
 import { MethodologyDrawer } from './components/MethodologyDrawer'
 import {
   mobilityToApiMode,
   type MobilityChoice,
 } from './components/ModeToggle'
+import { NavigationInstruction } from './components/NavigationInstruction'
 import { OnboardingCard, shouldShowOnboarding } from './components/OnboardingCard'
 import { RouteCards } from './components/RouteCards'
 import { RouteMap } from './components/RouteMap'
-import { Sidebar } from './components/Sidebar'
+import { SearchBar } from './components/SearchBar'
 import { StatusBanner } from './components/StatusBanner'
+import { TopBar } from './components/TopBar'
 import { TrialLogPanel } from './components/TrialLogPanel'
+import { TurnSignalStatus } from './components/TurnSignalStatus'
+import { WhyThisRoute } from './components/WhyThisRoute'
 import { isNativeApp } from './capacitor/init'
 import { DELTA_MINUTES, IS_MOBILE_BUILD } from './constants'
 import { LanguageProvider, useI18n } from './i18n/LanguageContext'
@@ -38,9 +44,12 @@ import {
   destinationsForOrigin,
   findScenarioId,
   friendlyApiError,
+  pickRecommendedRoute,
   scenarioDestKey,
   scenarioOriginKey,
 } from './utils/labels'
+
+type AppFlow = 'plan' | 'compare' | 'navigate' | 'gap1'
 
 function AppInner() {
   const { t } = useI18n()
@@ -63,10 +72,11 @@ function AppInner() {
   const [methodologyOpen, setMethodologyOpen] = useState(false)
   const [nativeShell, setNativeShell] = useState(false)
   const [dataSource, setDataSource] = useState<'api' | 'bundled'>('api')
-  const [view, setView] = useState<'demo' | 'gap1'>('demo')
+  const [flow, setFlow] = useState<AppFlow>('plan')
   const [gap1Exhibit, setGap1Exhibit] = useState<Gap1Exhibit | null>(null)
   const [gap1Loading, setGap1Loading] = useState(false)
   const [gap1Error, setGap1Error] = useState<string | null>(null)
+  const [labOpen, setLabOpen] = useState(false)
   const [onboardOpen, setOnboardOpen] = useState(
     () =>
       IS_MOBILE_BUILD &&
@@ -86,6 +96,14 @@ function AppInner() {
   const displayedRoutes: RouteRecord[] = useMemo(() => {
     if (!routesPayload) return []
     return [routesPayload.fastest_route, ...routesPayload.alternatives]
+  }, [routesPayload])
+
+  const recommended = useMemo(() => {
+    if (!routesPayload) return null
+    return pickRecommendedRoute(
+      routesPayload.fastest_route,
+      routesPayload.alternatives,
+    )
   }, [routesPayload])
 
   const selectedRoute = useMemo(
@@ -148,9 +166,11 @@ function AppInner() {
       })
       setRoutesPayload(payload)
       setDataSource(getDemoDataSource())
-      setSelectedRouteId(payload.fastest_route.route_id)
+      const next = pickRecommendedRoute(payload.fastest_route, payload.alternatives)
+      setSelectedRouteId(next.route_id)
       setAssistMode('off')
       resetAssist()
+      setFlow((current) => (current === 'navigate' ? 'plan' : current))
     } catch (err) {
       setError(friendlyApiError(err))
       setRoutesPayload(null)
@@ -184,10 +204,11 @@ function AppInner() {
     const destinations = destinationsForOrigin(scenarios, key)
     const nextDest = destinations[0]
     setDestinationKey(nextDest?.key ?? '')
+    setFlow('plan')
   }
 
   const openGap1 = useCallback(async () => {
-    setView('gap1')
+    setFlow('gap1')
     if (gap1Exhibit || gap1Loading) return
     setGap1Loading(true)
     setGap1Error(null)
@@ -201,66 +222,73 @@ function AppInner() {
     }
   }, [gap1Exhibit, gap1Loading])
 
+  const startNavigation = () => {
+    if (!selectedRoute) return
+    setFlow('navigate')
+    setAssistMode('demo')
+  }
+
+  const endNavigation = () => {
+    setFlow('compare')
+    setAssistMode('off')
+    resetAssist()
+  }
+
+  const sheetVariant =
+    flow === 'navigate' ? 'nav' : flow === 'compare' ? 'expanded' : 'peek'
+  const navigating = flow === 'navigate'
+
   return (
-    <div className={nativeShell ? 'app-shell app-shell--native' : 'app-shell'}>
+    <div
+      className={[
+        'app-shell',
+        nativeShell ? 'app-shell--native' : '',
+        navigating ? 'app-shell--nav' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
       <a className="skip-link" href="#route-results">
         {t.skipToRoutes}
       </a>
-      <Sidebar
-        scenarios={scenarios}
-        originKey={originKey}
-        destinationKey={destinationKey}
-        mode={mode}
-        mobility={mobility}
-        timeWindow={timeWindow}
-        deltaMinutes={deltaMinutes}
-        loadingRoutes={loadingRoutes}
-        onOriginChange={handleOriginChange}
-        onDestinationChange={setDestinationKey}
-        onModeChange={setMode}
-        onMobilityChange={setMobility}
-        onTimeWindowChange={setTimeWindow}
-        onDeltaChange={(value) =>
-          setDeltaMinutes(value as (typeof DELTA_MINUTES)[number])
-        }
-        onFindRoutes={() => {
-          void loadRoutes()
-        }}
-        onOpenMethodology={() => setMethodologyOpen(true)}
-        onOpenGap1={IS_MOBILE_BUILD ? undefined : () => void openGap1()}
-      />
 
-      <main className="main-panel" id="route-results">
-        {!IS_MOBILE_BUILD && view === 'gap1' ? (
-          <>
-            {gap1Loading ? (
-              <StatusBanner tone="loading">{t.gap1Loading}</StatusBanner>
-            ) : null}
-            {gap1Error ? <StatusBanner tone="error">{gap1Error}</StatusBanner> : null}
-            {gap1Exhibit ? (
-              <Gap1Research
-                exhibit={gap1Exhibit}
-                onBack={() => {
-                  setView('demo')
-                  setGap1Error(null)
-                }}
-              />
-            ) : !gap1Loading && !gap1Error ? (
-              <StatusBanner tone="info">{t.gap1Empty}</StatusBanner>
-            ) : null}
-          </>
-        ) : (
-          <>
+      {flow === 'gap1' ? (
+        <main className="research-panel">
+          <TopBar onOpenMore={() => setMethodologyOpen(true)} />
+          {gap1Loading ? (
+            <StatusBanner tone="loading">{t.gap1Loading}</StatusBanner>
+          ) : null}
+          {gap1Error ? <StatusBanner tone="error">{gap1Error}</StatusBanner> : null}
+          {gap1Exhibit ? (
+            <Gap1Research
+              exhibit={gap1Exhibit}
+              onBack={() => {
+                setFlow('compare')
+                setGap1Error(null)
+              }}
+            />
+          ) : !gap1Loading && !gap1Error ? (
+            <StatusBanner tone="info">{t.gap1Empty}</StatusBanner>
+          ) : null}
+        </main>
+      ) : (
+        <>
+          {navigating ? null : (
+            <TopBar
+              onOpenMore={() => {
+                setMethodologyOpen(true)
+              }}
+            />
+          )}
+
+          <main className="map-stage" id="route-results">
             {initialLoading ? (
               <StatusBanner tone="loading">{t.loadingScenarios}</StatusBanner>
             ) : null}
-
             {error ? <StatusBanner tone="error">{error}</StatusBanner> : null}
-
-            {IS_MOBILE_BUILD && !initialLoading && !error && dataSource === 'bundled' ? (
+            {!initialLoading && !error && dataSource === 'bundled' ? (
               <StatusBanner tone="info">{t.bundledNote}</StatusBanner>
             ) : null}
-
             {!initialLoading && !error && loadingRoutes ? (
               <StatusBanner tone="loading">{t.loadingRoutes}</StatusBanner>
             ) : null}
@@ -270,35 +298,123 @@ function AppInner() {
               routes={displayedRoutes}
               selectedRouteId={selectedRouteId}
               onSelectRoute={setSelectedRouteId}
-              progressLatLng={IS_MOBILE_BUILD ? progressLatLng : null}
+              progressLatLng={progressLatLng}
             />
+          </main>
 
-            {routesPayload ? (
+          <BottomSheet
+            variant={sheetVariant}
+            title={navigating ? t.assistTitle : t.chooseRoute}
+          >
+            {navigating && selectedRoute ? (
               <>
-                <RouteCards
-                  fastest={routesPayload.fastest_route}
-                  alternatives={routesPayload.alternatives}
-                  selectedRouteId={selectedRouteId}
-                  onSelectRoute={setSelectedRouteId}
+                <NavigationInstruction
+                  route={selectedRoute}
+                  snapshot={assistSnapshot}
                 />
-                {IS_MOBILE_BUILD ? (
+                <TurnSignalStatus snapshot={assistSnapshot} />
+                <AssistPanel
+                  snapshot={assistSnapshot}
+                  assistMode={assistMode}
+                  onAssistModeChange={setAssistMode}
+                  onReset={resetAssist}
+                />
+                <button type="button" className="secondary-btn" onClick={endNavigation}>
+                  {t.endNav}
+                </button>
+                <button
+                  type="button"
+                  className="linkish"
+                  onClick={() => setLabOpen((open) => !open)}
+                >
+                  {t.labTitle}
+                </button>
+                {labOpen ? <TrialLogPanel /> : null}
+              </>
+            ) : (
+              <>
+                <p className="muted small">{t.heroSub}</p>
+                <SearchBar
+                  scenarios={scenarios}
+                  originKey={originKey}
+                  destinationKey={destinationKey}
+                  mode={mode}
+                  mobility={mobility}
+                  timeWindow={timeWindow}
+                  deltaMinutes={deltaMinutes}
+                  loadingRoutes={loadingRoutes}
+                  compact={false}
+                  onOriginChange={handleOriginChange}
+                  onDestinationChange={(key) => {
+                    setDestinationKey(key)
+                    setFlow('plan')
+                  }}
+                  onModeChange={setMode}
+                  onMobilityChange={setMobility}
+                  onTimeWindowChange={setTimeWindow}
+                  onDeltaChange={(value) =>
+                    setDeltaMinutes(value as (typeof DELTA_MINUTES)[number])
+                  }
+                  onFindRoutes={() => {
+                    setFlow('compare')
+                    void loadRoutes()
+                  }}
+                />
+
+                {routesPayload ? (
                   <>
-                    <AssistPanel
-                      snapshot={assistSnapshot}
-                      assistMode={assistMode}
-                      onAssistModeChange={setAssistMode}
-                      onReset={resetAssist}
+                    <RouteCards
+                      fastest={routesPayload.fastest_route}
+                      alternatives={routesPayload.alternatives}
+                      selectedRouteId={selectedRouteId}
+                      recommendedRouteId={recommended?.route_id ?? null}
+                      onSelectRoute={setSelectedRouteId}
+                      compact={flow !== 'compare'}
                     />
-                    <TrialLogPanel />
+                    {selectedRoute ? (
+                      <WhyThisRoute
+                        route={selectedRoute}
+                        deltaMinutes={deltaMinutes}
+                      />
+                    ) : null}
+                    <div className="sheet-actions">
+                      <button
+                        type="button"
+                        className="primary-btn"
+                        onClick={startNavigation}
+                        disabled={!selectedRoute}
+                      >
+                        {t.startNav}
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      className="linkish"
+                      onClick={() => setMethodologyOpen(true)}
+                    >
+                      {t.howItWorks}
+                    </button>
+                    <AIAnalysis
+                      onOpenMethodology={() => setMethodologyOpen(true)}
+                      onOpenGap1={IS_MOBILE_BUILD ? undefined : () => void openGap1()}
+                    />
+                    <button
+                      type="button"
+                      className="linkish"
+                      onClick={() => setLabOpen((open) => !open)}
+                    >
+                      {t.labTitle}
+                    </button>
+                    {labOpen ? <TrialLogPanel /> : null}
                   </>
+                ) : !initialLoading && !loadingRoutes && !error ? (
+                  <StatusBanner tone="info">{t.choosePair}</StatusBanner>
                 ) : null}
               </>
-            ) : !initialLoading && !loadingRoutes && !error ? (
-              <StatusBanner tone="info">{t.choosePair}</StatusBanner>
-            ) : null}
-          </>
-        )}
-      </main>
+            )}
+          </BottomSheet>
+        </>
+      )}
 
       <MethodologyDrawer
         open={methodologyOpen}
