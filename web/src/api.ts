@@ -6,7 +6,7 @@ import type {
   TimeWindow,
   TravelMode,
 } from './types'
-import { API_BASE, IS_MOBILE_BUILD } from './constants'
+import { API_BASE } from './constants'
 import { localFetchRoutes, localFetchScenarios } from './offline/localDemo'
 
 export type DemoDataSource = 'api' | 'bundled'
@@ -134,7 +134,12 @@ export async function fetchScenarios(
     return live
   } catch (err) {
     if (signal?.aborted) throw err
-    if (!IS_MOBILE_BUILD) {
+    try {
+      const bundled = await localFetchScenarios()
+      preferBundled = true
+      lastDataSource = 'bundled'
+      return bundled
+    } catch {
       throw err instanceof DemoApiError
         ? err
         : new DemoApiError(
@@ -142,18 +147,6 @@ export async function fetchScenarios(
             0,
             'api_unavailable',
           )
-    }
-    try {
-      const bundled = await localFetchScenarios()
-      preferBundled = true
-      lastDataSource = 'bundled'
-      return bundled
-    } catch {
-      throw new DemoApiError(
-        'Cannot reach the AIRPATH demo API. Start the FastAPI backend on port 8000.',
-        0,
-        'api_unavailable',
-      )
     }
   }
 }
@@ -171,7 +164,7 @@ export async function fetchRoutes(
   },
   signal?: AbortSignal,
 ): Promise<RoutesResponse> {
-  if (preferBundled && IS_MOBILE_BUILD) {
+  if (preferBundled) {
     try {
       const bundled = await localFetchRoutes(params)
       lastDataSource = 'bundled'
@@ -190,7 +183,12 @@ export async function fetchRoutes(
     return live
   } catch (err) {
     if (signal?.aborted) throw err
-    if (!IS_MOBILE_BUILD) {
+    try {
+      const bundled = await localFetchRoutes(params)
+      preferBundled = true
+      lastDataSource = 'bundled'
+      return bundled
+    } catch {
       throw err instanceof DemoApiError
         ? err
         : new DemoApiError(
@@ -198,18 +196,6 @@ export async function fetchRoutes(
             0,
             'api_unavailable',
           )
-    }
-    try {
-      const bundled = await localFetchRoutes(params)
-      preferBundled = true
-      lastDataSource = 'bundled'
-      return bundled
-    } catch {
-      throw new DemoApiError(
-        'Cannot reach the AIRPATH demo API. Start the FastAPI backend on port 8000.',
-        0,
-        'api_unavailable',
-      )
     }
   }
 }

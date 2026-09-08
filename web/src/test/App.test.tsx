@@ -210,8 +210,10 @@ describe('AIRPATH frontend', () => {
     const user = userEvent.setup()
     await user.click(await screen.findByRole('button', { name: 'From' }))
     expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Close' }))
     await user.click(screen.getByRole('button', { name: 'To' }))
     expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Close' }))
     await chooseDefaultTrip()
     expect(
       screen.getByRole('button', { name: /Fastest, 40 minutes/i }),
@@ -323,11 +325,13 @@ describe('AIRPATH frontend', () => {
     expect(screen.getByRole('button', { name: 'End navigation' })).toBeInTheDocument()
   })
 
-  it('shows an API error when scenarios fail on the web build', async () => {
+  it('falls back to the bundled demo pack when the API is unavailable', async () => {
+    const user = userEvent.setup()
     stubApi({ scenariosFail: true })
     render(<App />)
-    expect(
-      (await screen.findAllByText(/demo API is unavailable/i)).length,
-    ).toBeGreaterThan(0)
+    expect(await screen.findByText(/bundled demo pack/i)).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'From' }))
+    expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
+    expect(screen.queryByText(/demo API is unavailable/i)).not.toBeInTheDocument()
   })
 })

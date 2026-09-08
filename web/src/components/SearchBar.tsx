@@ -1,7 +1,7 @@
 import { IS_MOBILE_BUILD } from '../constants'
 import { useI18n } from '../i18n/LanguageContext'
 import type { Scenario, TimeWindow, TravelMode } from '../types'
-import { matchDemoPair, uniquePlaces } from '../utils/labels'
+import { uniquePlaces } from '../utils/labels'
 import { DeltaSlider } from './DeltaSlider'
 import { ModeToggle, type MobilityChoice } from './ModeToggle'
 import { PlacePicker } from './PlacePicker'
@@ -52,7 +52,6 @@ export function SearchBar({
   const fromPlaces = places.filter((place) => place.key !== destinationKey)
   const toPlaces = places.filter((place) => place.key !== originKey)
   const bothChosen = Boolean(originKey && destinationKey && originKey !== destinationKey)
-  const matched = Boolean(matchDemoPair(scenarios, originKey, destinationKey))
 
   return (
     <section className={compact ? 'search-bar search-bar--compact' : 'search-bar'}>
@@ -92,7 +91,7 @@ export function SearchBar({
             type="button"
             className="primary-btn search-bar__compare"
             onClick={onFindRoutes}
-            disabled={loadingRoutes || !bothChosen || !matched}
+            disabled={loadingRoutes || !bothChosen}
           >
             {loadingRoutes ? t.comparing : t.compare}
           </button>

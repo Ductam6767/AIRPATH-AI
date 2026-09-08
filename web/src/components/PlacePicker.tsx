@@ -1,4 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { useI18n } from '../i18n/LanguageContext'
 
 export type PlaceOption = {
   key: string
@@ -21,6 +23,7 @@ export function PlacePicker({
   places,
   onChange,
 }: PlacePickerProps) {
+  const { t } = useI18n()
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const listId = useId()
@@ -28,19 +31,15 @@ export function PlacePicker({
 
   useEffect(() => {
     if (!open) return
-    const onPointerDown = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) {
-        setOpen(false)
-      }
-    }
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setOpen(false)
     }
-    document.addEventListener('pointerdown', onPointerDown)
     document.addEventListener('keydown', onKeyDown)
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
     return () => {
-      document.removeEventListener('pointerdown', onPointerDown)
       document.removeEventListener('keydown', onKeyDown)
+      document.body.style.overflow = previousOverflow
     }
   }, [open])
 
@@ -57,43 +56,73 @@ export function PlacePicker({
             .filter(Boolean)
             .join(' ')}
           aria-label={label}
-          aria-haspopup="listbox"
+          aria-haspopup="dialog"
           aria-expanded={open}
-          aria-controls={listId}
-          onClick={() => setOpen((current) => !current)}
+          onClick={() => setOpen(true)}
         >
-          {selected ? selected.label : placeholder}
+          <span className="place-picker__value">
+            {selected ? selected.label : placeholder}
+          </span>
+          <span className="place-picker__chevron" aria-hidden="true">
+            ▾
+          </span>
         </button>
-        {open ? (
-          <ul
-            id={listId}
-            className="place-picker__list"
-            role="listbox"
-            aria-label={label}
-          >
-            {places.map((place) => (
-              <li key={place.key}>
-                <button
-                  type="button"
-                  role="option"
-                  aria-selected={place.key === value}
-                  title={place.secondary}
-                  className={
-                    place.key === value
-                      ? 'place-picker__option is-selected'
-                      : 'place-picker__option'
-                  }
-                  onClick={() => {
-                    onChange(place.key)
-                    setOpen(false)
-                  }}
+        {open
+          ? createPortal(
+              <div
+                className="place-picker-overlay"
+                role="presentation"
+                onClick={() => setOpen(false)}
+              >
+                <div
+                  className="place-picker-overlay__panel"
+                  role="dialog"
+                  aria-label={label}
+                  onClick={(event) => event.stopPropagation()}
                 >
-                  {place.label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : null}
+                  <div className="place-picker-overlay__head">
+                    <strong>{label}</strong>
+                    <button
+                      type="button"
+                      className="place-picker-overlay__close"
+                      onClick={() => setOpen(false)}
+                    >
+                      {t.close}
+                    </button>
+                  </div>
+                  <ul
+                    id={listId}
+                    className="place-picker-overlay__list"
+                    role="listbox"
+                    aria-label={label}
+                  >
+                    {places.map((place) => (
+                      <li key={place.key}>
+                        <button
+                          type="button"
+                          role="option"
+                          aria-selected={place.key === value}
+                          title={place.secondary}
+                          className={
+                            place.key === value
+                              ? 'place-picker__option is-selected'
+                              : 'place-picker__option'
+                          }
+                          onClick={() => {
+                            onChange(place.key)
+                            setOpen(false)
+                          }}
+                        >
+                          {place.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>,
+              document.body,
+            )
+          : null}
       </div>
     </label>
   )

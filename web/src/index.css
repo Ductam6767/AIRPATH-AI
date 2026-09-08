@@ -313,6 +313,10 @@ a:focus-visible {
 .place-picker__button {
   width: 100%;
   max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 0.78rem 0.85rem;
@@ -323,9 +327,18 @@ a:focus-visible {
   font: inherit;
   font-weight: 600;
   cursor: pointer;
+}
+
+.place-picker__value {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.place-picker__chevron {
+  flex: 0 0 auto;
+  color: var(--muted);
 }
 
 .place-picker__button--placeholder {
@@ -333,21 +346,51 @@ a:focus-visible {
   font-weight: 500;
 }
 
-.place-picker__list {
-  position: absolute;
-  z-index: 8;
-  left: 0;
-  right: 0;
-  top: calc(100% + 4px);
-  margin: 0;
-  padding: 0.35rem;
-  list-style: none;
-  max-height: min(52vh, 320px);
-  overflow: auto;
+.place-picker-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0.75rem;
+  background: rgba(18, 24, 38, 0.45);
+}
+
+.place-picker-overlay__panel {
+  width: min(520px, 100%);
+  max-height: min(78dvh, 640px);
+  display: flex;
+  flex-direction: column;
   background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: 0 12px 32px rgba(18, 24, 38, 0.14);
+  border-radius: 18px;
+  box-shadow: 0 16px 48px rgba(18, 24, 38, 0.24);
+  overflow: hidden;
+}
+
+.place-picker-overlay__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem 0.55rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.place-picker-overlay__close {
+  border: 0;
+  background: transparent;
+  color: var(--sky);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.place-picker-overlay__list {
+  margin: 0;
+  padding: 0.4rem;
+  list-style: none;
+  overflow: auto;
 }
 
 .place-picker__option {
@@ -1228,6 +1271,12 @@ a:focus-visible {
   background: rgba(18, 24, 38, 0.06);
   color: var(--muted);
   font-size: 0.75rem;
+}
+
+@media (min-width: 720px) {
+  .place-picker-overlay {
+    align-items: center;
+  }
 }
 
 @media (min-width: 900px) {
