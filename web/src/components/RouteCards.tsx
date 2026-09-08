@@ -113,6 +113,9 @@ export function RouteCards({
                   >
                     {routeKindLabel(route)}
                   </span>
+                  {kind === 'fastest' && !hasLowerExposureAlt ? (
+                    <span className="kind kind--alt">{t.alsoLowestExposure}</span>
+                  ) : null}
                   {selected ? <span className="kind kind--selected">Selected</span> : null}
                 </div>
                 <div className="route-card__top">
@@ -155,16 +158,14 @@ export function RouteCards({
       </ul>
 
       {hasLowerExposureAlt ? (
-        <p className="muted small">
-          Top feasible alternatives among the generated candidate routes, ranked
-          by predicted exposure. AIRPATH compares feasible route alternatives
-          rather than guaranteeing a cleaner route.
-        </p>
+        <p className="muted small">{t.altsCompareNote}</p>
       ) : (
         <div className="empty-alts" role="status">
-          <p>Fastest route is also the lowest-exposure feasible option.</p>
+          <p>{t.emptyAltsFastestBest}</p>
           <p>
-            No lower-exposure alternative was found within your time limit.
+            {alternatives.length === 0
+              ? t.emptyAltsNoneFound
+              : t.otherFeasibleNote}
           </p>
         </div>
       )}

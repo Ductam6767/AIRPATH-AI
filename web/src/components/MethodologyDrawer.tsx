@@ -48,6 +48,10 @@ export function MethodologyDrawer({ open, onClose }: MethodologyDrawerProps) {
             <li key={step}>{step}</li>
           ))}
         </ol>
+        <h3>{t.methodologyWhyFastestTitle}</h3>
+        {t.methodologyWhyFastest.map((paragraph) => (
+          <p key={paragraph}>{paragraph}</p>
+        ))}
         <h3>{t.methodologyFromToTitle}</h3>
         {t.methodologyFromTo.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>

@@ -42,6 +42,7 @@ import type {
 } from './types'
 import {
   friendlyApiError,
+  hasLowerPredictedExposureAlternative,
   lookupPlace,
   matchDemoPair,
   parsePlaceKey,
@@ -461,6 +462,9 @@ function AppInner() {
                       <WhyThisRoute
                         route={selectedRoute}
                         deltaMinutes={deltaMinutes}
+                        hasLowerExposureAlt={hasLowerPredictedExposureAlternative(
+                          routesPayload.alternatives,
+                        )}
                       />
                     ) : null}
                     <div className="sheet-actions">

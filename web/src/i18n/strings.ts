@@ -20,11 +20,22 @@ export const STRINGS = {
     compareRoutes: 'Compare routes',
     whyTitle: 'Why this route?',
     whyHealth:
-      'AIRPATH estimates that this route provides lower PM2.5 exposure while remaining within the applicable travel-time constraint.',
+      'AIRPATH estimates that this route provides lower PM2.5 exposure while remaining within the applicable travel-time constraint. Choose it when you can spare extra minutes.',
     whyFastest:
-      'AIRPATH estimates that the fastest feasible route also has the lowest predicted exposure within your time limit.',
+      'This is the hurry option: shortest time. On this trip it is also the lowest predicted time-weighted PM2.5 within your limit. Detours add minutes in a similar pollution field, so they usually raise this proxy. The “fast and clean” route is this same card — not a fourth path.',
+    whyFastestHurry:
+      'This is the hurry option: shortest time. Another feasible route has lower predicted exposure if you can spare extra minutes.',
     whyBalanced:
-      'AIRPATH estimates that this feasible alternative stays within your time limit. Predicted exposure is not lower than the fastest route.',
+      'This is another feasible path within your time limit. Predicted exposure is not lower than the fastest route on this proxy.',
+    alsoLowestExposure: 'Also lowest estimated exposure',
+    emptyAltsFastestBest:
+      'Fastest route is also the lowest-exposure feasible option.',
+    emptyAltsNoneFound:
+      'No other feasible route was found within your time limit.',
+    otherFeasibleNote:
+      'The other cards are feasible detours within your time limit. They are not lower-exposure than the fastest route on this proxy.',
+    altsCompareNote:
+      'Top feasible alternatives among the generated candidate routes, ranked by predicted exposure. AIRPATH compares feasible route alternatives rather than guaranteeing a cleaner route.',
     whyVsFastest: 'Compared with fastest',
     whyConstraint: 'Time constraint',
     whyWithin: 'Within limit',
@@ -169,6 +180,11 @@ export const STRINGS = {
       'Routes are filtered by your maximum additional travel time, then ranked by predicted exposure among feasible candidates. AIRPATH compares those feasible alternatives rather than guaranteeing a cleaner route.',
       'This screen opens 16 precomputed origin–destination trips (16 of 30 P0-2B scenarios), spaced by straight-line distance rank so short and long trips are both shown. They were not filtered on exposure reduction or map aesthetics.',
     ],
+    methodologyWhyFastestTitle: 'Why the fastest route is often also the lowest estimated exposure',
+    methodologyWhyFastest: [
+      'The score is E = Σ (PM on each segment × minutes on that segment). Nearby streets often have similar estimated PM because the field is interpolated from a few stations. A detour then adds time without a large PM drop, so E often goes up.',
+      'That is a common frozen-panel result — not a promise that the fastest street always has cleaner air. When a feasible detour lowers E by more than 0.5%, it is labelled Health-first and recommended instead. The “fast and clean” route is then not a separate fourth card: it is Fastest when Fastest already wins on E, or Health-first when a slower path wins on E.',
+    ],
     methodologyFromToTitle: 'Choosing From and To',
     methodologyFromTo: [
       'You cannot freely pair any two places. This screen only opens trips that were already routed and scored. Reverse uses the same stored polyline.',
@@ -210,11 +226,22 @@ export const STRINGS = {
     compareRoutes: 'So sánh tuyến',
     whyTitle: 'Vì sao tuyến này?',
     whyHealth:
-      'AIRPATH ước lượng tuyến này có phơi nhiễm PM2.5 thấp hơn trong giới hạn thời gian bạn chọn.',
+      'AIRPATH ước lượng tuyến này có phơi nhiễm PM2.5 thấp hơn trong giới hạn thời gian bạn chọn. Chọn khi bạn chấp nhận thêm vài phút.',
     whyFastest:
-      'AIRPATH ước lượng tuyến nhanh nhất khả thi cũng có phơi nhiễm dự kiến thấp nhất trong giới hạn thời gian.',
+      'Đây là lựa chọn khi gấp: ngắn nhất về thời gian. Trên chuyến này nó cũng có PM2.5 trọng số thời gian dự kiến thấp nhất trong giới hạn. Đường vòng thêm phút trên nền ô nhiễm tương tự nên thường làm tăng proxy. Tuyến “vừa nhanh vừa ít ô nhiễm” chính là thẻ này — không phải một đường thứ tư.',
+    whyFastestHurry:
+      'Đây là lựa chọn khi gấp: ngắn nhất về thời gian. Trong danh sách còn một tuyến khả thi có phơi nhiễm dự kiến thấp hơn nếu bạn chấp nhận thêm vài phút.',
     whyBalanced:
-      'AIRPATH ước lượng phương án khả thi này nằm trong giới hạn thời gian. Phơi nhiễm dự kiến không thấp hơn tuyến nhanh nhất.',
+      'Đây là đường khả thi khác trong giới hạn thời gian. Phơi nhiễm dự kiến không thấp hơn tuyến nhanh nhất trên proxy này.',
+    alsoLowestExposure: 'Cũng thấp nhất về phơi nhiễm ước lượng',
+    emptyAltsFastestBest:
+      'Tuyến nhanh nhất cũng là phương án khả thi phơi nhiễm thấp nhất.',
+    emptyAltsNoneFound:
+      'Không có tuyến khả thi khác trong giới hạn thời gian.',
+    otherFeasibleNote:
+      'Các thẻ kia là đường vòng khả thi trong giới hạn thời gian. Chúng không thấp hơn tuyến nhanh nhất trên proxy này.',
+    altsCompareNote:
+      'Các phương án khả thi hàng đầu trong tập ứng viên đã sinh, xếp theo phơi nhiễm dự kiến. AIRPATH so sánh các tuyến khả thi chứ không bảo đảm tuyến sạch hơn.',
     whyVsFastest: 'So với tuyến nhanh nhất',
     whyConstraint: 'Giới hạn thời gian',
     whyWithin: 'Trong giới hạn',
@@ -358,6 +385,11 @@ export const STRINGS = {
       'Phơi nhiễm được cộng dồn theo đoạn như proxy PM2.5 trọng số thời gian.',
       'Tuyến được lọc theo thời gian thêm tối đa, rồi xếp hạng theo phơi nhiễm dự kiến trong các phương án khả thi. AIRPATH so sánh các phương án đó — không bảo đảm tuyến sạch hơn.',
       'Màn hình này mở 16 chuyến điểm đi–điểm đến đã tính sẵn (16/30 kịch bản P0-2B), lấy theo hạng khoảng cách đường thẳng để vừa có chuyến ngắn vừa có chuyến dài. Không lọc theo mức giảm phơi nhiễm hay vẻ đẹp bản đồ.',
+    ],
+    methodologyWhyFastestTitle: 'Vì sao tuyến nhanh nhất thường cũng thấp nhất về phơi nhiễm ước lượng',
+    methodologyWhyFastest: [
+      'Điểm số là E = Σ (PM trên từng đoạn × số phút trên đoạn đó). Các phố gần nhau thường có PM ước lượng gần nhau vì trường được nội suy từ vài trạm. Đường vòng rồi thêm thời gian mà PM không giảm đủ, nên E thường tăng.',
+      'Đó là kết quả thường gặp trên panel đóng băng — không phải cam kết phố nhanh nhất luôn có không khí sạch hơn. Khi một đường vòng khả thi giảm E hơn 0,5%, nó được gắn Ưu tiên sức khỏe và đề xuất thay thế. Tuyến “vừa nhanh vừa sạch” không phải thẻ thứ tư: nó là Nhanh nhất khi Nhanh nhất đã thắng trên E, hoặc Ưu tiên sức khỏe khi đường chậm hơn thắng trên E.',
     ],
     methodologyFromToTitle: 'Chọn điểm đi và điểm đến',
     methodologyFromTo: [

@@ -12,13 +12,24 @@ import {
 interface WhyThisRouteProps {
   route: RouteRecord
   deltaMinutes: number
+  hasLowerExposureAlt: boolean
 }
 
-export function WhyThisRoute({ route, deltaMinutes }: WhyThisRouteProps) {
+export function WhyThisRoute({
+  route,
+  deltaMinutes,
+  hasLowerExposureAlt,
+}: WhyThisRouteProps) {
   const { t } = useI18n()
   const kind = productRouteKind(route)
   const copy =
-    kind === 'health' ? t.whyHealth : kind === 'fastest' ? t.whyFastest : t.whyBalanced
+    kind === 'health'
+      ? t.whyHealth
+      : kind === 'fastest'
+        ? hasLowerExposureAlt
+          ? t.whyFastestHurry
+          : t.whyFastest
+        : t.whyBalanced
   const vsFastest = reductionBadgeText(route.predicted_exposure_reduction_percent)
   const within =
     route.additional_time_vs_fastest_minutes <= deltaMinutes + 0.05

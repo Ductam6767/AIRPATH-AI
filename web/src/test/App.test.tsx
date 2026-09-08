@@ -276,6 +276,27 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
   })
 
+  it('does not claim Fastest is also cleanest when a lower-exposure alternative exists', async () => {
+    stubApi()
+    render(<App />)
+    const user = await chooseDefaultTrip()
+    expect(
+      screen.getByText(
+        /this route provides lower PM2.5 exposure while remaining within the applicable travel-time constraint/i,
+      ),
+    ).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /Fastest, 40 minutes/i }))
+    expect(
+      screen.getByText(
+        /This is the hurry option: shortest time. Another feasible route has lower predicted exposure/i,
+      ),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText(/also the lowest predicted time-weighted PM2.5/i),
+    ).not.toBeInTheDocument()
+    expect(screen.queryByText(/Also lowest estimated exposure/i)).not.toBeInTheDocument()
+  })
+
   it('updates delta slider to absolute minute values', async () => {
     stubApi()
     render(<App />)
@@ -312,7 +333,7 @@ describe('AIRPATH frontend', () => {
     await waitFor(() => {
       expect(
         screen.getByText(
-          'No lower-exposure alternative was found within your time limit.',
+          'No other feasible route was found within your time limit.',
         ),
       ).toBeInTheDocument()
     })
@@ -340,9 +361,10 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
     expect(
       screen.getByText(
-        'No lower-exposure alternative was found within your time limit.',
+        'The other cards are feasible detours within your time limit. They are not lower-exposure than the fastest route on this proxy.',
       ),
     ).toBeInTheDocument()
+    expect(screen.getByText('Also lowest estimated exposure')).toBeInTheDocument()
     expect(
       screen.queryByText(/guaranteeing a cleaner route/i),
     ).not.toBeInTheDocument()
@@ -372,6 +394,12 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
     expect(
       screen.getByText(/pairing limit is demo packaging/i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/Why the fastest route is often also the lowest estimated exposure/i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/E = Σ \(PM on each segment × minutes on that segment\)/i),
     ).toBeInTheDocument()
   })
 
