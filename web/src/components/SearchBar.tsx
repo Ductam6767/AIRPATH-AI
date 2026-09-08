@@ -1,13 +1,7 @@
 import { IS_MOBILE_BUILD } from '../constants'
 import { useI18n } from '../i18n/LanguageContext'
 import type { Scenario, TimeWindow, TravelMode } from '../types'
-import {
-  destinationsForOrigin,
-  findScenarioId,
-  originsForDestination,
-  uniqueDestinations,
-  uniqueOrigins,
-} from '../utils/labels'
+import { uniquePlaces } from '../utils/labels'
 import { DeltaSlider } from './DeltaSlider'
 import { ModeToggle, type MobilityChoice } from './ModeToggle'
 import { TimeWindowToggle } from './TimeWindowToggle'
@@ -53,22 +47,9 @@ export function SearchBar({
   onFindRoutes,
 }: SearchBarProps) {
   const { t } = useI18n()
-  const origins = uniqueOrigins(scenarios)
-  const destinations = uniqueDestinations(scenarios)
-  const pairId = findScenarioId(scenarios, originKey, destinationKey)
-  const knownDests = originKey
-    ? destinationsForOrigin(scenarios, originKey)
-    : []
-  const knownOrigins = destinationKey
-    ? originsForDestination(scenarios, destinationKey)
-    : []
-  const reverseId = findScenarioId(scenarios, destinationKey, originKey)
-  const canSwap = Boolean(originKey && destinationKey && reverseId)
-  const unmatched = Boolean(originKey && destinationKey && !pairId)
-  const showDestHints = Boolean(knownDests.length && (!destinationKey || unmatched))
-  const showOriginHints = Boolean(
-    knownOrigins.length && (!originKey || unmatched),
-  )
+  const places = uniquePlaces(scenarios)
+  const fromPlaces = places.filter((place) => place.key !== destinationKey)
+  const toPlaces = places.filter((place) => place.key !== originKey)
 
   return (
     <section className={compact ? 'search-bar search-bar--compact' : 'search-bar'}>
@@ -83,7 +64,7 @@ export function SearchBar({
             aria-label={t.from}
           >
             <option value="">{t.chooseOrigin}</option>
-            {origins.map((item) => (
+            {fromPlaces.map((item) => (
               <option key={item.key} value={item.key} title={item.secondary}>
                 {item.label}
               </option>
@@ -96,9 +77,8 @@ export function SearchBar({
             type="button"
             className="icon-btn"
             onClick={onSwapEnds}
-            disabled={!canSwap}
+            disabled={!originKey && !destinationKey}
             aria-label={t.swapEnds}
-            title={canSwap ? t.swapEnds : t.swapUnavailable}
           >
             ↕
           </button>
@@ -114,7 +94,7 @@ export function SearchBar({
             aria-label={t.to}
           >
             <option value="">{t.chooseDestination}</option>
-            {destinations.map((place) => (
+            {toPlaces.map((place) => (
               <option
                 key={place.key}
                 value={place.key}
@@ -127,49 +107,18 @@ export function SearchBar({
         </label>
       </div>
 
-      {showDestHints || showOriginHints || unmatched ? (
-        <div className="pair-hint">
-          {unmatched ? <p className="muted small">{t.unmatchedPair}</p> : null}
-          {showDestHints ? (
-            <p className="pair-hint__row">
-              <span>{t.demoGoesTo}</span>
-              {knownDests.map((place) => (
-                <button
-                  key={place.key}
-                  type="button"
-                  className="pair-hint__chip"
-                  onClick={() => onDestinationChange(place.key)}
-                >
-                  {place.label}
-                </button>
-              ))}
-            </p>
-          ) : null}
-          {showOriginHints ? (
-            <p className="pair-hint__row">
-              <span>{t.demoStartsAt}</span>
-              {knownOrigins.map((place) => (
-                <button
-                  key={place.key}
-                  type="button"
-                  className="pair-hint__chip"
-                  onClick={() => onOriginChange(place.key)}
-                >
-                  {place.label}
-                </button>
-              ))}
-            </p>
-          ) : null}
-        </div>
-      ) : null}
-
       {compact ? null : (
         <>
           <button
             type="button"
             className="primary-btn search-bar__compare"
             onClick={onFindRoutes}
-            disabled={loadingRoutes || (!originKey && !destinationKey)}
+            disabled={
+              loadingRoutes ||
+              !originKey ||
+              !destinationKey ||
+              originKey === destinationKey
+            }
           >
             {loadingRoutes ? t.comparing : t.compare}
           </button>

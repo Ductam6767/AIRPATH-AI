@@ -138,7 +138,65 @@ def test_valid_route_request(client: TestClient) -> None:
         assert alt["rank"] >= 1
 
 
-def test_invalid_scenario(client: TestClient) -> None:
+def test_routes_by_from_to_keeps_requested_direction(client: TestClient) -> None:
+    scenario = client.get("/demo/scenarios").json()["scenarios"][0]
+    origin = scenario["origin"]
+    dest = scenario["destination"]
+    stored = client.get(
+        "/demo/routes",
+        params={
+            "from_latitude": origin["latitude"],
+            "from_longitude": origin["longitude"],
+            "to_latitude": dest["latitude"],
+            "to_longitude": dest["longitude"],
+            "mode": "walking",
+            "delta_minutes": 5,
+        },
+    )
+    assert stored.status_code == 200
+    stored_payload = stored.json()
+    assert stored_payload["scenario_id"] == scenario["scenario_id"]
+    assert stored_payload["metadata"]["requested_ends_reversed"] is False
+    first_stored = stored_payload["fastest_route"]["geometry"][0]
+
+    reversed_resp = client.get(
+        "/demo/routes",
+        params={
+            "from_latitude": dest["latitude"],
+            "from_longitude": dest["longitude"],
+            "to_latitude": origin["latitude"],
+            "to_longitude": origin["longitude"],
+            "mode": "walking",
+            "delta_minutes": 5,
+        },
+    )
+    assert reversed_resp.status_code == 200
+    reversed_payload = reversed_resp.json()
+    assert reversed_payload["scenario_id"] == scenario["scenario_id"]
+    assert reversed_payload["metadata"]["requested_ends_reversed"] is True
+    first_reversed = reversed_payload["fastest_route"]["geometry"][0]
+    last_stored = stored_payload["fastest_route"]["geometry"][-1]
+    assert first_reversed == last_stored
+    assert first_reversed != first_stored
+
+
+def test_unknown_from_to_pair_does_not_substitute_another_trip(client: TestClient) -> None:
+    scenarios = client.get("/demo/scenarios").json()["scenarios"]
+    origin = scenarios[0]["origin"]
+    dest = scenarios[1]["destination"]
+    response = client.get(
+        "/demo/routes",
+        params={
+            "from_latitude": origin["latitude"],
+            "from_longitude": origin["longitude"],
+            "to_latitude": dest["latitude"],
+            "to_longitude": dest["longitude"],
+            "mode": "walking",
+            "delta_minutes": 5,
+        },
+    )
+    assert response.status_code == 404
+    assert response.json()["detail"]["error"] == "unknown_endpoint_pair"
     response = client.get(
         "/demo/routes",
         params={"scenario_id": "od_missing", "mode": "walking", "delta_minutes": 5},

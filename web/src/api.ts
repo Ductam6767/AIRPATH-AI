@@ -74,7 +74,11 @@ async function fetchLiveScenarios(signal?: AbortSignal): Promise<ScenariosRespon
 
 async function fetchLiveRoutes(
   params: {
-    scenarioId: string
+    scenarioId?: string
+    fromLatitude?: number
+    fromLongitude?: number
+    toLatitude?: number
+    toLongitude?: number
     mode: TravelMode
     deltaMinutes: number
     timeWindow?: TimeWindow | string
@@ -82,11 +86,23 @@ async function fetchLiveRoutes(
   signal?: AbortSignal,
 ): Promise<RoutesResponse> {
   const query = new URLSearchParams({
-    scenario_id: params.scenarioId,
     mode: params.mode,
     delta_minutes: String(params.deltaMinutes),
     time_window: params.timeWindow ?? 'morning_peak',
   })
+  if (
+    params.fromLatitude != null &&
+    params.fromLongitude != null &&
+    params.toLatitude != null &&
+    params.toLongitude != null
+  ) {
+    query.set('from_latitude', String(params.fromLatitude))
+    query.set('from_longitude', String(params.fromLongitude))
+    query.set('to_latitude', String(params.toLatitude))
+    query.set('to_longitude', String(params.toLongitude))
+  } else if (params.scenarioId) {
+    query.set('scenario_id', params.scenarioId)
+  }
   const response = await fetch(`${API_BASE}/demo/routes?${query.toString()}`, {
     signal: withTimeout(signal, 8000),
   })
@@ -144,7 +160,11 @@ export async function fetchScenarios(
 
 export async function fetchRoutes(
   params: {
-    scenarioId: string
+    scenarioId?: string
+    fromLatitude?: number
+    fromLongitude?: number
+    toLatitude?: number
+    toLongitude?: number
     mode: TravelMode
     deltaMinutes: number
     timeWindow?: TimeWindow | string

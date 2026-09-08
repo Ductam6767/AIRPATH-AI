@@ -34,6 +34,41 @@ def parse_allowed_origins(raw: str | None) -> list[str]:
     return origins
 
 
+def coord_key(lat: float, lon: float) -> str:
+    """Stable 6-decimal key used by the demo UI for From/To places."""
+    return f"{float(lat):.6f},{float(lon):.6f}"
+
+
+def match_demo_pair(
+    scenarios: Sequence[dict[str, Any]],
+    from_lat: float,
+    from_lon: float,
+    to_lat: float,
+    to_lon: float,
+) -> tuple[dict[str, Any] | None, bool]:
+    """Match a frozen OD in either direction. Does not create new routes."""
+    from_key = coord_key(from_lat, from_lon)
+    to_key = coord_key(to_lat, to_lon)
+    if from_key == to_key:
+        return None, False
+    for scenario in scenarios:
+        origin = scenario.get("origin") or {}
+        dest = scenario.get("destination") or {}
+        origin_key = coord_key(origin["latitude"], origin["longitude"])
+        dest_key = coord_key(dest["latitude"], dest["longitude"])
+        if origin_key == from_key and dest_key == to_key:
+            return scenario, False
+        if origin_key == to_key and dest_key == from_key:
+            return scenario, True
+    return None, False
+
+
+def reversed_geometry(geometry: Any) -> list[list[float]]:
+    if not isinstance(geometry, list):
+        return []
+    return list(reversed(geometry))
+
+
 class Coordinate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -195,29 +230,83 @@ def create_app(
 
     @app.get("/demo/routes", response_model=RoutesResponse)
     def demo_routes(
-        scenario_id: str = Query(..., min_length=1, description="Demo OD scenario id"),
         mode: str = Query(..., min_length=1, description="walking or motorbike"),
         delta_minutes: float = Query(
             ...,
             description="Maximum extra minutes vs fastest route",
         ),
+        scenario_id: str | None = Query(
+            default=None,
+            description="Demo OD scenario id (optional when From/To coordinates are sent)",
+        ),
+        from_latitude: float | None = Query(default=None),
+        from_longitude: float | None = Query(default=None),
+        to_latitude: float | None = Query(default=None),
+        to_longitude: float | None = Query(default=None),
     ) -> RoutesResponse:
         pack = load_demo_pack(resolved_dir)
         scenario_by_id: dict[str, Any] = pack["scenario_by_id"]
         metadata: dict[str, Any] = dict(pack["metadata"])
+        scenarios = pack["scenarios"]
 
-        if scenario_id not in scenario_by_id:
+        end_values = (from_latitude, from_longitude, to_latitude, to_longitude)
+        has_ends = all(value is not None for value in end_values)
+        has_partial_ends = any(value is not None for value in end_values) and not has_ends
+        if has_partial_ends:
             raise HTTPException(
-                status_code=404,
+                status_code=422,
                 detail={
-                    "error": "unknown_scenario_id",
-                    "message": f"Unknown scenario_id '{scenario_id}'.",
-                    "available_scenario_ids": sorted(scenario_by_id),
+                    "error": "malformed_query",
+                    "message": (
+                        "from_latitude, from_longitude, to_latitude, and "
+                        "to_longitude must be sent together."
+                    ),
+                },
+            )
+
+        reversed_ends = False
+        scenario: dict[str, Any] | None = None
+        if has_ends:
+            scenario, reversed_ends = match_demo_pair(
+                scenarios,
+                float(from_latitude),
+                float(from_longitude),
+                float(to_latitude),
+                float(to_longitude),
+            )
+            if scenario is None:
+                raise HTTPException(
+                    status_code=404,
+                    detail={
+                        "error": "unknown_endpoint_pair",
+                        "message": (
+                            "That From/To combination is not a precomputed demo pair "
+                            "(in either direction)."
+                        ),
+                    },
+                )
+            scenario_id = str(scenario["scenario_id"])
+        elif scenario_id:
+            scenario = scenario_by_id.get(scenario_id)
+            if scenario is None:
+                raise HTTPException(
+                    status_code=404,
+                    detail={
+                        "error": "unknown_scenario_id",
+                        "message": f"Unknown scenario_id '{scenario_id}'.",
+                        "available_scenario_ids": sorted(scenario_by_id),
+                    },
+                )
+        else:
+            raise HTTPException(
+                status_code=422,
+                detail={
+                    "error": "malformed_query",
+                    "message": "Provide scenario_id or From/To coordinates.",
                 },
             )
 
         mode_normalized = mode.strip().lower()
-        scenario = scenario_by_id[scenario_id]
         supported_modes = {str(m).lower() for m in scenario.get("supported_modes", [])}
         if mode_normalized not in SUPPORTED_MODES or mode_normalized not in supported_modes:
             raise HTTPException(
@@ -291,6 +380,9 @@ def create_app(
         ]
 
         def to_public_route(row: dict[str, Any]) -> RouteRecord:
+            geometry = row["geometry"]
+            if reversed_ends:
+                geometry = reversed_geometry(geometry)
             return RouteRecord(
                 route_id=str(row["route_id"]),
                 route_type=str(row["route_type"]),
@@ -306,7 +398,7 @@ def create_app(
                     row["predicted_exposure_reduction_percent"]
                 ),
                 distance_m=float(row["distance_m"]),
-                geometry=row["geometry"],
+                geometry=geometry,
                 available_feasible_alternatives=(
                     int(row["available_feasible_alternatives"])
                     if row.get("available_feasible_alternatives") is not None
@@ -336,6 +428,7 @@ def create_app(
                 "fewer_than_requested_alternatives"
             ),
             "alternative_count": len(alternatives_raw),
+            "requested_ends_reversed": reversed_ends,
             "empty_alternatives_message": (
                 None
                 if alternatives_raw
@@ -346,7 +439,7 @@ def create_app(
             ),
         }
         return RoutesResponse(
-            scenario_id=scenario_id,
+            scenario_id=str(scenario_id),
             mode=mode_normalized,
             delta_minutes=float(matched_delta),
             fastest_route=to_public_route(fastest_raw),

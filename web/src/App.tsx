@@ -41,11 +41,10 @@ import type {
   TravelMode,
 } from './types'
 import {
-  findScenarioId,
   friendlyApiError,
+  parsePlaceKey,
   pickRecommendedRoute,
-  resolveDemoPair,
-  type PairAnchor,
+  scenarioForRequestedEnds,
 } from './utils/labels'
 
 type AppFlow = 'plan' | 'compare' | 'navigate' | 'gap1'
@@ -77,8 +76,6 @@ function AppInner() {
   const [gap1Error, setGap1Error] = useState<string | null>(null)
   const [labOpen, setLabOpen] = useState(false)
   const [hasRequested, setHasRequested] = useState(false)
-  const [lastEdited, setLastEdited] = useState<PairAnchor | null>(null)
-  const [snappedPair, setSnappedPair] = useState(false)
   const [onboardOpen, setOnboardOpen] = useState(
     () =>
       IS_MOBILE_BUILD &&
@@ -90,10 +87,10 @@ function AppInner() {
     void isNativeApp().then(setNativeShell)
   }, [])
 
-  const selectedScenario = useMemo(() => {
-    const id = findScenarioId(scenarios, originKey, destinationKey)
-    return scenarios.find((s) => s.scenario_id === id) ?? null
-  }, [scenarios, originKey, destinationKey])
+  const selectedScenario = useMemo(
+    () => scenarioForRequestedEnds(scenarios, originKey, destinationKey),
+    [scenarios, originKey, destinationKey],
+  )
 
   const displayedRoutes: RouteRecord[] = useMemo(() => {
     if (!routesPayload) return []
@@ -146,17 +143,25 @@ function AppInner() {
   }, [])
 
   const loadRoutes = useCallback(async () => {
-    const scenarioId = findScenarioId(scenarios, originKey, destinationKey)
-    if (!scenarioId) {
+    const from = parsePlaceKey(originKey)
+    const to = parsePlaceKey(destinationKey)
+    if (!from || !to || !selectedScenario) {
       setRoutesPayload(null)
       setSelectedRouteId(null)
+      if (originKey && destinationKey && originKey !== destinationKey) {
+        setError(t.unmatchedPair)
+      }
       return
     }
     setLoadingRoutes(true)
     setError(null)
     try {
       const payload = await fetchRoutes({
-        scenarioId,
+        scenarioId: selectedScenario.scenario_id,
+        fromLatitude: from.latitude,
+        fromLongitude: from.longitude,
+        toLatitude: to.latitude,
+        toLongitude: to.longitude,
         mode: apiMode,
         deltaMinutes,
         timeWindow,
@@ -179,17 +184,21 @@ function AppInner() {
     scenarios,
     originKey,
     destinationKey,
+    selectedScenario,
     apiMode,
     deltaMinutes,
     timeWindow,
     resetAssist,
+    t,
   ])
 
   useEffect(() => {
-    if (!hasRequested || !selectedScenario || initialLoading) return
+    if (!hasRequested || initialLoading) return
     void loadRoutes()
   }, [
     selectedScenario?.scenario_id,
+    originKey,
+    destinationKey,
     apiMode,
     deltaMinutes,
     timeWindow,
@@ -199,38 +208,29 @@ function AppInner() {
 
   const handleOriginChange = (key: string) => {
     setOriginKey(key)
-    setLastEdited('origin')
     if (key && key === destinationKey) {
       setDestinationKey('')
     }
     setRoutesPayload(null)
     setSelectedRouteId(null)
     setHasRequested(false)
-    setSnappedPair(false)
     setError(null)
     setFlow('plan')
   }
 
   const handleDestinationChange = (key: string) => {
     setDestinationKey(key)
-    setLastEdited('destination')
     if (key && key === originKey) {
       setOriginKey('')
     }
     setRoutesPayload(null)
     setSelectedRouteId(null)
     setHasRequested(false)
-    setSnappedPair(false)
     setError(null)
     setFlow('plan')
   }
 
   const handleSwapEnds = () => {
-    const reversed = findScenarioId(scenarios, destinationKey, originKey)
-    if (!reversed) {
-      setError(t.swapUnavailable)
-      return
-    }
     setOriginKey(destinationKey)
     setDestinationKey(originKey)
     setRoutesPayload(null)
@@ -387,19 +387,6 @@ function AppInner() {
                     setDeltaMinutes(value as (typeof DELTA_MINUTES)[number])
                   }
                   onFindRoutes={() => {
-                    const resolved = resolveDemoPair(
-                      scenarios,
-                      originKey,
-                      destinationKey,
-                      lastEdited,
-                    )
-                    if (!resolved) {
-                      setError(t.unmatchedPair)
-                      return
-                    }
-                    setOriginKey(resolved.originKey)
-                    setDestinationKey(resolved.destinationKey)
-                    setSnappedPair(resolved.snapped)
                     setError(null)
                     setHasRequested(true)
                     setFlow('compare')
@@ -407,9 +394,6 @@ function AppInner() {
                 />
 
                 {error ? <StatusBanner tone="error">{error}</StatusBanner> : null}
-                {snappedPair && !error ? (
-                  <StatusBanner tone="info">{t.snappedPair}</StatusBanner>
-                ) : null}
 
                 {routesPayload ? (
                   <>

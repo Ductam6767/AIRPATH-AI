@@ -113,7 +113,7 @@ describe('AIRPATH frontend', () => {
       within(to).getByRole('option', { name: 'Destination 01' }),
     ).toBeInTheDocument()
     expect(within(to).getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
-    expect(within(to).queryByRole('option', { name: 'Park Gate' })).not.toBeInTheDocument()
+    expect(within(to).getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
     await user.selectOptions(to, 'Destination 01')
     await user.selectOptions(screen.getByLabelText('From'), 'Origin 01')
     await user.click(screen.getByRole('button', { name: 'Compare routes' }))
@@ -134,11 +134,11 @@ describe('AIRPATH frontend', () => {
     expect(to).toHaveDisplayValue('Destination 01')
     expect(within(to).getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
     expect(within(to).queryByRole('option', { name: 'Park Gate' })).not.toBeInTheDocument()
-    expect(within(from).queryByRole('option', { name: 'Market Hall' })).not.toBeInTheDocument()
+    expect(within(from).getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
     expect(within(from).getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
   })
 
-  it('does not swap into a reverse pair that is not in the demo pack', async () => {
+  it('swaps From and To without replacing them with another trip', async () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
@@ -146,27 +146,18 @@ describe('AIRPATH frontend', () => {
     const to = screen.getByLabelText('To')
     await user.selectOptions(from, 'Origin 01')
     await user.selectOptions(to, 'Destination 01')
-    expect(screen.getByRole('button', { name: 'Swap origin and destination' })).toBeDisabled()
-    expect(from).toHaveDisplayValue('Origin 01')
-    expect(to).toHaveDisplayValue('Destination 01')
-  })
-
-  it('lets a demo-destination chip complete an unmatched pair', async () => {
-    const user = userEvent.setup()
-    stubApi()
-    render(<App />)
-    await user.selectOptions(await screen.findByLabelText('From'), 'Origin 01')
-    await user.selectOptions(screen.getByLabelText('To'), 'Market Hall')
-    expect(screen.getByText(/not one precomputed pair/i)).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Destination 01' }))
-    expect(screen.getByLabelText('To')).toHaveDisplayValue('Destination 01')
+    await user.click(screen.getByRole('button', { name: 'Swap origin and destination' }))
+    expect(from).toHaveDisplayValue('Destination 01')
+    expect(to).toHaveDisplayValue('Origin 01')
     await user.click(screen.getByRole('button', { name: 'Compare routes' }))
     expect(
       await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
     ).toBeInTheDocument()
+    expect(from).toHaveDisplayValue('Destination 01')
+    expect(to).toHaveDisplayValue('Origin 01')
   })
 
-  it('compares a mixed pair by using the last-chosen end', async () => {
+  it('keeps a mixed pair and does not compare a different trip', async () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
@@ -175,21 +166,14 @@ describe('AIRPATH frontend', () => {
     await user.selectOptions(from, 'Origin 01')
     await user.selectOptions(to, 'Market Hall')
     await user.click(screen.getByRole('button', { name: 'Compare routes' }))
-    expect(await screen.findByRole('button', { name: /Fastest, 40 minutes/i })).toBeInTheDocument()
-    expect(from).toHaveDisplayValue('Park Gate')
+    expect(
+      (await screen.findAllByText(/not a precomputed demo pair/i)).length,
+    ).toBeGreaterThan(0)
+    expect(from).toHaveDisplayValue('Origin 01')
     expect(to).toHaveDisplayValue('Market Hall')
-    expect(screen.getByText(/precomputed demo trip/i)).toBeInTheDocument()
-  })
-
-  it('compares from a single origin by filling its demo destination', async () => {
-    const user = userEvent.setup()
-    stubApi()
-    render(<App />)
-    const from = await screen.findByLabelText('From')
-    await user.selectOptions(from, 'Origin 01')
-    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
-    expect(await screen.findByRole('button', { name: /Fastest, 40 minutes/i })).toBeInTheDocument()
-    expect(screen.getByLabelText('To')).toHaveDisplayValue('Destination 01')
+    expect(
+      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).not.toBeInTheDocument()
   })
 
   it('renders API route comparison from backend response', async () => {
@@ -205,7 +189,7 @@ describe('AIRPATH frontend', () => {
       within(screen.getByLabelText('From')).getByRole('option', { name: 'Origin 01' }),
     ).toBeInTheDocument()
     expect(
-      within(screen.getByLabelText('To')).getByRole('option', { name: 'Market Hall' }),
+      within(screen.getByLabelText('To')).getByRole('option', { name: 'Park Gate' }),
     ).toBeInTheDocument()
     await chooseDefaultTrip()
     expect(

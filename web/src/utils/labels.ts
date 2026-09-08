@@ -121,63 +121,67 @@ export function findScenarioId(
   originKey: string,
   destinationKey: string,
 ): string | null {
-  const match = scenarios.find(
-    (s) => scenarioOriginKey(s) === originKey && scenarioDestKey(s) === destinationKey,
-  )
-  return match?.scenario_id ?? null
-}
-
-export type PairAnchor = 'origin' | 'destination'
-
-export function resolveDemoPair(
-  scenarios: Scenario[],
-  originKey: string,
-  destinationKey: string,
-  anchor: PairAnchor | null,
-): {
-  originKey: string
-  destinationKey: string
-  scenarioId: string
-  snapped: boolean
-} | null {
-  const exact = findScenarioId(scenarios, originKey, destinationKey)
-  if (exact) {
-    return {
-      originKey,
-      destinationKey,
-      scenarioId: exact,
-      snapped: false,
-    }
-  }
-
-  const byOrigin = originKey
-    ? scenarios.find((scenario) => scenarioOriginKey(scenario) === originKey)
-    : undefined
-  const byDest = destinationKey
-    ? scenarios.find((scenario) => scenarioDestKey(scenario) === destinationKey)
-    : undefined
-
-  const preferDest =
-    anchor === 'destination' || (!originKey && Boolean(byDest))
-  const chosen = preferDest ? byDest ?? byOrigin : byOrigin ?? byDest
-  if (!chosen) return null
-
-  const nextOrigin = scenarioOriginKey(chosen)
-  const nextDest = scenarioDestKey(chosen)
-  return {
-    originKey: nextOrigin,
-    destinationKey: nextDest,
-    scenarioId: chosen.scenario_id,
-    snapped: nextOrigin !== originKey || nextDest !== destinationKey,
-  }
+  return matchDemoPair(scenarios, originKey, destinationKey)?.scenario.scenario_id ?? null
 }
 
 export function scenarioOriginKey(scenario: Scenario): string {
-  return `${scenario.origin.latitude.toFixed(6)},${scenario.origin.longitude.toFixed(6)}`
+  return placeKey(scenario.origin.latitude, scenario.origin.longitude)
 }
 
 export function scenarioDestKey(scenario: Scenario): string {
-  return `${scenario.destination.latitude.toFixed(6)},${scenario.destination.longitude.toFixed(6)}`
+  return placeKey(scenario.destination.latitude, scenario.destination.longitude)
+}
+
+export function placeKey(lat: number, lon: number): string {
+  return `${lat.toFixed(6)},${lon.toFixed(6)}`
+}
+
+export function parsePlaceKey(
+  key: string,
+): { latitude: number; longitude: number } | null {
+  const [latRaw, lonRaw] = key.split(',')
+  const latitude = Number(latRaw)
+  const longitude = Number(lonRaw)
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null
+  return { latitude, longitude }
+}
+
+export function matchDemoPair(
+  scenarios: Scenario[],
+  fromKey: string,
+  toKey: string,
+): { scenario: Scenario; reversed: boolean } | null {
+  if (!fromKey || !toKey || fromKey === toKey) return null
+  for (const scenario of scenarios) {
+    const origin = scenarioOriginKey(scenario)
+    const dest = scenarioDestKey(scenario)
+    if (origin === fromKey && dest === toKey) {
+      return { scenario, reversed: false }
+    }
+    if (origin === toKey && dest === fromKey) {
+      return { scenario, reversed: true }
+    }
+  }
+  return null
+}
+
+export function reverseRouteGeometry(route: RouteRecord): RouteRecord {
+  return { ...route, geometry: [...route.geometry].reverse() }
+}
+
+export function scenarioForRequestedEnds(
+  scenarios: Scenario[],
+  fromKey: string,
+  toKey: string,
+): Scenario | null {
+  const match = matchDemoPair(scenarios, fromKey, toKey)
+  if (!match) return null
+  if (!match.reversed) return match.scenario
+  return {
+    ...match.scenario,
+    origin: match.scenario.destination,
+    destination: match.scenario.origin,
+  }
 }
 
 export function uniquePlaces(scenarios: Scenario[]): {
@@ -338,7 +342,7 @@ export function friendlyApiError(err: unknown): string {
   if (code === 'api_unavailable') {
     return 'The demo API is unavailable. Start the backend on port 8000 and refresh.'
   }
-  if (code === 'unknown_scenario_id') {
+  if (code === 'unknown_scenario_id' || code === 'unknown_endpoint_pair') {
     return 'That origin and destination pair is not in the demo dataset.'
   }
   if (code === 'unsupported_mode') {

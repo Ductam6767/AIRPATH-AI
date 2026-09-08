@@ -1,4 +1,5 @@
 import type { RouteRecord, RoutesResponse, Scenario, ScenariosResponse } from '../types'
+import { matchDemoPair, placeKey, reverseRouteGeometry } from '../utils/labels'
 
 type RawPack = {
   scenarios: Scenario[]
@@ -81,12 +82,38 @@ export async function localFetchScenarios(): Promise<ScenariosResponse> {
 }
 
 export async function localFetchRoutes(params: {
-  scenarioId: string
+  scenarioId?: string
+  fromLatitude?: number
+  fromLongitude?: number
+  toLatitude?: number
+  toLongitude?: number
   mode: string
   deltaMinutes: number
 }): Promise<RoutesResponse> {
   const pack = await loadPack()
-  const scenario = pack.scenarios.find((s) => s.scenario_id === params.scenarioId)
+  let scenario = params.scenarioId
+    ? pack.scenarios.find((s) => s.scenario_id === params.scenarioId)
+    : undefined
+  let reversed = false
+  if (
+    params.fromLatitude != null &&
+    params.fromLongitude != null &&
+    params.toLatitude != null &&
+    params.toLongitude != null
+  ) {
+    const match = matchDemoPair(
+      pack.scenarios,
+      placeKey(params.fromLatitude, params.fromLongitude),
+      placeKey(params.toLatitude, params.toLongitude),
+    )
+    if (!match) {
+      throw new Error(
+        "That From/To combination is not a precomputed demo pair (in either direction).",
+      )
+    }
+    scenario = match.scenario
+    reversed = match.reversed
+  }
   if (!scenario) {
     throw new Error(`Unknown scenario_id '${params.scenarioId}'.`)
   }
@@ -99,7 +126,7 @@ export async function localFetchRoutes(params: {
   }
   const group = pack.routes.filter(
     (row) =>
-      String(row.scenario_id) === params.scenarioId &&
+      String(row.scenario_id) === scenario.scenario_id &&
       String(row.mode).toLowerCase() === mode &&
       Math.abs(Number(row.delta_minutes) - Number(matchedDelta)) < 1e-9,
   )
@@ -109,7 +136,7 @@ export async function localFetchRoutes(params: {
   const fastestRaw = group.find(isFastest)
   if (!fastestRaw) {
     throw new Error(
-      `No frozen demo routes for ${params.scenarioId}/${mode}/${matchedDelta}.`,
+      `No frozen demo routes for ${scenario.scenario_id}/${mode}/${matchedDelta}.`,
     )
   }
   const alternativesRaw = group.filter((row) => !isFastest(row))
@@ -118,17 +145,22 @@ export async function localFetchRoutes(params: {
     available_feasible_alternatives: fastestRaw.available_feasible_alternatives,
     fewer_than_requested_alternatives: fastestRaw.fewer_than_requested_alternatives,
     alternative_count: alternativesRaw.length,
+    requested_ends_reversed: reversed,
     empty_alternatives_message: alternativesRaw.length
       ? null
       : 'No lower-exposure alternative fits your current time limit. Try allowing a few more minutes.',
     data_source: 'bundled_demo_pack',
   }
+  const fastest = toRoute(fastestRaw)
+  const alternatives = alternativesRaw.map(toRoute)
   return {
-    scenario_id: params.scenarioId,
+    scenario_id: scenario.scenario_id,
     mode,
     delta_minutes: Number(matchedDelta),
-    fastest_route: toRoute(fastestRaw),
-    alternatives: alternativesRaw.map(toRoute),
+    fastest_route: reversed ? reverseRouteGeometry(fastest) : fastest,
+    alternatives: reversed
+      ? alternatives.map((route) => reverseRouteGeometry(route))
+      : alternatives,
     metadata,
   }
 }

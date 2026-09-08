@@ -7,7 +7,7 @@ import {
   originLabel,
   pickRecommendedRoute,
   reductionBadgeText,
-  resolveDemoPair,
+  matchDemoPair,
   routeCardTitle,
   routeKindLabel,
   scenarioDestKey,
@@ -131,10 +131,10 @@ describe('labels', () => {
         scenarioDestKey(first),
         scenarioOriginKey(first),
       ),
-    ).toBeNull()
+    ).toBe('od_01')
   })
 
-  it('resolves Compare to the last-edited endpoint when the pair is mixed', () => {
+  it('matches a precomputed pair in either direction without swapping in a different trip', () => {
     const first: Scenario = {
       ...base,
       scenario_id: 'od_01',
@@ -149,39 +149,26 @@ describe('labels', () => {
     }
     const scenarios = [first, second]
     expect(
-      resolveDemoPair(
+      matchDemoPair(
+        scenarios,
+        scenarioOriginKey(first),
+        scenarioDestKey(first),
+      ),
+    ).toEqual({ scenario: first, reversed: false })
+    expect(
+      matchDemoPair(
+        scenarios,
+        scenarioDestKey(first),
+        scenarioOriginKey(first),
+      ),
+    ).toEqual({ scenario: first, reversed: true })
+    expect(
+      matchDemoPair(
         scenarios,
         scenarioOriginKey(first),
         scenarioDestKey(second),
-        'origin',
       ),
-    ).toEqual({
-      originKey: scenarioOriginKey(first),
-      destinationKey: scenarioDestKey(first),
-      scenarioId: 'od_01',
-      snapped: true,
-    })
-    expect(
-      resolveDemoPair(
-        scenarios,
-        scenarioOriginKey(first),
-        scenarioDestKey(second),
-        'destination',
-      ),
-    ).toEqual({
-      originKey: scenarioOriginKey(second),
-      destinationKey: scenarioDestKey(second),
-      scenarioId: 'od_05',
-      snapped: true,
-    })
-    expect(
-      resolveDemoPair(scenarios, scenarioOriginKey(first), '', 'origin'),
-    ).toEqual({
-      originKey: scenarioOriginKey(first),
-      destinationKey: scenarioDestKey(first),
-      scenarioId: 'od_01',
-      snapped: true,
-    })
+    ).toBeNull()
   })
 
   it('names route cards without medical language', () => {
