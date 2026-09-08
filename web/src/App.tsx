@@ -75,7 +75,6 @@ function AppInner() {
   const [gap1Loading, setGap1Loading] = useState(false)
   const [gap1Error, setGap1Error] = useState<string | null>(null)
   const [labOpen, setLabOpen] = useState(false)
-  const [hasRequested, setHasRequested] = useState(false)
   const [onboardOpen, setOnboardOpen] = useState(
     () =>
       IS_MOBILE_BUILD &&
@@ -169,7 +168,7 @@ function AppInner() {
       setSelectedRouteId(next.route_id)
       setAssistMode('off')
       resetAssist()
-      setFlow((current) => (current === 'navigate' ? 'plan' : current))
+      setFlow((current) => (current === 'navigate' ? current : 'compare'))
     } catch (err) {
       setError(friendlyApiError(err))
       setRoutesPayload(null)
@@ -188,7 +187,12 @@ function AppInner() {
   ])
 
   useEffect(() => {
-    if (!hasRequested || initialLoading) return
+    if (initialLoading) return
+    if (!selectedScenario) {
+      setRoutesPayload(null)
+      setSelectedRouteId(null)
+      return
+    }
     void loadRoutes()
   }, [
     selectedScenario?.scenario_id,
@@ -198,7 +202,6 @@ function AppInner() {
     deltaMinutes,
     timeWindow,
     initialLoading,
-    hasRequested,
   ]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleOriginChange = (key: string) => {
@@ -206,9 +209,6 @@ function AppInner() {
     if (key && key === destinationKey) {
       setDestinationKey('')
     }
-    setRoutesPayload(null)
-    setSelectedRouteId(null)
-    setHasRequested(false)
     setError(null)
     setFlow('plan')
   }
@@ -218,9 +218,6 @@ function AppInner() {
     if (key && key === originKey) {
       setOriginKey('')
     }
-    setRoutesPayload(null)
-    setSelectedRouteId(null)
-    setHasRequested(false)
     setError(null)
     setFlow('plan')
   }
@@ -228,21 +225,8 @@ function AppInner() {
   const handleSwapEnds = () => {
     setOriginKey(destinationKey)
     setDestinationKey(originKey)
-    setRoutesPayload(null)
-    setSelectedRouteId(null)
-    setHasRequested(false)
     setError(null)
     setFlow('plan')
-  }
-
-  const handleSelectPair = (fromKey: string, toKey: string) => {
-    setOriginKey(fromKey)
-    setDestinationKey(toKey)
-    setRoutesPayload(null)
-    setSelectedRouteId(null)
-    setError(null)
-    setHasRequested(true)
-    setFlow('compare')
   }
 
   const openGap1 = useCallback(async () => {
@@ -385,7 +369,6 @@ function AppInner() {
                   onOriginChange={handleOriginChange}
                   onDestinationChange={handleDestinationChange}
                   onSwapEnds={handleSwapEnds}
-                  onSelectPair={handleSelectPair}
                   onModeChange={setMode}
                   onMobilityChange={setMobility}
                   onTimeWindowChange={setTimeWindow}
@@ -395,8 +378,8 @@ function AppInner() {
                   onFindRoutes={() => {
                     if (!selectedScenario) return
                     setError(null)
-                    setHasRequested(true)
                     setFlow('compare')
+                    void loadRoutes()
                   }}
                 />
 

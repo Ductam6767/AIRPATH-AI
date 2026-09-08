@@ -105,7 +105,7 @@ export const STRINGS = {
     loadingScenarios: 'Loading demo scenarios…',
     loadingRoutes: 'Loading precomputed routes…',
     choosePair:
-      'Pick any demo place in From and To. Compare is available when the pair has a precomputed route. This demo does not search the live city network.',
+      'Choose From and To independently — nothing is pre-selected. Each list only shows places that have a working demo route with the other end. The map draws after both are chosen.',
     bundledNote: 'Using bundled demo pack (offline / API fallback). Not live air quality.',
     liveApiNote: 'Connected to demo API.',
     langEn: 'EN',
@@ -263,7 +263,7 @@ export const STRINGS = {
     loadingScenarios: 'Đang tải kịch bản demo…',
     loadingRoutes: 'Đang tải tuyến đã tính sẵn…',
     choosePair:
-      'From và To đều chọn được mọi điểm demo. Nút So sánh chỉ bật khi cặp đó đã có tuyến tính sẵn. Demo không tìm đường live.',
+      'Chọn Điểm đi và Điểm đến độc lập — không chọn sẵn cặp. Danh sách chỉ hiện điểm có tuyến demo với đầu kia. Bản đồ vẽ khi đã chọn đủ hai đầu.',
     bundledNote: 'Đang dùng gói demo đóng trong app (offline / API lỗi). Không phải không khí realtime.',
     liveApiNote: 'Đã kết nối API demo.',
     langEn: 'EN',

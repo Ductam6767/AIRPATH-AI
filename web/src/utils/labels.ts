@@ -270,6 +270,20 @@ export function uniquePlaces(scenarios: Scenario[]): {
   )
 }
 
+export function placesCompatibleWith(
+  scenarios: Scenario[],
+  otherKey: string,
+  as: 'from' | 'to',
+): { key: string; label: string; secondary: string }[] {
+  const places = uniquePlaces(scenarios)
+  if (!otherKey) return places
+  return places.filter((place) =>
+    as === 'from'
+      ? matchDemoPair(scenarios, place.key, otherKey) != null
+      : matchDemoPair(scenarios, otherKey, place.key) != null,
+  )
+}
+
 function sortPlaces<T extends { label: string }>(places: T[]): T[] {
   return [...places].sort((a, b) =>
     a.label.localeCompare(b.label, 'vi', { sensitivity: 'base' }),

@@ -17,6 +17,7 @@ import {
   uniqueDestinations,
   uniquePlaces,
   originsForDestination,
+  placesCompatibleWith,
   tripsKeepingFrom,
   tripsKeepingTo,
 } from '../utils/labels'
@@ -104,6 +105,21 @@ describe('labels', () => {
     expect(tripsKeepingTo([first, second], scenarioDestKey(second))).toEqual([
       { fromKey: scenarioOriginKey(second), fromLabel: 'Park Gate' },
     ])
+    expect(
+      placesCompatibleWith([first, second], scenarioOriginKey(first), 'to').map(
+        (place) => place.label,
+      ),
+    ).toEqual(['Dest A'])
+    expect(
+      placesCompatibleWith([first, second], scenarioDestKey(second), 'from').map(
+        (place) => place.label,
+      ),
+    ).toEqual(['Park Gate'])
+    expect(
+      placesCompatibleWith([first, second], '', 'to').map((place) => place.label),
+    ).toEqual(
+      expect.arrayContaining(['Origin A', 'Dest A', 'Park Gate', 'Market Hall']),
+    )
   })
 
   it('looks up a precomputed pair without inferring destination from origin', () => {
