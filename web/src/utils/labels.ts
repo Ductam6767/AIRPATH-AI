@@ -270,6 +270,21 @@ export function uniquePlaces(scenarios: Scenario[]): {
   )
 }
 
+export function lookupPlace(
+  scenarios: Scenario[],
+  key: string,
+): { label: string; latitude: number; longitude: number } | null {
+  if (!key) return null
+  const parsed = parsePlaceKey(key)
+  const place = uniquePlaces(scenarios).find((item) => item.key === key)
+  if (!parsed || !place) return null
+  return {
+    label: place.label,
+    latitude: parsed.latitude,
+    longitude: parsed.longitude,
+  }
+}
+
 export function placesCompatibleWith(
   scenarios: Scenario[],
   otherKey: string,

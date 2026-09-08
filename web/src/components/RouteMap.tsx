@@ -8,15 +8,9 @@ import {
   useMap,
 } from 'react-leaflet'
 import L from 'leaflet'
-import type { RouteRecord, Scenario } from '../types'
+import type { Coordinate, RouteRecord } from '../types'
 import { COLORS } from '../constants'
-import {
-  destinationLabel,
-  formatCoord,
-  originLabel,
-  routeCardTitle,
-  safeGeometry,
-} from '../utils/labels'
+import { formatCoord, routeCardTitle, safeGeometry } from '../utils/labels'
 import 'leaflet/dist/leaflet.css'
 
 const originIcon = L.divIcon({
@@ -41,7 +35,8 @@ const progressIcon = L.divIcon({
 })
 
 interface RouteMapProps {
-  scenario: Scenario | null
+  fromPlace: Coordinate | null
+  toPlace: Coordinate | null
   routes: RouteRecord[]
   selectedRouteId: string | null
   onSelectRoute: (routeId: string) => void
@@ -50,10 +45,12 @@ interface RouteMapProps {
 
 function FitRoutes({
   routes,
-  scenario,
+  fromPlace,
+  toPlace,
 }: {
   routes: RouteRecord[]
-  scenario: Scenario | null
+  fromPlace: Coordinate | null
+  toPlace: Coordinate | null
 }) {
   const map = useMap()
   useEffect(() => {
@@ -63,9 +60,11 @@ function FitRoutes({
       for (const route of routes) {
         points.push(...safeGeometry(route.geometry))
       }
-      if (scenario) {
-        points.push([scenario.origin.latitude, scenario.origin.longitude])
-        points.push([scenario.destination.latitude, scenario.destination.longitude])
+      if (fromPlace) {
+        points.push([fromPlace.latitude, fromPlace.longitude])
+      }
+      if (toPlace) {
+        points.push([toPlace.latitude, toPlace.longitude])
       }
       if (points.length === 0) {
         map.setView([10.78, 106.66], 12)
@@ -82,7 +81,7 @@ function FitRoutes({
       window.cancelAnimationFrame(frame)
       observer.disconnect()
     }
-  }, [map, routes, scenario])
+  }, [map, routes, fromPlace, toPlace])
   return null
 }
 
@@ -105,7 +104,8 @@ function lineStyle(
 }
 
 export function RouteMap({
-  scenario,
+  fromPlace,
+  toPlace,
   routes,
   selectedRouteId,
   onSelectRoute,
@@ -129,7 +129,7 @@ export function RouteMap({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <FitRoutes routes={routes} scenario={scenario} />
+        <FitRoutes routes={routes} fromPlace={fromPlace} toPlace={toPlace} />
         {ordered.map((route) => {
           const geometry = safeGeometry(route.geometry)
           if (geometry.length < 2) return null
@@ -147,39 +147,33 @@ export function RouteMap({
             </Polyline>
           )
         })}
-        {scenario ? (
-          <>
-            <Marker
-              position={[scenario.origin.latitude, scenario.origin.longitude]}
-              icon={originIcon}
-            >
-              <Popup>
-                <strong>{originLabel(scenario)}</strong>
-                <br />
-                <span className="muted">
-                  {formatCoord(scenario.origin.latitude, scenario.origin.longitude)}
-                </span>
-              </Popup>
-            </Marker>
-            <Marker
-              position={[
-                scenario.destination.latitude,
-                scenario.destination.longitude,
-              ]}
-              icon={destinationIcon}
-            >
-              <Popup>
-                <strong>{destinationLabel(scenario)}</strong>
-                <br />
-                <span className="muted">
-                  {formatCoord(
-                    scenario.destination.latitude,
-                    scenario.destination.longitude,
-                  )}
-                </span>
-              </Popup>
-            </Marker>
-          </>
+        {fromPlace ? (
+          <Marker
+            position={[fromPlace.latitude, fromPlace.longitude]}
+            icon={originIcon}
+          >
+            <Popup>
+              <strong>{fromPlace.label}</strong>
+              <br />
+              <span className="muted">
+                {formatCoord(fromPlace.latitude, fromPlace.longitude)}
+              </span>
+            </Popup>
+          </Marker>
+        ) : null}
+        {toPlace ? (
+          <Marker
+            position={[toPlace.latitude, toPlace.longitude]}
+            icon={destinationIcon}
+          >
+            <Popup>
+              <strong>{toPlace.label}</strong>
+              <br />
+              <span className="muted">
+                {formatCoord(toPlace.latitude, toPlace.longitude)}
+              </span>
+            </Popup>
+          </Marker>
         ) : null}
         {progressLatLng ? (
           <Marker position={progressLatLng} icon={progressIcon}>

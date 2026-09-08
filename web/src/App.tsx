@@ -42,6 +42,7 @@ import type {
 } from './types'
 import {
   friendlyApiError,
+  lookupPlace,
   parsePlaceKey,
   pickRecommendedRoute,
   scenarioForRequestedEnds,
@@ -89,6 +90,14 @@ function AppInner() {
   const selectedScenario = useMemo(
     () => scenarioForRequestedEnds(scenarios, originKey, destinationKey),
     [scenarios, originKey, destinationKey],
+  )
+  const fromPlace = useMemo(
+    () => lookupPlace(scenarios, originKey),
+    [scenarios, originKey],
+  )
+  const toPlace = useMemo(
+    () => lookupPlace(scenarios, destinationKey),
+    [scenarios, destinationKey],
   )
 
   const displayedRoutes: RouteRecord[] = useMemo(() => {
@@ -316,7 +325,8 @@ function AppInner() {
             ) : null}
 
             <RouteMap
-              scenario={selectedScenario}
+              fromPlace={fromPlace}
+              toPlace={toPlace}
               routes={displayedRoutes}
               selectedRouteId={selectedRouteId}
               onSelectRoute={setSelectedRouteId}
