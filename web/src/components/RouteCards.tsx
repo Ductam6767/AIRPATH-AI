@@ -167,6 +167,7 @@ export function RouteCards({
               ? t.emptyAltsNoneFound
               : t.otherFeasibleNote}
           </p>
+          <p>{t.packFinding}</p>
         </div>
       )}
     </section>

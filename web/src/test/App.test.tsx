@@ -295,6 +295,9 @@ describe('AIRPATH frontend', () => {
       screen.queryByText(/also the lowest predicted time-weighted PM2.5/i),
     ).not.toBeInTheDocument()
     expect(screen.queryByText(/Also lowest estimated exposure/i)).not.toBeInTheDocument()
+    expect(
+      screen.queryByText(/no stored detour beats Fastest by more than 0.5%/i),
+    ).not.toBeInTheDocument()
   })
 
   it('updates delta slider to absolute minute values', async () => {
@@ -342,7 +345,9 @@ describe('AIRPATH frontend', () => {
         'Fastest route is also the lowest-exposure feasible option.',
       ),
     ).toBeInTheDocument()
-    expect(screen.queryByText(/AIRPATH alternative/i)).not.toBeInTheDocument()
+    expect(
+      screen.getByText(/no stored detour beats Fastest by more than 0.5%/i),
+    ).toBeInTheDocument()
     const list = screen.getByRole('list')
     expect(within(list).getAllByRole('listitem')).toHaveLength(1)
   })
@@ -365,6 +370,9 @@ describe('AIRPATH frontend', () => {
       ),
     ).toBeInTheDocument()
     expect(screen.getByText('Also lowest estimated exposure')).toBeInTheDocument()
+    expect(
+      screen.getByText(/no stored detour beats Fastest by more than 0.5%/i),
+    ).toBeInTheDocument()
     expect(
       screen.queryByText(/guaranteeing a cleaner route/i),
     ).not.toBeInTheDocument()
@@ -396,10 +404,13 @@ describe('AIRPATH frontend', () => {
       screen.getByText(/pairing limit is demo packaging/i),
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/Why the fastest route is often also the lowest estimated exposure/i),
+      screen.getByText(/Why Fastest wins on estimated exposure in this demo/i),
     ).toBeInTheDocument()
     expect(
       screen.getByText(/E = Σ \(PM on each segment × minutes on that segment\)/i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/0 of 16 origin–destination pairs/i),
     ).toBeInTheDocument()
   })
 

@@ -5,8 +5,8 @@ export const STRINGS = {
     skipToRoutes: 'Skip to route comparison',
     hero: 'Health-aware navigation',
     heroSub:
-      'Compare feasible alternatives on a precomputed trip. Not live city routing.',
-    chip: 'Research prototype · not live city routing',
+      'Scores frozen trips on time and a PM×time proxy. On this pack, Fastest also wins that proxy. Not live city routing.',
+    chip: 'Research prototype · ranking often equals fastest',
     whereTo: 'Where do you want to go?',
     currentLocation: 'Current location',
     tripOptions: 'Trip options',
@@ -22,7 +22,7 @@ export const STRINGS = {
     whyHealth:
       'AIRPATH estimates that this route provides lower PM2.5 exposure while remaining within the applicable travel-time constraint. Choose it when you can spare extra minutes.',
     whyFastest:
-      'This is the hurry option: shortest time. On this trip it is also the lowest predicted time-weighted PM2.5 within your limit. Detours add minutes in a similar pollution field, so they usually raise this proxy. The “fast and clean” route is this same card — not a fourth path.',
+      'This is the hurry option: shortest time. It is also the lowest predicted time-weighted PM2.5 within your limit. In this frozen 16-trip pack that is true for every stored trip — not a coincidence on this From/To. Detours add minutes in a similar interpolated PM field, so they usually raise this proxy.',
     whyFastestHurry:
       'This is the hurry option: shortest time. Another feasible route has lower predicted exposure if you can spare extra minutes.',
     whyBalanced:
@@ -34,6 +34,8 @@ export const STRINGS = {
       'No other feasible route was found within your time limit.',
     otherFeasibleNote:
       'The other cards are feasible detours within your time limit. They are not lower-exposure than the fastest route on this proxy.',
+    packFinding:
+      'Not Google Maps with a green badge: AIRPATH still scores every candidate on PM×time. On this frozen 16-trip pack, no stored detour beats Fastest by more than 0.5% on that proxy, so min-E and min-time are the same route. That is the panel result.',
     altsCompareNote:
       'Top feasible alternatives among the generated candidate routes, ranked by predicted exposure. AIRPATH compares feasible route alternatives rather than guaranteeing a cleaner route.',
     whyVsFastest: 'Compared with fastest',
@@ -116,7 +118,7 @@ export const STRINGS = {
     loadingScenarios: 'Loading demo scenarios…',
     loadingRoutes: 'Loading precomputed routes…',
     choosePair:
-      '16 stored trips — not live city search. Pick From or To; the other field fills the only computed partner. Compare then ranks frozen alternatives for that same trip.',
+      '16 stored trips — not live city search. Pick From or To; the other field fills the only computed partner. On this pack, Compare will not reveal a distinct cleaner route: Fastest also wins the exposure proxy.',
     packHasOnePartner:
       'Each start has one stored destination in the demo pack (or the reverse of that same path). You cannot freely pair any two streets. Compare ranks those frozen routes — it does not invent a live A-to-B path.',
     bundledNote: 'Using bundled demo pack (offline / API fallback). Not live air quality.',
@@ -180,10 +182,11 @@ export const STRINGS = {
       'Routes are filtered by your maximum additional travel time, then ranked by predicted exposure among feasible candidates. AIRPATH compares those feasible alternatives rather than guaranteeing a cleaner route.',
       'This screen opens 16 precomputed origin–destination trips (16 of 30 P0-2B scenarios), spaced by straight-line distance rank so short and long trips are both shown. They were not filtered on exposure reduction or map aesthetics.',
     ],
-    methodologyWhyFastestTitle: 'Why the fastest route is often also the lowest estimated exposure',
+    methodologyWhyFastestTitle: 'Why Fastest wins on estimated exposure in this demo',
     methodologyWhyFastest: [
       'The score is E = Σ (PM on each segment × minutes on that segment). Nearby streets often have similar estimated PM because the field is interpolated from a few stations. A detour then adds time without a large PM drop, so E often goes up.',
-      'That is a common frozen-panel result — not a promise that the fastest street always has cleaner air. When a feasible detour lowers E by more than 0.5%, it is labelled Health-first and recommended instead. The “fast and clean” route is then not a separate fourth card: it is Fastest when Fastest already wins on E, or Health-first when a slower path wins on E.',
+      'In this 16-trip demo pack (Model C, 06:00), no feasible detour beats Fastest by more than 0.5% on E — 0 of 16 origin–destination pairs, both walking and motorbike, every +δ setting. That is why every Compare looks like a “tie.” On the full frozen 30-OD × 5-hour panel, a >0.5% win is still rare (about 1% of cells with alternatives) and never exceeds 1%. The UI can show Health-first if that happens; this pack does not contain such a trip.',
+      'Google Maps (here) would stop at shortest time. AIRPATH extra work is forecast → road PM → E → rank within +δ. When min-E = min-time, the extra score did not change the pick. That is a research result to report, not a reason to invent a cleaner path for the demo.',
     ],
     methodologyFromToTitle: 'Choosing From and To',
     methodologyFromTo: [
@@ -202,7 +205,7 @@ export const STRINGS = {
       'This UI uses precomputed demo scenarios from the frozen research pack.',
       'If the live API is unreachable, the app falls back to the bundled demo pack so a phone demo still works.',
       'The safety assistant follows the selected polyline (demo play or GPS). It is not Google Maps navigation and does not invent live traffic lights.',
-      'A lower-exposure feasible alternative is not guaranteed; on the frozen research panel it is uncommon, and any predicted reduction is typically small.',
+      'On this 16-trip demo pack, no feasible detour beats Fastest by more than 0.5% on the PM×time proxy. A lower-exposure alternative is possible in the UI if the pack contains one; this pack does not. Do not read the repeated tie as a promise of cleaner air, and do not invent one for screenshots.',
     ],
     methodologyMetricsNote:
       'Research metrics such as MAE or R² belong in the scientific reports, not on this comparison screen.',
@@ -211,8 +214,8 @@ export const STRINGS = {
     skipToRoutes: 'Nhảy tới so sánh tuyến',
     hero: 'Dẫn đường cân nhắc sức khỏe',
     heroSub:
-      'So sánh các tuyến khả thi trên một chuyến đã tính sẵn. Không định tuyến live.',
-    chip: 'Nguyên mẫu nghiên cứu · không định tuyến live',
+      'Chấm chuyến đã đóng băng theo thời gian và proxy PM×phút. Trong gói này, Nhanh nhất cũng thắng proxy đó. Không định tuyến live.',
+    chip: 'Nguyên mẫu nghiên cứu · xếp hạng thường trùng tuyến nhanh nhất',
     whereTo: 'Bạn muốn đi đâu?',
     currentLocation: 'Vị trí hiện tại',
     tripOptions: 'Tùy chọn chuyến đi',
@@ -228,7 +231,7 @@ export const STRINGS = {
     whyHealth:
       'AIRPATH ước lượng tuyến này có phơi nhiễm PM2.5 thấp hơn trong giới hạn thời gian bạn chọn. Chọn khi bạn chấp nhận thêm vài phút.',
     whyFastest:
-      'Đây là lựa chọn khi gấp: ngắn nhất về thời gian. Trên chuyến này nó cũng có PM2.5 trọng số thời gian dự kiến thấp nhất trong giới hạn. Đường vòng thêm phút trên nền ô nhiễm tương tự nên thường làm tăng proxy. Tuyến “vừa nhanh vừa ít ô nhiễm” chính là thẻ này — không phải một đường thứ tư.',
+      'Đây là lựa chọn khi gấp: ngắn nhất về thời gian. Nó cũng có PM2.5 trọng số thời gian dự kiến thấp nhất trong giới hạn. Trong gói 16 chuyến đóng băng, điều đó đúng mọi chuyến đã lưu — không phải trùng ngẫu nhiên cặp Điểm đi/Điểm đến này. Đường vòng thêm phút trên trường PM nội suy gần nhau nên thường làm tăng proxy.',
     whyFastestHurry:
       'Đây là lựa chọn khi gấp: ngắn nhất về thời gian. Trong danh sách còn một tuyến khả thi có phơi nhiễm dự kiến thấp hơn nếu bạn chấp nhận thêm vài phút.',
     whyBalanced:
@@ -240,6 +243,8 @@ export const STRINGS = {
       'Không có tuyến khả thi khác trong giới hạn thời gian.',
     otherFeasibleNote:
       'Các thẻ kia là đường vòng khả thi trong giới hạn thời gian. Chúng không thấp hơn tuyến nhanh nhất trên proxy này.',
+    packFinding:
+      'Không phải Google Maps gắn nhãn xanh: AIRPATH vẫn chấm mọi ứng viên theo PM×phút. Trong gói 16 chuyến đóng băng, không đường vòng nào thắng Nhanh nhất quá 0,5% trên proxy đó, nên min-E và min-thời gian là cùng một tuyến. Đó là kết quả panel.',
     altsCompareNote:
       'Các phương án khả thi hàng đầu trong tập ứng viên đã sinh, xếp theo phơi nhiễm dự kiến. AIRPATH so sánh các tuyến khả thi chứ không bảo đảm tuyến sạch hơn.',
     whyVsFastest: 'So với tuyến nhanh nhất',
@@ -322,7 +327,7 @@ export const STRINGS = {
     loadingScenarios: 'Đang tải kịch bản demo…',
     loadingRoutes: 'Đang tải tuyến đã tính sẵn…',
     choosePair:
-      'Có 16 chuyến đã tính sẵn — không tìm đường live. Chọn điểm đi hoặc điểm đến; ô kia điền đúng một điểm đã tính. So sánh tuyến xếp hạng các phương án đóng băng của đúng chuyến đó.',
+      'Có 16 chuyến đã tính sẵn — không tìm đường live. Chọn điểm đi hoặc điểm đến; ô kia điền đúng một điểm đã tính. Trong gói này, So sánh tuyến sẽ không ra một đường sạch hơn riêng: Nhanh nhất cũng thắng proxy phơi nhiễm.',
     packHasOnePartner:
       'Mỗi điểm đi có đúng một điểm đến đã tính trong gói demo (hoặc chiều ngược cùng đường). Không ghép tự do hai phố bất kỳ. So sánh tuyến xếp hạng tuyến đã đóng băng — không tạo đường live A→B.',
     bundledNote: 'Đang dùng gói demo đóng trong app (offline / API lỗi). Không phải không khí realtime.',
@@ -386,10 +391,11 @@ export const STRINGS = {
       'Tuyến được lọc theo thời gian thêm tối đa, rồi xếp hạng theo phơi nhiễm dự kiến trong các phương án khả thi. AIRPATH so sánh các phương án đó — không bảo đảm tuyến sạch hơn.',
       'Màn hình này mở 16 chuyến điểm đi–điểm đến đã tính sẵn (16/30 kịch bản P0-2B), lấy theo hạng khoảng cách đường thẳng để vừa có chuyến ngắn vừa có chuyến dài. Không lọc theo mức giảm phơi nhiễm hay vẻ đẹp bản đồ.',
     ],
-    methodologyWhyFastestTitle: 'Vì sao tuyến nhanh nhất thường cũng thấp nhất về phơi nhiễm ước lượng',
+    methodologyWhyFastestTitle: 'Vì sao trong demo này Nhanh nhất thắng cả phơi nhiễm ước lượng',
     methodologyWhyFastest: [
       'Điểm số là E = Σ (PM trên từng đoạn × số phút trên đoạn đó). Các phố gần nhau thường có PM ước lượng gần nhau vì trường được nội suy từ vài trạm. Đường vòng rồi thêm thời gian mà PM không giảm đủ, nên E thường tăng.',
-      'Đó là kết quả thường gặp trên panel đóng băng — không phải cam kết phố nhanh nhất luôn có không khí sạch hơn. Khi một đường vòng khả thi giảm E hơn 0,5%, nó được gắn Ưu tiên sức khỏe và đề xuất thay thế. Tuyến “vừa nhanh vừa sạch” không phải thẻ thứ tư: nó là Nhanh nhất khi Nhanh nhất đã thắng trên E, hoặc Ưu tiên sức khỏe khi đường chậm hơn thắng trên E.',
+      'Trong gói demo 16 chuyến (Model C, 06:00), không đường vòng khả thi nào thắng Nhanh nhất quá 0,5% trên E — 0/16 cặp điểm đi–điểm đến, cả đi bộ lẫn xe máy, mọi mức +δ. Vì thế mọi lần So sánh đều như “trùng.” Trên panel đóng băng đủ 30 OD × 5 giờ, thắng >0,5% vẫn hiếm (khoảng 1% ô có đường vòng) và không bao giờ vượt 1%. Giao diện có thể hiện Ưu tiên sức khỏe nếu gói có chuyến đó; gói này không có.',
+      'Google Maps (ở đây) dừng ở thời gian ngắn nhất. Phần việc thêm của AIRPATH là dự báo → PM trên đường → E → xếp trong +δ. Khi min-E = min-thời gian, điểm số thêm không đổi lựa chọn. Đó là kết quả nghiên cứu cần báo cáo — không phải lý do để bịa một đường sạch hơn cho demo.',
     ],
     methodologyFromToTitle: 'Chọn điểm đi và điểm đến',
     methodologyFromTo: [
@@ -408,7 +414,7 @@ export const STRINGS = {
       'Giao diện dùng kịch bản demo đã tính sẵn từ gói nghiên cứu đóng băng.',
       'Nếu API live không tới được, app dùng gói demo đóng trong máy để demo điện thoại vẫn chạy.',
       'Trợ lý an toàn đi theo polyline đã chọn (chạy demo hoặc GPS). Không phải Google Maps và không bịa đèn giao thông live.',
-      'Không bảo đảm có phương án khả thi phơi nhiễm thấp hơn; trên panel nghiên cứu đóng băng điều đó ít gặp, và mức giảm dự kiến thường nhỏ.',
+      'Trong gói demo 16 chuyến, không đường vòng khả thi nào thắng Nhanh nhất quá 0,5% trên proxy PM×phút. Giao diện có thể hiện phương án phơi nhiễm thấp hơn nếu gói có chuyến đó; gói này không có. Đừng đọc sự trùng lặp như cam kết không khí sạch hơn, và đừng bịa thêm một đường cho screenshot.',
     ],
     methodologyMetricsNote:
       'Chỉ số nghiên cứu như MAE hay R² thuộc báo cáo khoa học, không đặt trên màn hình so sánh này.',
