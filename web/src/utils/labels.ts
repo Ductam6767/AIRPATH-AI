@@ -374,6 +374,13 @@ export function safeGeometry(
   )
 }
 
+export function reverseRouteGeometry(route: RouteRecord): RouteRecord {
+  return {
+    ...route,
+    geometry: [...safeGeometry(route.geometry)].reverse(),
+  }
+}
+
 export function friendlyApiError(err: unknown): string {
   const fallback = 'Unable to load this request. Please try again.'
   if (!err || typeof err !== 'object') return fallback

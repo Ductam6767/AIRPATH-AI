@@ -60,7 +60,7 @@ export const STRINGS = {
     swapUnavailable:
       'Reverse direction is not in the demo dataset. Keep this origin and destination, or pick a suggested demo pair.',
     unmatchedPair:
-      'That From/To combination is not a precomputed demo pair (in either direction). The two places you chose are kept — this is not live city routing.',
+      'No demo route between these two places. They stay as you chose. Use a demo trip below — this is not live city routing.',
     snappedPair:
       'Opened the precomputed demo trip for the end you last chose. This is not live city routing.',
     demoGoesTo: 'Demo route from here:',
@@ -69,6 +69,8 @@ export const STRINGS = {
     otherPlaceGroup: 'No demo route with the other place',
     keepFromTrip: (label: string) => `Keep From — demo To: ${label}`,
     keepToTrip: (label: string) => `Keep To — demo From: ${label}`,
+    setToTrip: (label: string) => `Set To: ${label}`,
+    setFromTrip: (label: string) => `Set From: ${label}`,
     from: 'From',
     to: 'To',
     travelMode: 'Mode',
@@ -103,7 +105,7 @@ export const STRINGS = {
     loadingScenarios: 'Loading demo scenarios…',
     loadingRoutes: 'Loading precomputed routes…',
     choosePair:
-      'From and To can each be any demo place. The dropdown marks which pairs have a precomputed route. Compare keeps your two places; it does not invent live city routing.',
+      'Pick any demo place in From and To. Compare is available when the pair has a precomputed route. This demo does not search the live city network.',
     bundledNote: 'Using bundled demo pack (offline / API fallback). Not live air quality.',
     liveApiNote: 'Connected to demo API.',
     langEn: 'EN',
@@ -216,7 +218,7 @@ export const STRINGS = {
     swapUnavailable:
       'Chiều ngược lại không có trong gói demo. Giữ cặp này, hoặc chọn cặp demo được gợi ý.',
     unmatchedPair:
-      'Cặp Điểm đi / Điểm đến này không phải cặp demo đã tính sẵn (cả hai chiều). Hai điểm bạn chọn được giữ nguyên — không phải tìm đường live.',
+      'Hai điểm này chưa có tuyến demo. Hai chỗ bạn chọn được giữ nguyên. Bấm nút bên dưới để mở tuyến demo có sẵn — không phải tìm đường live.',
     snappedPair:
       'Đã mở tuyến demo đã tính sẵn cho điểm bạn chọn sau cùng. Không phải tìm đường live.',
     demoGoesTo: 'Tuyến demo từ đây đến:',
@@ -225,6 +227,8 @@ export const STRINGS = {
     otherPlaceGroup: 'Chưa có tuyến demo với điểm kia',
     keepFromTrip: (label: string) => `Giữ điểm đi — điểm đến demo: ${label}`,
     keepToTrip: (label: string) => `Giữ điểm đến — điểm đi demo: ${label}`,
+    setToTrip: (label: string) => `Chọn điểm đến: ${label}`,
+    setFromTrip: (label: string) => `Chọn điểm đi: ${label}`,
     from: 'Điểm đi',
     to: 'Điểm đến',
     travelMode: 'Phương tiện',
@@ -259,7 +263,7 @@ export const STRINGS = {
     loadingScenarios: 'Đang tải kịch bản demo…',
     loadingRoutes: 'Đang tải tuyến đã tính sẵn…',
     choosePair:
-      'From và To đều chọn được mọi điểm demo. Dropdown đánh dấu cặp nào đã có tuyến. Compare giữ nguyên hai điểm đã chọn; không bịa tìm đường live.',
+      'From và To đều chọn được mọi điểm demo. Nút So sánh chỉ bật khi cặp đó đã có tuyến tính sẵn. Demo không tìm đường live.',
     bundledNote: 'Đang dùng gói demo đóng trong app (offline / API lỗi). Không phải không khí realtime.',
     liveApiNote: 'Đã kết nối API demo.',
     langEn: 'EN',

@@ -322,7 +322,18 @@ a:focus-visible {
 
 .pair-hint {
   display: grid;
-  gap: 0.4rem;
+  gap: 0.45rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 12px;
+  background: var(--soft-green);
+  border: 1px solid var(--border);
+}
+
+.pair-hint__note {
+  margin: 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--navy);
 }
 
 .pair-hint__row {
@@ -338,7 +349,7 @@ a:focus-visible {
 
 .pair-hint__chip {
   border: 1px solid var(--border);
-  background: var(--soft-green);
+  background: #fff;
   color: var(--navy);
   border-radius: 999px;
   padding: 0.28rem 0.7rem;

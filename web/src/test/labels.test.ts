@@ -8,6 +8,7 @@ import {
   pickRecommendedRoute,
   reductionBadgeText,
   matchDemoPair,
+  reverseRouteGeometry,
   routeCardTitle,
   routeKindLabel,
   scenarioDestKey,
@@ -177,6 +178,30 @@ describe('labels', () => {
         scenarioDestKey(second),
       ),
     ).toBeNull()
+  })
+
+  it('reverses a stored polyline so swapped From/To still starts at From', () => {
+    const route: RouteRecord = {
+      route_id: 'w-1',
+      route_type: 'fastest',
+      rank: 0,
+      is_fastest: true,
+      is_feasible: true,
+      travel_time_minutes: 20,
+      additional_time_vs_fastest_minutes: 0,
+      predicted_exposure_index: 100,
+      predicted_exposure_reduction_percent: 0,
+      distance_m: 1000,
+      geometry: [
+        [10.79, 106.66],
+        [10.8, 106.68],
+      ],
+    }
+    expect(reverseRouteGeometry(route).geometry).toEqual([
+      [10.8, 106.68],
+      [10.79, 106.66],
+    ])
+    expect(route.geometry[0]).toEqual([10.79, 106.66])
   })
 
   it('names route cards without medical language', () => {

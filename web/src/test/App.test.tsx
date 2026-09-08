@@ -165,10 +165,10 @@ describe('AIRPATH frontend', () => {
     const to = screen.getByLabelText('To')
     await user.selectOptions(from, 'Origin 01')
     await user.selectOptions(to, 'Market Hall')
-    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
+    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeDisabled()
     expect(
-      (await screen.findAllByText(/not a precomputed demo pair/i)).length,
-    ).toBeGreaterThan(0)
+      screen.getByText(/No demo route between these two places/i),
+    ).toBeInTheDocument()
     expect(from).toHaveDisplayValue('Origin 01')
     expect(to).toHaveDisplayValue('Market Hall')
     expect(
@@ -182,6 +182,21 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
     expect(from).toHaveDisplayValue('Origin 01')
     expect(to).toHaveDisplayValue('Destination 01')
+  })
+
+  it('suggests a demo To after From is chosen without filling it', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    const from = await screen.findByLabelText('From')
+    const to = screen.getByLabelText('To')
+    await user.selectOptions(from, 'Origin 01')
+    expect(to).toHaveDisplayValue('Choose destination')
+    expect(screen.getByRole('button', { name: 'Set To: Destination 01' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeDisabled()
+    expect(
+      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).not.toBeInTheDocument()
   })
 
   it('renders API route comparison from backend response', async () => {

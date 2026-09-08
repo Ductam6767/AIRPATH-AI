@@ -148,9 +148,6 @@ function AppInner() {
     if (!from || !to || !selectedScenario) {
       setRoutesPayload(null)
       setSelectedRouteId(null)
-      if (originKey && destinationKey && originKey !== destinationKey) {
-        setError(t.unmatchedPair)
-      }
       return
     }
     setLoadingRoutes(true)
@@ -181,7 +178,6 @@ function AppInner() {
       setLoadingRoutes(false)
     }
   }, [
-    scenarios,
     originKey,
     destinationKey,
     selectedScenario,
@@ -189,7 +185,6 @@ function AppInner() {
     deltaMinutes,
     timeWindow,
     resetAssist,
-    t,
   ])
 
   useEffect(() => {
@@ -398,6 +393,7 @@ function AppInner() {
                     setDeltaMinutes(value as (typeof DELTA_MINUTES)[number])
                   }
                   onFindRoutes={() => {
+                    if (!selectedScenario) return
                     setError(null)
                     setHasRequested(true)
                     setFlow('compare')
@@ -452,7 +448,10 @@ function AppInner() {
                     </button>
                     {labOpen ? <TrialLogPanel /> : null}
                   </>
-                ) : !initialLoading && !loadingRoutes && !error ? (
+                ) : !initialLoading &&
+                  !loadingRoutes &&
+                  !error &&
+                  (!originKey || !destinationKey || selectedScenario) ? (
                   <StatusBanner tone="info">{t.choosePair}</StatusBanner>
                 ) : null}
               </>

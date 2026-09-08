@@ -101,11 +101,12 @@ export function SearchBar({
   const places = uniquePlaces(scenarios)
   const fromPlaces = places.filter((place) => place.key !== destinationKey)
   const toPlaces = places.filter((place) => place.key !== originKey)
+  const matched = Boolean(matchDemoPair(scenarios, originKey, destinationKey))
   const unmatched = Boolean(
     originKey &&
       destinationKey &&
       originKey !== destinationKey &&
-      !matchDemoPair(scenarios, originKey, destinationKey),
+      !matched,
   )
   const fromMatched = new Set(
     destinationKey
@@ -121,8 +122,14 @@ export function SearchBar({
           .map((place) => place.key)
       : [],
   )
-  const keepFrom = tripsKeepingFrom(scenarios, originKey)
-  const keepTo = tripsKeepingTo(scenarios, destinationKey)
+  const keepFrom = tripsKeepingFrom(scenarios, originKey).filter(
+    (trip) => trip.toKey !== destinationKey,
+  )
+  const keepTo = tripsKeepingTo(scenarios, destinationKey).filter(
+    (trip) => trip.fromKey !== originKey,
+  )
+  const showFromSuggestions = Boolean(originKey) && keepFrom.length > 0 && !matched
+  const showToSuggestions = Boolean(destinationKey) && keepTo.length > 0 && !matched
 
   return (
     <section className={compact ? 'search-bar search-bar--compact' : 'search-bar'}>
@@ -178,30 +185,39 @@ export function SearchBar({
         </label>
       </div>
 
-      {unmatched ? (
-        <div className="pair-hint">
-          {keepFrom.map((trip) => (
-            <p key={`from-${trip.toKey}`} className="pair-hint__row">
-              <button
-                type="button"
-                className="pair-hint__chip"
-                onClick={() => onSelectPair(originKey, trip.toKey)}
-              >
-                {t.keepFromTrip(trip.toLabel)}
-              </button>
-            </p>
-          ))}
-          {keepTo.map((trip) => (
-            <p key={`to-${trip.fromKey}`} className="pair-hint__row">
-              <button
-                type="button"
-                className="pair-hint__chip"
-                onClick={() => onSelectPair(trip.fromKey, destinationKey)}
-              >
-                {t.keepToTrip(trip.fromLabel)}
-              </button>
-            </p>
-          ))}
+      {showFromSuggestions || showToSuggestions ? (
+        <div className="pair-hint" role="status">
+          {unmatched ? <p className="pair-hint__note">{t.unmatchedPair}</p> : null}
+          {showFromSuggestions
+            ? keepFrom.map((trip) => (
+                <p key={`from-${trip.toKey}`} className="pair-hint__row">
+                  <button
+                    type="button"
+                    className="pair-hint__chip"
+                    onClick={() => onSelectPair(originKey, trip.toKey)}
+                  >
+                    {unmatched
+                      ? t.keepFromTrip(trip.toLabel)
+                      : t.setToTrip(trip.toLabel)}
+                  </button>
+                </p>
+              ))
+            : null}
+          {showToSuggestions
+            ? keepTo.map((trip) => (
+                <p key={`to-${trip.fromKey}`} className="pair-hint__row">
+                  <button
+                    type="button"
+                    className="pair-hint__chip"
+                    onClick={() => onSelectPair(trip.fromKey, destinationKey)}
+                  >
+                    {unmatched
+                      ? t.keepToTrip(trip.fromLabel)
+                      : t.setFromTrip(trip.fromLabel)}
+                  </button>
+                </p>
+              ))
+            : null}
         </div>
       ) : null}
 
@@ -211,11 +227,13 @@ export function SearchBar({
             type="button"
             className="primary-btn search-bar__compare"
             onClick={onFindRoutes}
+            title={unmatched ? t.unmatchedPair : undefined}
             disabled={
               loadingRoutes ||
               !originKey ||
               !destinationKey ||
-              originKey === destinationKey
+              originKey === destinationKey ||
+              unmatched
             }
           >
             {loadingRoutes ? t.comparing : t.compare}
