@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useI18n } from '../i18n/LanguageContext'
 
 interface MethodologyDrawerProps {
   open: boolean
@@ -7,6 +8,7 @@ interface MethodologyDrawerProps {
 
 export function MethodologyDrawer({ open, onClose }: MethodologyDrawerProps) {
   const closeRef = useRef<HTMLButtonElement>(null)
+  const { t } = useI18n()
 
   useEffect(() => {
     if (!open) return
@@ -30,68 +32,33 @@ export function MethodologyDrawer({ open, onClose }: MethodologyDrawerProps) {
         onClick={(event) => event.stopPropagation()}
       >
         <div className="drawer__header">
-          <h2 id="methodology-title">How AIRPATH works</h2>
+          <h2 id="methodology-title">{t.methodologyTitle}</h2>
           <button
             ref={closeRef}
             type="button"
             className="icon-btn"
             onClick={onClose}
-            aria-label="Close methodology"
+            aria-label={t.methodologyCloseAria}
           >
-            Close
+            {t.close}
           </button>
         </div>
         <ol className="drawer__steps">
-          <li>Historical monitoring data are used to forecast PM2.5.</li>
-          <li>Station forecasts are spatially estimated across the road network.</li>
-          <li>Route segments receive estimated travel times.</li>
-          <li>Exposure is aggregated across segments as a time-weighted PM2.5 proxy.</li>
-          <li>
-            Routes are filtered by your maximum additional travel time, then ranked by
-            predicted exposure among feasible candidates. AIRPATH compares those
-            feasible alternatives rather than guaranteeing a cleaner route.
-          </li>
-          <li>
-            This screen opens 16 precomputed origin–destination trips (16 of 30
-            P0-2B scenarios), spaced by straight-line distance rank so short and
-            long trips are both shown. They were not filtered on exposure reduction
-            or map aesthetics.
-          </li>
+          {t.methodologySteps.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
         </ol>
-        <h3>Limitations</h3>
+        <h3>{t.methodologyFromToTitle}</h3>
+        {t.methodologyFromTo.map((paragraph) => (
+          <p key={paragraph}>{paragraph}</p>
+        ))}
+        <h3>{t.methodologyLimitsTitle}</h3>
         <ul className="drawer__limits">
-          <li>Current demo uses hourly HealthyAir data.</li>
-          <li>Pilot-area only (stations 2–6 polygon).</li>
-          <li>Road PM2.5 is estimated, not directly measured on each road.</li>
-          <li>No live traffic model.</li>
-          <li>
-            Exposure is a time-weighted proxy — not inhaled dose, medical risk, or
-            medical advice.
-          </li>
-          <li>
-            Each start has one stored destination, or the reverse of that same
-            polyline. Choosing From infers that partner. This is a frozen demo pack,
-            not live A-to-B city search.
-          </li>
-          <li>This UI uses precomputed demo scenarios from the frozen research pack.</li>
-          <li>
-            If the live API is unreachable, the app falls back to the bundled demo
-            pack so a phone demo still works.
-          </li>
-          <li>
-            The safety assistant follows the selected polyline (demo play or GPS).
-            It is not Google Maps navigation and does not invent live traffic lights.
-          </li>
-          <li>
-            A lower-exposure feasible alternative is not guaranteed; on the frozen
-            research panel it is uncommon, and any predicted reduction is typically
-            small.
-          </li>
+          {t.methodologyLimits.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
         </ul>
-        <p className="muted small">
-          Research metrics such as MAE or R² belong in the scientific reports, not on
-          this comparison screen.
-        </p>
+        <p className="muted small">{t.methodologyMetricsNote}</p>
       </aside>
     </div>
   )

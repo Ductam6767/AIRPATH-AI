@@ -982,6 +982,17 @@ a:focus-visible {
   color: var(--navy);
 }
 
+.drawer h3 {
+  margin: 1.15rem 0 0.5rem;
+  color: var(--navy);
+  font-size: 1rem;
+}
+
+.drawer p {
+  margin: 0 0 0.7rem;
+  line-height: 1.45;
+}
+
 .drawer__steps,
 .drawer__limits {
   padding-left: 1.15rem;

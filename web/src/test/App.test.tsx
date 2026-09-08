@@ -127,6 +127,12 @@ describe('AIRPATH frontend', () => {
     expect(screen.getByLabelText('From')).toHaveDisplayValue('Origin 01')
     expect(to).toHaveDisplayValue('Destination 01')
     expect(
+      within(to).queryByRole('option', { name: 'Market Hall' }),
+    ).not.toBeInTheDocument()
+    expect(
+      within(screen.getByLabelText('From')).getByRole('option', { name: 'Park Gate' }),
+    ).toBeInTheDocument()
+    expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
     ).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Compare routes' }))
@@ -145,6 +151,9 @@ describe('AIRPATH frontend', () => {
     expect(from).toHaveDisplayValue('Origin 01')
     expect(to).toHaveDisplayValue('Destination 01')
     expect(within(to).getByRole('option', { name: 'Destination 01' })).toBeInTheDocument()
+    expect(
+      within(to).queryByRole('option', { name: 'Market Hall' }),
+    ).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Compare routes' })).toBeEnabled()
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
@@ -209,14 +218,19 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
   })
 
-  it('infers the stored partner instead of showing an unmatched-pair error', async () => {
+  it('omits unmatched To options instead of showing an unmatched-pair error', async () => {
     const user = userEvent.setup()
     stubApi()
     render(<App />)
     await screen.findByLabelText('From')
     await user.selectOptions(screen.getByLabelText('From'), 'Origin 01')
     expect(screen.getByLabelText('To')).toHaveDisplayValue('Destination 01')
-    await user.selectOptions(screen.getByLabelText('To'), 'Market Hall')
+    expect(
+      within(screen.getByLabelText('To')).queryByRole('option', {
+        name: 'Market Hall',
+      }),
+    ).not.toBeInTheDocument()
+    await user.selectOptions(screen.getByLabelText('From'), 'Park Gate')
     expect(screen.getByLabelText('From')).toHaveDisplayValue('Park Gate')
     expect(screen.getByLabelText('To')).toHaveDisplayValue('Market Hall')
     expect(screen.queryByText(/No demo route between these two places/i)).not.toBeInTheDocument()
@@ -352,6 +366,12 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
     expect(
       screen.getByText(/not live A-to-B city search/i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/You cannot freely pair any two places/i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/pairing limit is demo packaging/i),
     ).toBeInTheDocument()
   })
 
