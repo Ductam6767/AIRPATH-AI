@@ -63,6 +63,15 @@ export function productRouteKind(route: RouteRecord): ProductRouteKind {
 }
 
 export function routeCardTitle(route: RouteRecord): string {
+  if (route.tradeoff_slot === 'closer_to_fastest') {
+    return 'Slightly slower · lower exposure'
+  }
+  if (route.tradeoff_slot === 'second_fastest') {
+    return 'Second-fastest · lower exposure'
+  }
+  if (route.tradeoff_slot === 'near_time_limit') {
+    return 'Near time limit · lower exposure'
+  }
   const kind = productRouteKind(route)
   if (kind === 'fastest') return 'Fastest'
   if (kind === 'health') return 'Health-first'
@@ -76,6 +85,15 @@ export function isLowerPredictedExposure(percent: number): boolean {
 export function routeKindLabel(route: RouteRecord): string {
   if (route.is_fastest || route.route_type === 'fastest') {
     return 'Fastest'
+  }
+  if (route.tradeoff_slot === 'closer_to_fastest') {
+    return 'Slightly slower · lower exposure'
+  }
+  if (route.tradeoff_slot === 'second_fastest') {
+    return 'Second-fastest · lower exposure'
+  }
+  if (route.tradeoff_slot === 'near_time_limit') {
+    return 'Near time limit · lower exposure'
   }
   return isLowerPredictedExposure(route.predicted_exposure_reduction_percent)
     ? 'Lower predicted exposure'

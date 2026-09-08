@@ -15,6 +15,10 @@ from pydantic import BaseModel, ConfigDict, Field
 REPO_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 DEFAULT_DEMO_DIR: Final[Path] = REPO_ROOT / "data" / "processed" / "web_demo"
 SUPPORTED_MODES: Final[frozenset[str]] = frozenset({"walking", "motorbike"})
+SUPPORTED_TIME_WINDOWS: Final[frozenset[str]] = frozenset(
+    {"morning_peak", "midday", "evening_peak"}
+)
+DEFAULT_TIME_WINDOW: Final[str] = "morning_peak"
 LOCAL_DEV_ORIGINS: Final[tuple[str, ...]] = (
     "http://localhost:5173",
     "http://127.0.0.1:5173",
@@ -88,6 +92,10 @@ class Scenario(BaseModel):
     supported_delta_minutes: list[float]
     demo_distance_rank: int
     selection_method: str
+    supported_time_windows: list[str] = Field(
+        default_factory=lambda: ["morning_peak", "midday", "evening_peak"]
+    )
+    opening_example: bool | None = None
 
 
 class ScenariosResponse(BaseModel):
@@ -112,6 +120,8 @@ class RouteRecord(BaseModel):
     geometry: list[list[float]]
     available_feasible_alternatives: int | None = None
     fewer_than_requested_alternatives: bool | None = None
+    is_also_lowest_exposure: bool | None = None
+    tradeoff_slot: str | None = None
     research_warning: str | None = None
 
 
@@ -121,6 +131,7 @@ class RoutesResponse(BaseModel):
     scenario_id: str
     mode: str
     delta_minutes: float
+    time_window: str = "morning_peak"
     fastest_route: RouteRecord
     alternatives: list[RouteRecord]
     metadata: dict[str, Any] = Field(default_factory=dict)
@@ -154,12 +165,13 @@ def load_demo_pack(demo_dir: str | None = None) -> dict[str, Any]:
     if not isinstance(routes, list) or not routes:
         raise ValueError("routes.json must contain a non-empty routes list.")
     by_scenario = {str(item["scenario_id"]): item for item in scenarios}
-    index: dict[tuple[str, str, float], list[dict[str, Any]]] = {}
+    index: dict[tuple[str, str, float, str], list[dict[str, Any]]] = {}
     for route in routes:
         key = (
             str(route["scenario_id"]),
             str(route["mode"]),
             float(route["delta_minutes"]),
+            str(route.get("time_window", DEFAULT_TIME_WINDOW)),
         )
         index.setdefault(key, []).append(route)
     for key, group in index.items():
@@ -185,8 +197,10 @@ def create_app(
     app = FastAPI(
         title="AIRPATH-AI Demo API",
         description=(
-            "Thin read-only API over the frozen Model-C web demo pack. "
-            "Does not retrain models, run IDW, or optimize routes."
+            "Thin read-only API over the web demo pack. "
+            "Does not retrain models, run IDW, or optimize routes. "
+            "Route PM in this pack is station-IDW background times a simulated "
+            "OSM road-class increment — not roadside measurements."
         ),
         version="0.1.0",
     )
@@ -243,6 +257,10 @@ def create_app(
         from_longitude: float | None = Query(default=None),
         to_latitude: float | None = Query(default=None),
         to_longitude: float | None = Query(default=None),
+        time_window: str = Query(
+            default=DEFAULT_TIME_WINDOW,
+            description="Demo congestion window: morning_peak, midday, or evening_peak",
+        ),
     ) -> RoutesResponse:
         pack = load_demo_pack(resolved_dir)
         scenario_by_id: dict[str, Any] = pack["scenario_by_id"]
@@ -321,6 +339,29 @@ def create_app(
                 },
             )
 
+        window_normalized = time_window.strip().lower()
+        supported_windows = {
+            str(item).lower()
+            for item in scenario.get(
+                "supported_time_windows", list(SUPPORTED_TIME_WINDOWS)
+            )
+        }
+        if (
+            window_normalized not in SUPPORTED_TIME_WINDOWS
+            or window_normalized not in supported_windows
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "error": "unsupported_time_window",
+                    "message": (
+                        f"Unsupported time_window '{time_window}'. "
+                        f"Use one of: {sorted(supported_windows)}."
+                    ),
+                    "supported_time_windows": sorted(supported_windows),
+                },
+            )
+
         supported_deltas = [float(d) for d in scenario.get("supported_delta_minutes", [])]
         try:
             delta_value = float(delta_minutes)
@@ -350,8 +391,13 @@ def create_app(
                 },
             )
 
-        key = (scenario_id, mode_normalized, float(matched_delta))
-        routes_index: dict[tuple[str, str, float], list[dict[str, Any]]] = pack[
+        key = (
+            str(scenario_id),
+            mode_normalized,
+            float(matched_delta),
+            window_normalized,
+        )
+        routes_index: dict[tuple[str, str, float, str], list[dict[str, Any]]] = pack[
             "routes_index"
         ]
         group = routes_index.get(key)
@@ -361,9 +407,9 @@ def create_app(
                 detail={
                     "error": "route_request_outside_demo_dataset",
                     "message": (
-                        "No frozen demo routes for "
+                        "No demo routes for "
                         f"scenario_id={scenario_id}, mode={mode_normalized}, "
-                        f"delta_minutes={matched_delta}."
+                        f"delta_minutes={matched_delta}, time_window={window_normalized}."
                     ),
                 },
             )
@@ -409,6 +455,16 @@ def create_app(
                     if row.get("fewer_than_requested_alternatives") is not None
                     else None
                 ),
+                is_also_lowest_exposure=(
+                    bool(row["is_also_lowest_exposure"])
+                    if row.get("is_also_lowest_exposure") is not None
+                    else None
+                ),
+                tradeoff_slot=(
+                    str(row["tradeoff_slot"])
+                    if row.get("tradeoff_slot") not in (None, "", "none", "None")
+                    else None
+                ),
                 research_warning=row.get("research_warning"),
             )
 
@@ -429,6 +485,8 @@ def create_app(
             ),
             "alternative_count": len(alternatives_raw),
             "requested_ends_reversed": reversed_ends,
+            "time_window": window_normalized,
+            "spatial_model": metadata.get("spatial_model"),
             "empty_alternatives_message": (
                 None
                 if alternatives_raw
@@ -442,6 +500,7 @@ def create_app(
             scenario_id=str(scenario_id),
             mode=mode_normalized,
             delta_minutes=float(matched_delta),
+            time_window=window_normalized,
             fastest_route=to_public_route(fastest_raw),
             alternatives=[to_public_route(row) for row in alternatives_raw],
             metadata=response_metadata,

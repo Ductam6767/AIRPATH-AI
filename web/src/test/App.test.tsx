@@ -268,7 +268,7 @@ describe('AIRPATH frontend', () => {
     expect(screen.getByText(/Why this route/i)).toBeInTheDocument()
     expect(
       screen.getByText(
-        /AIRPATH compares feasible route alternatives rather than guaranteeing a cleaner route/i,
+        /beat Fastest on the demo increment \(OSM road class/i,
       ),
     ).toBeInTheDocument()
     expect(
@@ -295,9 +295,7 @@ describe('AIRPATH frontend', () => {
       screen.queryByText(/also the lowest predicted time-weighted PM2.5/i),
     ).not.toBeInTheDocument()
     expect(screen.queryByText(/Also lowest estimated exposure/i)).not.toBeInTheDocument()
-    expect(
-      screen.queryByText(/no stored detour beats Fastest by more than 0.5%/i),
-    ).not.toBeInTheDocument()
+    expect(screen.getByText(/Two formulas, same map/i)).toBeInTheDocument()
   })
 
   it('updates delta slider to absolute minute values', async () => {
@@ -345,9 +343,7 @@ describe('AIRPATH frontend', () => {
         'Fastest route is also the lowest-exposure feasible option.',
       ),
     ).toBeInTheDocument()
-    expect(
-      screen.getByText(/no stored detour beats Fastest by more than 0.5%/i),
-    ).toBeInTheDocument()
+    expect(screen.getByText(/Two formulas, same map/i)).toBeInTheDocument()
     const list = screen.getByRole('list')
     expect(within(list).getAllByRole('listitem')).toHaveLength(1)
   })
@@ -371,7 +367,7 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('Also lowest estimated exposure')).toBeInTheDocument()
     expect(
-      screen.getByText(/no stored detour beats Fastest by more than 0.5%/i),
+      screen.getByText(/Two formulas, same map/i),
     ).toBeInTheDocument()
     expect(
       screen.queryByText(/guaranteeing a cleaner route/i),
@@ -404,13 +400,13 @@ describe('AIRPATH frontend', () => {
       screen.getByText(/pairing limit is demo packaging/i),
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/Why Fastest wins on estimated exposure in this demo/i),
+      screen.getByText(/Two PM formulas — do not mix them/i),
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/E = Σ \(PM on each segment × minutes on that segment\)/i),
+      screen.getByText(/E = Σ \(PM × minutes\)/i),
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/0 of 16 origin–destination pairs/i),
+      screen.getByText(/illustrative, not calibrated to HCMC traffic counts/i),
     ).toBeInTheDocument()
   })
 

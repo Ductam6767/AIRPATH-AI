@@ -3,12 +3,12 @@
     {
       "scenario_id": "od_26",
       "origin": {
-        "label": "Lô SL Cư xá Phú Lâm A · Phú Lâm",
+        "label": "L\u00f4 SL C\u01b0 x\u00e1 Ph\u00fa L\u00e2m A \u00b7 Ph\u00fa L\u00e2m",
         "latitude": 10.749940910728707,
         "longitude": 106.63058143958231
       },
       "destination": {
-        "label": "Đường số 6 · Bình Thới",
+        "label": "\u0110\u01b0\u1eddng s\u1ed1 6 \u00b7 B\u00ecnh Th\u1edbi",
         "latitude": 10.76189362005488,
         "longitude": 106.64769292246834
       },
@@ -25,18 +25,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 0,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_03",
       "origin": {
-        "label": "Hẻm 7 Tôn Thất Hiệp · Phú Thọ",
+        "label": "od_03 origin",
         "latitude": 10.765486385651338,
         "longitude": 106.6542878896305
       },
       "destination": {
-        "label": "Trịnh Đình Trọng · Tân Phú",
+        "label": "od_03 destination",
         "latitude": 10.776300874791875,
         "longitude": 106.63613550048358
       },
@@ -53,18 +59,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 2,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_22",
       "origin": {
-        "label": "Đường Số 100 Bình Thới · Hòa Bình",
+        "label": "\u0110\u01b0\u1eddng S\u1ed1 100 B\u00ecnh Th\u1edbi \u00b7 H\u00f2a B\u00ecnh",
         "latitude": 10.768373149137515,
         "longitude": 106.64866934081056
       },
       "destination": {
-        "label": "Đặng Nguyên Cẩn · Phú Lâm",
+        "label": "\u0110\u1eb7ng Nguy\u00ean C\u1ea9n \u00b7 Ph\u00fa L\u00e2m",
         "latitude": 10.752829740555551,
         "longitude": 106.63195436635417
       },
@@ -81,18 +93,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 4,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_16",
       "origin": {
-        "label": "Quách Đình Bảo · Phú Thạnh",
+        "label": "od_16 origin",
         "latitude": 10.78037874654082,
         "longitude": 106.62732957500644
       },
       "destination": {
-        "label": "Tân Thắng · Tân Sơn Nhì",
+        "label": "od_16 destination",
         "latitude": 10.80368144843654,
         "longitude": 106.6223438621628
       },
@@ -109,18 +127,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 6,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_28",
       "origin": {
-        "label": "Hẻm Võ Thành Trang · Bảy Hiền",
+        "label": "H\u1ebbm V\u00f5 Th\u00e0nh Trang \u00b7 B\u1ea3y Hi\u1ec1n",
         "latitude": 10.790060825724904,
         "longitude": 106.64884728294992
       },
       "destination": {
-        "label": "Hoàng Văn Thụ · Đức Nhuận",
+        "label": "Ho\u00e0ng V\u0103n Th\u1ee5 \u00b7 \u0110\u1ee9c Nhu\u1eadn",
         "latitude": 10.800218360033266,
         "longitude": 106.67220923018309
       },
@@ -137,18 +161,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 8,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_07",
       "origin": {
-        "label": "Hẻm 1036 Cách Mạng Tháng 8 · Tân Sơn Nhất",
+        "label": "od_07 origin",
         "latitude": 10.790954730672,
         "longitude": 106.6578912360163
       },
       "destination": {
-        "label": "Hẻm 78 Tân Sơn Nhì · Tân Sơn Nhì",
+        "label": "od_07 destination",
         "latitude": 10.802218892212034,
         "longitude": 106.63387899927775
       },
@@ -165,18 +195,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 10,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_01",
       "origin": {
-        "label": "Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa",
+        "label": "H\u1ebbm Nguy\u1ec5n Tr\u1ecdng Tuy\u1ec3n \u00b7 T\u00e2n S\u01a1n H\u00f2a",
         "latitude": 10.79920439306918,
         "longitude": 106.66115000810552
       },
       "destination": {
-        "label": "Nguyễn Văn Đậu · Đức Nhuận",
+        "label": "Nguy\u1ec5n V\u0103n \u0110\u1eadu \u00b7 \u0110\u1ee9c Nhu\u1eadn",
         "latitude": 10.805572971047097,
         "longitude": 106.68707545410574
       },
@@ -193,18 +229,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 12,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_02",
       "origin": {
-        "label": "Nguyễn Văn Săng · Tân Sơn Nhì",
+        "label": "od_02 origin",
         "latitude": 10.799537520759737,
         "longitude": 106.63665376437883
       },
       "destination": {
-        "label": "Bình Long · Phú Thạnh",
+        "label": "od_02 destination",
         "latitude": 10.776087579733089,
         "longitude": 106.621525638113
       },
@@ -221,18 +263,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 14,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_23",
       "origin": {
-        "label": "Hẻm Hoàng Hoa Thám · Tân Bình",
+        "label": "H\u1ebbm Ho\u00e0ng Hoa Th\u00e1m \u00b7 T\u00e2n B\u00ecnh",
         "latitude": 10.803075074305696,
         "longitude": 106.64675559927
       },
       "destination": {
-        "label": "Đường D8 · Diên Hồng",
+        "label": "\u0110\u01b0\u1eddng D8 \u00b7 Di\u00ean H\u1ed3ng",
         "latitude": 10.775472637154722,
         "longitude": 106.66149459345698
       },
@@ -249,18 +297,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 16,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_10",
       "origin": {
-        "label": "Hẻm 54 Duy Tân · Tân Hòa",
+        "label": "od_10 origin",
         "latitude": 10.784690698500322,
         "longitude": 106.65192191922864
       },
       "destination": {
-        "label": "Lê Lư · Phú Thọ Hòa",
+        "label": "od_10 destination",
         "latitude": 10.78543215431568,
         "longitude": 106.6194194347684
       },
@@ -277,18 +331,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 18,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_12",
       "origin": {
-        "label": "Hẻm Tô Hiến Thành · Hòa Hưng",
+        "label": "H\u1ebbm T\u00f4 Hi\u1ebfn Th\u00e0nh \u00b7 H\u00f2a H\u01b0ng",
         "latitude": 10.777587693333428,
         "longitude": 106.66634819963508
       },
       "destination": {
-        "label": "Đặng Văn Sâm · Đức Nhuận",
+        "label": "\u0110\u1eb7ng V\u0103n S\u00e2m \u00b7 \u0110\u1ee9c Nhu\u1eadn",
         "latitude": 10.811534241698942,
         "longitude": 106.6744742795683
       },
@@ -305,18 +365,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 20,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_04",
       "origin": {
-        "label": "Phan Đình Phùng · Phú Thọ Hòa",
+        "label": "od_04 origin",
         "latitude": 10.792322768162512,
         "longitude": 106.63114890112082
       },
       "destination": {
-        "label": "Đường số 8E · An Lạc",
+        "label": "od_04 destination",
         "latitude": 10.756012195020205,
         "longitude": 106.61787070547072
       },
@@ -333,18 +399,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 22,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_11",
       "origin": {
-        "label": "Trường Sơn · Tân Sơn Hòa",
+        "label": "Tr\u01b0\u1eddng S\u01a1n \u00b7 T\u00e2n S\u01a1n H\u00f2a",
         "latitude": 10.813094204700738,
         "longitude": 106.66550535728128
       },
       "destination": {
-        "label": "Đường Số 6 · Tân Sơn Nhì",
+        "label": "\u0110\u01b0\u1eddng S\u1ed1 6 \u00b7 T\u00e2n S\u01a1n Nh\u00ec",
         "latitude": 10.799864951291744,
         "longitude": 106.62542977979922
       },
@@ -361,18 +433,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 24,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_13",
       "origin": {
-        "label": "Lý Thường Kiệt · Tân Hòa",
+        "label": "od_13 origin",
         "latitude": 10.78271871988162,
         "longitude": 106.65433428429004
       },
       "destination": {
-        "label": "Lê Quang Định · Bình Lợi Trung",
+        "label": "od_13 destination",
         "latitude": 10.803405401766309,
         "longitude": 106.698196608817
       },
@@ -389,18 +467,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 26,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_08",
       "origin": {
-        "label": "Hoa Cau · Cầu Kiệu",
+        "label": "od_08 origin",
         "latitude": 10.799565164990703,
         "longitude": 106.68903344672287
       },
       "destination": {
-        "label": "Hẻm 104 Trịnh Đình Trọng · Hòa Bình",
+        "label": "od_08 destination",
         "latitude": 10.774781425489092,
         "longitude": 106.64443701246266
       },
@@ -417,18 +501,24 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 28,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": false
     },
     {
       "scenario_id": "od_05",
       "origin": {
-        "label": "Hẻm Cao Thắng · Hòa Hưng",
+        "label": "H\u1ebbm Cao Th\u1eafng \u00b7 H\u00f2a H\u01b0ng",
         "latitude": 10.775500302968537,
         "longitude": 106.67417471011515
       },
       "destination": {
-        "label": "Khu phố 11 · Phú Lâm",
+        "label": "Khu ph\u1ed1 11 \u00b7 Ph\u00fa L\u00e2m",
         "latitude": 10.751489340242742,
         "longitude": 106.62861919680236
       },
@@ -445,8 +535,14 @@
         5.0,
         10.0
       ],
+      "supported_time_windows": [
+        "morning_peak",
+        "midday",
+        "evening_peak"
+      ],
       "demo_distance_rank": 29,
-      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
+      "opening_example": true
     }
   ]
 }

@@ -69,6 +69,14 @@ function toRoute(row: Record<string, unknown>): RouteRecord {
         : Boolean(row.fewer_than_requested_alternatives),
     research_warning:
       row.research_warning == null ? null : String(row.research_warning),
+    is_also_lowest_exposure:
+      row.is_also_lowest_exposure == null
+        ? null
+        : Boolean(row.is_also_lowest_exposure),
+    tradeoff_slot:
+      row.tradeoff_slot == null || row.tradeoff_slot === ''
+        ? null
+        : String(row.tradeoff_slot),
   }
 }
 
@@ -89,6 +97,7 @@ export async function localFetchRoutes(params: {
   toLongitude?: number
   mode: string
   deltaMinutes: number
+  timeWindow?: string
 }): Promise<RoutesResponse> {
   const pack = await loadPack()
   let scenario = params.scenarioId
@@ -124,11 +133,13 @@ export async function localFetchRoutes(params: {
   if (matchedDelta === undefined) {
     throw new Error(`Unsupported delta_minutes=${params.deltaMinutes}.`)
   }
+  const windowId = (params.timeWindow ?? 'morning_peak').trim().toLowerCase()
   const group = pack.routes.filter(
     (row) =>
       String(row.scenario_id) === scenario.scenario_id &&
       String(row.mode).toLowerCase() === mode &&
-      Math.abs(Number(row.delta_minutes) - Number(matchedDelta)) < 1e-9,
+      Math.abs(Number(row.delta_minutes) - Number(matchedDelta)) < 1e-9 &&
+      String(row.time_window ?? 'morning_peak').toLowerCase() === windowId,
   )
   group.sort(
     (a, b) => Number(a.rank) - Number(b.rank) || String(a.route_id).localeCompare(String(b.route_id)),
@@ -146,6 +157,7 @@ export async function localFetchRoutes(params: {
     fewer_than_requested_alternatives: fastestRaw.fewer_than_requested_alternatives,
     alternative_count: alternativesRaw.length,
     requested_ends_reversed: reversed,
+    time_window: windowId,
     empty_alternatives_message: alternativesRaw.length
       ? null
       : 'No lower-exposure alternative fits your current time limit. Try allowing a few more minutes.',
@@ -157,6 +169,7 @@ export async function localFetchRoutes(params: {
     scenario_id: scenario.scenario_id,
     mode,
     delta_minutes: Number(matchedDelta),
+    time_window: windowId,
     fastest_route: reversed ? reverseRouteGeometry(fastest) : fastest,
     alternatives: reversed
       ? alternatives.map((route) => reverseRouteGeometry(route))

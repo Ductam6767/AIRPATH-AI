@@ -167,9 +167,9 @@ export function RouteCards({
               ? t.emptyAltsNoneFound
               : t.otherFeasibleNote}
           </p>
-          <p>{t.packFinding}</p>
         </div>
       )}
+      <p className="muted small search-bar__pack-note">{t.packFinding}</p>
     </section>
   )
 }
