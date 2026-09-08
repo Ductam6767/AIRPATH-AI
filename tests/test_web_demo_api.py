@@ -41,7 +41,7 @@ def test_scenario_selection_is_distance_stratified() -> None:
 
     od = pd.read_csv(OD_PATH)
     selected = select_demo_scenarios(od)
-    assert len(selected) == 8
+    assert len(selected) == 16
     distances = selected["straight_line_distance_km"].tolist()
     assert distances == sorted(distances)
     assert selected["scenario_id"].is_unique
@@ -70,7 +70,7 @@ def test_write_demo_pack_roundtrip(tmp_path: Path) -> None:
     scenarios = json.loads(paths["scenarios"].read_text(encoding="utf-8"))
     routes = json.loads(paths["routes"].read_text(encoding="utf-8"))
     metadata = json.loads(paths["metadata"].read_text(encoding="utf-8"))
-    assert len(scenarios["scenarios"]) == 8
+    assert len(scenarios["scenarios"]) == 16
     assert len(routes["routes"]) == len(pack["routes"])
     assert metadata["pack_name"] == "airpath_web_demo_v1"
 
@@ -89,7 +89,7 @@ def test_demo_scenarios(client: TestClient) -> None:
     assert response.status_code == 200
     payload = response.json()
     assert "scenarios" in payload
-    assert len(payload["scenarios"]) == 8
+    assert len(payload["scenarios"]) == 16
     first = payload["scenarios"][0]
     assert {"scenario_id", "origin", "destination", "supported_modes", "supported_delta_minutes"} <= set(
         first

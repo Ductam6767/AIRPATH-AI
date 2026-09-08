@@ -14,18 +14,26 @@
     "freeze_manifest": "data/processed/final_robustness/freeze_manifest.json"
   },
   "scenario_selection": {
-    "count": 8,
+    "count": 16,
     "distance_ranks": [
       0,
+      2,
       4,
+      6,
       8,
+      10,
       12,
+      14,
       16,
+      18,
       20,
+      22,
       24,
+      26,
+      28,
       29
     ],
-    "method": "Evenly spaced ranks by straight-line OD distance across the 30 P0-2B scenarios so short and long trips are both represented. Scenarios were not filtered on exposure reduction or map aesthetics."
+    "method": "Denser evenly spaced ranks by straight-line OD distance across the 30 P0-2B scenarios (16 of 30) so short and long trips are both represented. Scenarios were not filtered on exposure reduction or map aesthetics. Not live city-wide OD search."
   },
   "supported_modes": [
     "walking",
@@ -39,16 +47,16 @@
     5.0,
     10.0
   ],
-  "exposure_unit": "(\u00b5g/m\u00b3)\u00b7min",
+  "exposure_unit": "(µg/m³)·min",
   "research_warning": "PM2.5 values are forecast-based spatial estimates derived from an hourly monitoring network. Exposure is a time-weighted PM2.5 proxy, not a direct measure of inhaled dose or health risk. Road-level PM2.5 is estimated (IDW p=1 over six stations), not measured. Pilot area only; no live traffic.",
   "limitations": [
     "Hourly HealthyAir resolution; segment ETA maps to hourly forecast buckets.",
-    "Six-station pilot support (stations 2\u20136 polygon); road PM2.5 is estimated.",
+    "Six-station pilot support (stations 2–6 polygon); road PM2.5 is estimated.",
     "No road-level ground-truth PM2.5.",
     "Constant-speed ETA; no live traffic.",
-    "Alternatives are top feasible lower-predicted-exposure candidates among generated routes \u2014 not a globally optimal cleanest path.",
+    "Alternatives are top feasible lower-predicted-exposure candidates among generated routes — not a globally optimal cleanest path.",
     "Not a medical recommendation or inhaled-dose estimate."
   ],
-  "route_count": 289,
+  "route_count": 593,
   "scientific_logic_modified": false
 }

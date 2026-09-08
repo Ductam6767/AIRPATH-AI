@@ -26,13 +26,35 @@
         10.0
       ],
       "demo_distance_rank": 0,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
-      "opening_example": false,
-      "supported_time_windows": [
-        "morning_peak",
-        "midday",
-        "evening_peak"
-      ]
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+    },
+    {
+      "scenario_id": "od_03",
+      "origin": {
+        "label": "od_03 origin",
+        "latitude": 10.765486385651338,
+        "longitude": 106.6542878896305
+      },
+      "destination": {
+        "label": "od_03 destination",
+        "latitude": 10.776300874791875,
+        "longitude": 106.63613550048358
+      },
+      "straight_line_distance_km": 2.319035445599661,
+      "supported_modes": [
+        "walking",
+        "motorbike"
+      ],
+      "supported_delta_minutes": [
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        5.0,
+        10.0
+      ],
+      "demo_distance_rank": 2,
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
     },
     {
       "scenario_id": "od_22",
@@ -60,13 +82,35 @@
         10.0
       ],
       "demo_distance_rank": 4,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
-      "opening_example": false,
-      "supported_time_windows": [
-        "morning_peak",
-        "midday",
-        "evening_peak"
-      ]
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+    },
+    {
+      "scenario_id": "od_16",
+      "origin": {
+        "label": "od_16 origin",
+        "latitude": 10.78037874654082,
+        "longitude": 106.62732957500644
+      },
+      "destination": {
+        "label": "od_16 destination",
+        "latitude": 10.80368144843654,
+        "longitude": 106.6223438621628
+      },
+      "straight_line_distance_km": 2.6477548162650995,
+      "supported_modes": [
+        "walking",
+        "motorbike"
+      ],
+      "supported_delta_minutes": [
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        5.0,
+        10.0
+      ],
+      "demo_distance_rank": 6,
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
     },
     {
       "scenario_id": "od_28",
@@ -94,13 +138,35 @@
         10.0
       ],
       "demo_distance_rank": 8,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
-      "opening_example": false,
-      "supported_time_windows": [
-        "morning_peak",
-        "midday",
-        "evening_peak"
-      ]
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+    },
+    {
+      "scenario_id": "od_07",
+      "origin": {
+        "label": "od_07 origin",
+        "latitude": 10.790954730672,
+        "longitude": 106.6578912360163
+      },
+      "destination": {
+        "label": "od_07 destination",
+        "latitude": 10.802218892212034,
+        "longitude": 106.63387899927775
+      },
+      "straight_line_distance_km": 2.906505160198627,
+      "supported_modes": [
+        "walking",
+        "motorbike"
+      ],
+      "supported_delta_minutes": [
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        5.0,
+        10.0
+      ],
+      "demo_distance_rank": 10,
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
     },
     {
       "scenario_id": "od_01",
@@ -128,13 +194,35 @@
         10.0
       ],
       "demo_distance_rank": 12,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
-      "opening_example": false,
-      "supported_time_windows": [
-        "morning_peak",
-        "midday",
-        "evening_peak"
-      ]
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+    },
+    {
+      "scenario_id": "od_02",
+      "origin": {
+        "label": "od_02 origin",
+        "latitude": 10.799537520759737,
+        "longitude": 106.63665376437883
+      },
+      "destination": {
+        "label": "od_02 destination",
+        "latitude": 10.776087579733089,
+        "longitude": 106.621525638113
+      },
+      "straight_line_distance_km": 3.087024889524067,
+      "supported_modes": [
+        "walking",
+        "motorbike"
+      ],
+      "supported_delta_minutes": [
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        5.0,
+        10.0
+      ],
+      "demo_distance_rank": 14,
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
     },
     {
       "scenario_id": "od_23",
@@ -162,13 +250,35 @@
         10.0
       ],
       "demo_distance_rank": 16,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
-      "opening_example": false,
-      "supported_time_windows": [
-        "morning_peak",
-        "midday",
-        "evening_peak"
-      ]
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+    },
+    {
+      "scenario_id": "od_10",
+      "origin": {
+        "label": "od_10 origin",
+        "latitude": 10.784690698500322,
+        "longitude": 106.65192191922864
+      },
+      "destination": {
+        "label": "od_10 destination",
+        "latitude": 10.78543215431568,
+        "longitude": 106.6194194347684
+      },
+      "straight_line_distance_km": 3.551234051212264,
+      "supported_modes": [
+        "walking",
+        "motorbike"
+      ],
+      "supported_delta_minutes": [
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        5.0,
+        10.0
+      ],
+      "demo_distance_rank": 18,
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
     },
     {
       "scenario_id": "od_12",
@@ -196,13 +306,35 @@
         10.0
       ],
       "demo_distance_rank": 20,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
-      "opening_example": false,
-      "supported_time_windows": [
-        "morning_peak",
-        "midday",
-        "evening_peak"
-      ]
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+    },
+    {
+      "scenario_id": "od_04",
+      "origin": {
+        "label": "od_04 origin",
+        "latitude": 10.792322768162512,
+        "longitude": 106.63114890112082
+      },
+      "destination": {
+        "label": "od_04 destination",
+        "latitude": 10.756012195020205,
+        "longitude": 106.61787070547072
+      },
+      "straight_line_distance_km": 4.290180649587548,
+      "supported_modes": [
+        "walking",
+        "motorbike"
+      ],
+      "supported_delta_minutes": [
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        5.0,
+        10.0
+      ],
+      "demo_distance_rank": 22,
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
     },
     {
       "scenario_id": "od_11",
@@ -230,13 +362,63 @@
         10.0
       ],
       "demo_distance_rank": 24,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
-      "opening_example": false,
-      "supported_time_windows": [
-        "morning_peak",
-        "midday",
-        "evening_peak"
-      ]
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+    },
+    {
+      "scenario_id": "od_13",
+      "origin": {
+        "label": "od_13 origin",
+        "latitude": 10.78271871988162,
+        "longitude": 106.65433428429004
+      },
+      "destination": {
+        "label": "od_13 destination",
+        "latitude": 10.803405401766309,
+        "longitude": 106.698196608817
+      },
+      "straight_line_distance_km": 5.314585576824305,
+      "supported_modes": [
+        "walking",
+        "motorbike"
+      ],
+      "supported_delta_minutes": [
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        5.0,
+        10.0
+      ],
+      "demo_distance_rank": 26,
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
+    },
+    {
+      "scenario_id": "od_08",
+      "origin": {
+        "label": "od_08 origin",
+        "latitude": 10.799565164990703,
+        "longitude": 106.68903344672287
+      },
+      "destination": {
+        "label": "od_08 destination",
+        "latitude": 10.774781425489092,
+        "longitude": 106.64443701246266
+      },
+      "straight_line_distance_km": 5.596778485150166,
+      "supported_modes": [
+        "walking",
+        "motorbike"
+      ],
+      "supported_delta_minutes": [
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        5.0,
+        10.0
+      ],
+      "demo_distance_rank": 28,
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
     },
     {
       "scenario_id": "od_05",
@@ -264,13 +446,7 @@
         10.0
       ],
       "demo_distance_rank": 29,
-      "selection_method": "evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes",
-      "opening_example": true,
-      "supported_time_windows": [
-        "morning_peak",
-        "midday",
-        "evening_peak"
-      ]
+      "selection_method": "denser evenly spaced straight-line distance ranks among P0-2B OD scenarios; not cherry-picked for exposure outcomes"
     }
   ]
 }

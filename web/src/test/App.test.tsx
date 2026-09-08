@@ -49,6 +49,22 @@ function jsonResponse(data: unknown, status = 200): Response {
   })
 }
 
+async function chooseDefaultTrip() {
+  const user = userEvent.setup()
+  await screen.findByRole('option', { name: 'Origin 01' })
+  await user.selectOptions(
+    screen.getByLabelText('From'),
+    screen.getByRole('option', { name: 'Origin 01' }),
+  )
+  await user.selectOptions(
+    screen.getByLabelText('Where do you want to go?'),
+    screen.getByRole('option', { name: 'Destination 01' }),
+  )
+  await user.click(screen.getByRole('button', { name: 'Compare routes' }))
+  await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+  return user
+}
+
 function stubApi(options?: {
   routes?: typeof mockRoutesWithAlts
   scenariosFail?: boolean
@@ -80,6 +96,18 @@ describe('AIRPATH frontend', () => {
     vi.restoreAllMocks()
   })
 
+  it('does not auto-select a trip or load routes', async () => {
+    stubApi()
+    render(<App />)
+    expect(await screen.findByText('AIRPATH-AI')).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'Choose origin' })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'Choose destination' })).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeDisabled()
+  })
+
   it('renders API route comparison from backend response', async () => {
     stubApi()
     render(<App />)
@@ -89,8 +117,11 @@ describe('AIRPATH frontend', () => {
     expect(
       screen.getByRole('button', { name: 'Compare routes' }),
     ).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
+    await chooseDefaultTrip()
     expect(
-      await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
+      screen.getByRole('button', { name: /Fastest, 40 minutes/i }),
     ).toBeInTheDocument()
     expect(screen.getByText('Health-first')).toBeInTheDocument()
     expect(screen.getAllByText(/28% lower predicted exposure/i).length).toBeGreaterThan(0)
@@ -104,14 +135,12 @@ describe('AIRPATH frontend', () => {
     expect(
       screen.getByText(/time-weighted proxy from hourly data, not a medical risk score/i),
     ).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
   })
 
   it('updates delta slider to absolute minute values', async () => {
     stubApi()
     render(<App />)
-    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    await chooseDefaultTrip()
 
     const slider = screen.getByLabelText(/Maximum additional time/i)
     fireEvent.change(slider, { target: { value: '4' } })
@@ -122,10 +151,9 @@ describe('AIRPATH frontend', () => {
   })
 
   it('selects a route from a card and updates selection state', async () => {
-    const user = userEvent.setup()
     stubApi()
     render(<App />)
-    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    const user = await chooseDefaultTrip()
     expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-2')
 
     const fastestCard = screen.getByRole('button', {
@@ -138,7 +166,7 @@ describe('AIRPATH frontend', () => {
   it('shows empty-alternatives message without empty cards', async () => {
     stubApi({ routes: mockRoutesEmptyAlts })
     render(<App />)
-    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    await chooseDefaultTrip()
     const slider = screen.getByLabelText(/Maximum additional time/i)
     fireEvent.change(slider, { target: { value: '0' } })
 
@@ -162,6 +190,7 @@ describe('AIRPATH frontend', () => {
   it('labels higher-exposure alternatives as feasible, not lower', async () => {
     stubApi({ routes: mockRoutesHigherExposure })
     render(<App />)
+    await chooseDefaultTrip()
     expect(await screen.findByText(/\+10% higher predicted exposure/i)).toBeInTheDocument()
     expect(screen.getByText('Feasible alternative')).toBeInTheDocument()
     expect(screen.queryByText('Lower predicted exposure')).not.toBeInTheDocument()
@@ -181,10 +210,9 @@ describe('AIRPATH frontend', () => {
   })
 
   it('explains in methodology that AIRPATH compares rather than guaranteeing a cleaner route', async () => {
-    const user = userEvent.setup()
     stubApi()
     render(<App />)
-    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    const user = await chooseDefaultTrip()
     await user.click(screen.getByRole('button', { name: 'How AIRPATH works' }))
     expect(
       await screen.findByText(
@@ -194,10 +222,9 @@ describe('AIRPATH frontend', () => {
   })
 
   it('starts navigation without leaving the real route data', async () => {
-    const user = userEvent.setup()
     stubApi()
     render(<App />)
-    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    const user = await chooseDefaultTrip()
     await user.click(screen.getByRole('button', { name: 'Start navigation' }))
     expect(screen.getByText('Turn-signal assist')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'End navigation' })).toBeInTheDocument()

@@ -4,7 +4,7 @@ import { localFetchRoutes, localFetchScenarios } from '../offline/localDemo'
 describe('bundled demo pack', () => {
   it('serves frozen scenarios and a walking route for od_01', async () => {
     const scenarios = await localFetchScenarios()
-    expect(scenarios.scenarios).toHaveLength(8)
+    expect(scenarios.scenarios).toHaveLength(16)
     const payload = await localFetchRoutes({
       scenarioId: 'od_01',
       mode: 'walking',

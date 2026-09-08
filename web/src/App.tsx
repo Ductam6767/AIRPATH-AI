@@ -41,12 +41,9 @@ import type {
   TravelMode,
 } from './types'
 import {
-  destinationsForOrigin,
   findScenarioId,
   friendlyApiError,
   pickRecommendedRoute,
-  scenarioDestKey,
-  scenarioOriginKey,
 } from './utils/labels'
 
 type AppFlow = 'plan' | 'compare' | 'navigate' | 'gap1'
@@ -77,6 +74,7 @@ function AppInner() {
   const [gap1Loading, setGap1Loading] = useState(false)
   const [gap1Error, setGap1Error] = useState<string | null>(null)
   const [labOpen, setLabOpen] = useState(false)
+  const [hasRequested, setHasRequested] = useState(false)
   const [onboardOpen, setOnboardOpen] = useState(
     () =>
       IS_MOBILE_BUILD &&
@@ -131,11 +129,6 @@ function AppInner() {
         const list = payload.scenarios ?? []
         setScenarios(list)
         setDataSource(getDemoDataSource())
-        const opening = list.find((scenario) => scenario.opening_example) ?? list[0]
-        if (opening) {
-          setOriginKey(scenarioOriginKey(opening))
-          setDestinationKey(scenarioDestKey(opening))
-        }
       } catch (err) {
         if (controller.signal.aborted) return
         setError(friendlyApiError(err))
@@ -151,8 +144,11 @@ function AppInner() {
   const loadRoutes = useCallback(async () => {
     const scenarioId = findScenarioId(scenarios, originKey, destinationKey)
     if (!scenarioId) {
-      setError('That origin and destination combination is not in the demo dataset.')
       setRoutesPayload(null)
+      setSelectedRouteId(null)
+      if (originKey && destinationKey) {
+        setError('That origin and destination combination is not in the demo dataset.')
+      }
       return
     }
     setLoadingRoutes(true)
@@ -189,7 +185,7 @@ function AppInner() {
   ])
 
   useEffect(() => {
-    if (!selectedScenario || initialLoading) return
+    if (!hasRequested || !selectedScenario || initialLoading) return
     void loadRoutes()
   }, [
     selectedScenario?.scenario_id,
@@ -197,13 +193,25 @@ function AppInner() {
     deltaMinutes,
     timeWindow,
     initialLoading,
+    hasRequested,
   ]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleOriginChange = (key: string) => {
     setOriginKey(key)
-    const destinations = destinationsForOrigin(scenarios, key)
-    const nextDest = destinations[0]
-    setDestinationKey(nextDest?.key ?? '')
+    setDestinationKey('')
+    setRoutesPayload(null)
+    setSelectedRouteId(null)
+    setHasRequested(false)
+    setError(null)
+    setFlow('plan')
+  }
+
+  const handleDestinationChange = (key: string) => {
+    setDestinationKey(key)
+    setRoutesPayload(null)
+    setSelectedRouteId(null)
+    setHasRequested(false)
+    setError(null)
     setFlow('plan')
   }
 
@@ -345,10 +353,7 @@ function AppInner() {
                   loadingRoutes={loadingRoutes}
                   compact={false}
                   onOriginChange={handleOriginChange}
-                  onDestinationChange={(key) => {
-                    setDestinationKey(key)
-                    setFlow('plan')
-                  }}
+                  onDestinationChange={handleDestinationChange}
                   onModeChange={setMode}
                   onMobilityChange={setMobility}
                   onTimeWindowChange={setTimeWindow}
@@ -356,6 +361,7 @@ function AppInner() {
                     setDeltaMinutes(value as (typeof DELTA_MINUTES)[number])
                   }
                   onFindRoutes={() => {
+                    setHasRequested(true)
                     setFlow('compare')
                     void loadRoutes()
                   }}

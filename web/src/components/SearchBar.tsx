@@ -60,37 +60,39 @@ export function SearchBar({
     <section className={compact ? 'search-bar search-bar--compact' : 'search-bar'}>
       <label className="field" htmlFor="destination-select">
         <span>{t.whereTo}</span>
-        <select
-          id="destination-select"
-          value={destinationKey}
-          onChange={(event) => onDestinationChange(event.target.value)}
-          disabled={destinations.length === 0}
-        >
-          {destinations.map((destination) => (
-            <option
-              key={destination.key}
-              value={destination.key}
-              title={destination.secondary}
-            >
-              {destination.label}
-            </option>
-          ))}
-        </select>
+          <select
+            id="destination-select"
+            value={destinationKey}
+            onChange={(event) => onDestinationChange(event.target.value)}
+            disabled={destinations.length === 0}
+          >
+            <option value="">{t.chooseDestination}</option>
+            {destinations.map((destination) => (
+              <option
+                key={destination.key}
+                value={destination.key}
+                title={destination.secondary}
+              >
+                {destination.label}
+              </option>
+            ))}
+          </select>
       </label>
 
       <label className="field" htmlFor="origin-select">
         <span>{t.from}</span>
-        <select
-          id="origin-select"
-          value={originKey}
-          onChange={(event) => onOriginChange(event.target.value)}
-        >
-          {origins.map((item) => (
-            <option key={item.key} value={item.key} title={item.secondary}>
-              {item.label}
-            </option>
-          ))}
-        </select>
+          <select
+            id="origin-select"
+            value={originKey}
+            onChange={(event) => onOriginChange(event.target.value)}
+          >
+            <option value="">{t.chooseOrigin}</option>
+            {origins.map((item) => (
+              <option key={item.key} value={item.key} title={item.secondary}>
+                {item.label}
+              </option>
+            ))}
+          </select>
         {origin && selectedScenario ? (
           <p className="muted small search-bar__here">
             {t.currentLocation}: {originLabel(selectedScenario)}

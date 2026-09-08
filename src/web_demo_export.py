@@ -14,8 +14,6 @@ from typing import Final, Sequence
 
 import pandas as pd
 
-from .route_optimizer import TIME_TOLERANCES_MINUTES
-
 REPO_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT_DIR: Final[Path] = REPO_ROOT / "data" / "processed" / "web_demo"
 SHORTLIST_PATH: Final[Path] = (
@@ -31,12 +29,19 @@ FREEZE_MANIFEST_PATH: Final[Path] = (
     REPO_ROOT / "data" / "processed" / "final_robustness" / "freeze_manifest.json"
 )
 
+# Must match src.route_optimizer.TIME_TOLERANCES_MINUTES (frozen).
+TIME_TOLERANCES_MINUTES: Final[tuple[int, ...]] = (0, 1, 2, 3, 5, 10)
+
 # Representative demo departure from the P0-2B / P0-3 panel.
 DEMO_DEPARTURE_TIME: Final[str] = "2022-02-27T06:00:00"
 DEMO_FORECASTING_ORIGIN: Final[str] = "2022-02-27T05:00:00"
 SUPPORTED_MODES: Final[tuple[str, ...]] = ("walking", "motorbike")
-# Evenly spaced distance ranks among the 30 P0-2B OD pairs (sorted by km).
-DEMO_DISTANCE_RANKS: Final[tuple[int, ...]] = (0, 4, 8, 12, 16, 20, 24, 29)
+# Denser distance-stratified subset of the 30 P0-2B OD pairs (sorted by km).
+# Still packaging-only: no retrain, no new routing. 16 pairs give users more
+# choice than the original 8 without shipping the full geometry table.
+DEMO_DISTANCE_RANKS: Final[tuple[int, ...]] = (
+    0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 29,
+)
 RESEARCH_WARNING: Final[str] = (
     "PM2.5 values are forecast-based spatial estimates derived from an hourly "
     "monitoring network. Exposure is a time-weighted PM2.5 proxy, not a direct "
@@ -59,8 +64,8 @@ def select_demo_scenarios(od_scenarios: pd.DataFrame) -> pd.DataFrame:
     selected = ordered.iloc[ranks].copy()
     selected["demo_distance_rank"] = ranks
     selected["selection_method"] = (
-        "evenly spaced straight-line distance ranks among P0-2B OD scenarios; "
-        "not cherry-picked for exposure outcomes"
+        "denser evenly spaced straight-line distance ranks among P0-2B OD "
+        "scenarios; not cherry-picked for exposure outcomes"
     )
     return selected.reset_index(drop=True)
 
@@ -259,9 +264,10 @@ def build_demo_pack(
             "count": len(scenarios),
             "distance_ranks": list(DEMO_DISTANCE_RANKS),
             "method": (
-                "Evenly spaced ranks by straight-line OD distance across the "
-                "30 P0-2B scenarios so short and long trips are both represented. "
-                "Scenarios were not filtered on exposure reduction or map aesthetics."
+                "Denser evenly spaced ranks by straight-line OD distance across "
+                "the 30 P0-2B scenarios (16 of 30) so short and long trips are "
+                "both represented. Scenarios were not filtered on exposure "
+                "reduction or map aesthetics. Not live city-wide OD search."
             ),
         },
         "supported_modes": list(modes),
@@ -280,7 +286,38 @@ def build_demo_pack(
         "route_count": len(routes),
         "scientific_logic_modified": False,
     }
+    overlay_existing_endpoint_labels(scenarios, DEFAULT_OUTPUT_DIR / "scenarios.json")
     return {"scenarios": scenarios, "routes": routes, "metadata": metadata}
+
+
+def overlay_existing_endpoint_labels(
+    scenarios: list[dict[str, object]],
+    existing_path: Path,
+) -> None:
+    """Keep human street names already curated for a scenario_id."""
+    if not existing_path.is_file():
+        return
+    try:
+        payload = json.loads(existing_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return
+    previous = {
+        str(item.get("scenario_id")): item
+        for item in payload.get("scenarios", [])
+        if isinstance(item, dict)
+    }
+    for scenario in scenarios:
+        old = previous.get(str(scenario["scenario_id"]))
+        if not old:
+            continue
+        origin = scenario.get("origin")
+        dest = scenario.get("destination")
+        old_origin = old.get("origin") if isinstance(old.get("origin"), dict) else None
+        old_dest = old.get("destination") if isinstance(old.get("destination"), dict) else None
+        if isinstance(origin, dict) and old_origin and old_origin.get("label"):
+            origin["label"] = old_origin["label"]
+        if isinstance(dest, dict) and old_dest and old_dest.get("label"):
+            dest["label"] = old_dest["label"]
 
 
 def write_demo_pack(output_dir: Path, pack: dict[str, object]) -> dict[str, Path]:
@@ -292,15 +329,16 @@ def write_demo_pack(output_dir: Path, pack: dict[str, object]) -> dict[str, Path
         "metadata": output_dir / "metadata.json",
     }
     paths["scenarios"].write_text(
-        json.dumps({"scenarios": pack["scenarios"]}, indent=2) + "\n",
+        json.dumps({"scenarios": pack["scenarios"]}, indent=2, ensure_ascii=False)
+        + "\n",
         encoding="utf-8",
     )
     paths["routes"].write_text(
-        json.dumps({"routes": pack["routes"]}, indent=2) + "\n",
+        json.dumps({"routes": pack["routes"]}, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
     paths["metadata"].write_text(
-        json.dumps(pack["metadata"], indent=2) + "\n",
+        json.dumps(pack["metadata"], indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
     return paths
