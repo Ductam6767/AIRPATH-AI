@@ -44,6 +44,8 @@ import {
   findScenarioId,
   friendlyApiError,
   pickRecommendedRoute,
+  resolveDemoPair,
+  type PairAnchor,
 } from './utils/labels'
 
 type AppFlow = 'plan' | 'compare' | 'navigate' | 'gap1'
@@ -75,6 +77,8 @@ function AppInner() {
   const [gap1Error, setGap1Error] = useState<string | null>(null)
   const [labOpen, setLabOpen] = useState(false)
   const [hasRequested, setHasRequested] = useState(false)
+  const [lastEdited, setLastEdited] = useState<PairAnchor | null>(null)
+  const [snappedPair, setSnappedPair] = useState(false)
   const [onboardOpen, setOnboardOpen] = useState(
     () =>
       IS_MOBILE_BUILD &&
@@ -146,9 +150,6 @@ function AppInner() {
     if (!scenarioId) {
       setRoutesPayload(null)
       setSelectedRouteId(null)
-      if (originKey && destinationKey) {
-        setError('That origin and destination combination is not in the demo dataset.')
-      }
       return
     }
     setLoadingRoutes(true)
@@ -198,24 +199,28 @@ function AppInner() {
 
   const handleOriginChange = (key: string) => {
     setOriginKey(key)
+    setLastEdited('origin')
     if (key && key === destinationKey) {
       setDestinationKey('')
     }
     setRoutesPayload(null)
     setSelectedRouteId(null)
     setHasRequested(false)
+    setSnappedPair(false)
     setError(null)
     setFlow('plan')
   }
 
   const handleDestinationChange = (key: string) => {
     setDestinationKey(key)
+    setLastEdited('destination')
     if (key && key === originKey) {
       setOriginKey('')
     }
     setRoutesPayload(null)
     setSelectedRouteId(null)
     setHasRequested(false)
+    setSnappedPair(false)
     setError(null)
     setFlow('plan')
   }
@@ -382,13 +387,29 @@ function AppInner() {
                     setDeltaMinutes(value as (typeof DELTA_MINUTES)[number])
                   }
                   onFindRoutes={() => {
+                    const resolved = resolveDemoPair(
+                      scenarios,
+                      originKey,
+                      destinationKey,
+                      lastEdited,
+                    )
+                    if (!resolved) {
+                      setError(t.unmatchedPair)
+                      return
+                    }
+                    setOriginKey(resolved.originKey)
+                    setDestinationKey(resolved.destinationKey)
+                    setSnappedPair(resolved.snapped)
+                    setError(null)
                     setHasRequested(true)
                     setFlow('compare')
-                    void loadRoutes()
                   }}
                 />
 
                 {error ? <StatusBanner tone="error">{error}</StatusBanner> : null}
+                {snappedPair && !error ? (
+                  <StatusBanner tone="info">{t.snappedPair}</StatusBanner>
+                ) : null}
 
                 {routesPayload ? (
                   <>

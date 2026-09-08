@@ -157,13 +157,39 @@ describe('AIRPATH frontend', () => {
     render(<App />)
     await user.selectOptions(await screen.findByLabelText('From'), 'Origin 01')
     await user.selectOptions(screen.getByLabelText('To'), 'Market Hall')
-    expect(screen.getByText(/not in the demo dataset/i)).toBeInTheDocument()
+    expect(screen.getByText(/not one precomputed pair/i)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Destination 01' }))
     expect(screen.getByLabelText('To')).toHaveDisplayValue('Destination 01')
     await user.click(screen.getByRole('button', { name: 'Compare routes' }))
     expect(
       await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
     ).toBeInTheDocument()
+  })
+
+  it('compares a mixed pair by using the last-chosen end', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    const from = await screen.findByLabelText('From')
+    const to = screen.getByLabelText('To')
+    await user.selectOptions(from, 'Origin 01')
+    await user.selectOptions(to, 'Market Hall')
+    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
+    expect(await screen.findByRole('button', { name: /Fastest, 40 minutes/i })).toBeInTheDocument()
+    expect(from).toHaveDisplayValue('Park Gate')
+    expect(to).toHaveDisplayValue('Market Hall')
+    expect(screen.getByText(/precomputed demo trip/i)).toBeInTheDocument()
+  })
+
+  it('compares from a single origin by filling its demo destination', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    const from = await screen.findByLabelText('From')
+    await user.selectOptions(from, 'Origin 01')
+    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
+    expect(await screen.findByRole('button', { name: /Fastest, 40 minutes/i })).toBeInTheDocument()
+    expect(screen.getByLabelText('To')).toHaveDisplayValue('Destination 01')
   })
 
   it('renders API route comparison from backend response', async () => {

@@ -7,6 +7,7 @@ import {
   originLabel,
   pickRecommendedRoute,
   reductionBadgeText,
+  resolveDemoPair,
   routeCardTitle,
   routeKindLabel,
   scenarioDestKey,
@@ -131,6 +132,56 @@ describe('labels', () => {
         scenarioOriginKey(first),
       ),
     ).toBeNull()
+  })
+
+  it('resolves Compare to the last-edited endpoint when the pair is mixed', () => {
+    const first: Scenario = {
+      ...base,
+      scenario_id: 'od_01',
+      origin: { label: 'Origin A', latitude: 10.79, longitude: 106.66 },
+      destination: { label: 'Dest A', latitude: 10.8, longitude: 106.68 },
+    }
+    const second: Scenario = {
+      ...base,
+      scenario_id: 'od_05',
+      origin: { label: 'Park Gate', latitude: 10.75, longitude: 106.63 },
+      destination: { label: 'Market Hall', latitude: 10.78, longitude: 106.68 },
+    }
+    const scenarios = [first, second]
+    expect(
+      resolveDemoPair(
+        scenarios,
+        scenarioOriginKey(first),
+        scenarioDestKey(second),
+        'origin',
+      ),
+    ).toEqual({
+      originKey: scenarioOriginKey(first),
+      destinationKey: scenarioDestKey(first),
+      scenarioId: 'od_01',
+      snapped: true,
+    })
+    expect(
+      resolveDemoPair(
+        scenarios,
+        scenarioOriginKey(first),
+        scenarioDestKey(second),
+        'destination',
+      ),
+    ).toEqual({
+      originKey: scenarioOriginKey(second),
+      destinationKey: scenarioDestKey(second),
+      scenarioId: 'od_05',
+      snapped: true,
+    })
+    expect(
+      resolveDemoPair(scenarios, scenarioOriginKey(first), '', 'origin'),
+    ).toEqual({
+      originKey: scenarioOriginKey(first),
+      destinationKey: scenarioDestKey(first),
+      scenarioId: 'od_01',
+      snapped: true,
+    })
   })
 
   it('names route cards without medical language', () => {

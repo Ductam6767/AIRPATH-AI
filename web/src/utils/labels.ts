@@ -127,6 +127,51 @@ export function findScenarioId(
   return match?.scenario_id ?? null
 }
 
+export type PairAnchor = 'origin' | 'destination'
+
+export function resolveDemoPair(
+  scenarios: Scenario[],
+  originKey: string,
+  destinationKey: string,
+  anchor: PairAnchor | null,
+): {
+  originKey: string
+  destinationKey: string
+  scenarioId: string
+  snapped: boolean
+} | null {
+  const exact = findScenarioId(scenarios, originKey, destinationKey)
+  if (exact) {
+    return {
+      originKey,
+      destinationKey,
+      scenarioId: exact,
+      snapped: false,
+    }
+  }
+
+  const byOrigin = originKey
+    ? scenarios.find((scenario) => scenarioOriginKey(scenario) === originKey)
+    : undefined
+  const byDest = destinationKey
+    ? scenarios.find((scenario) => scenarioDestKey(scenario) === destinationKey)
+    : undefined
+
+  const preferDest =
+    anchor === 'destination' || (!originKey && Boolean(byDest))
+  const chosen = preferDest ? byDest ?? byOrigin : byOrigin ?? byDest
+  if (!chosen) return null
+
+  const nextOrigin = scenarioOriginKey(chosen)
+  const nextDest = scenarioDestKey(chosen)
+  return {
+    originKey: nextOrigin,
+    destinationKey: nextDest,
+    scenarioId: chosen.scenario_id,
+    snapped: nextOrigin !== originKey || nextDest !== destinationKey,
+  }
+}
+
 export function scenarioOriginKey(scenario: Scenario): string {
   return `${scenario.origin.latitude.toFixed(6)},${scenario.origin.longitude.toFixed(6)}`
 }

@@ -169,12 +169,7 @@ export function SearchBar({
             type="button"
             className="primary-btn search-bar__compare"
             onClick={onFindRoutes}
-            disabled={
-              loadingRoutes ||
-              !originKey ||
-              !destinationKey ||
-              originKey === destinationKey
-            }
+            disabled={loadingRoutes || (!originKey && !destinationKey)}
           >
             {loadingRoutes ? t.comparing : t.compare}
           </button>
