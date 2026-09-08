@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   destinationLabel,
+  findScenarioId,
   hasLowerPredictedExposureAlternative,
   isLowerPredictedExposure,
   originLabel,
@@ -8,7 +9,10 @@ import {
   reductionBadgeText,
   routeCardTitle,
   routeKindLabel,
+  scenarioDestKey,
   scenarioNumber,
+  scenarioOriginKey,
+  uniquePlaces,
 } from '../utils/labels'
 import type { RouteRecord, Scenario } from '../types'
 
@@ -46,6 +50,64 @@ describe('labels', () => {
     }
     expect(originLabel(scenario)).toBe('Park Gate')
     expect(destinationLabel(scenario)).toBe('Market Hall')
+  })
+
+  it('lists origins and destinations independently as places', () => {
+    const first: Scenario = {
+      ...base,
+      scenario_id: 'od_01',
+      origin: { label: 'od_01 origin', latitude: 10.79, longitude: 106.66 },
+      destination: { label: 'od_01 destination', latitude: 10.8, longitude: 106.68 },
+    }
+    const second: Scenario = {
+      ...base,
+      scenario_id: 'od_05',
+      origin: { label: 'Park Gate', latitude: 10.75, longitude: 106.63 },
+      destination: { label: 'Market Hall', latitude: 10.78, longitude: 106.68 },
+    }
+    const places = uniquePlaces([first, second])
+    const labels = places.map((place) => place.label)
+    expect(labels).toEqual(
+      expect.arrayContaining(['Origin 01', 'Destination 01', 'Park Gate', 'Market Hall']),
+    )
+    expect(places).toHaveLength(4)
+  })
+
+  it('looks up a precomputed pair without inferring destination from origin', () => {
+    const first: Scenario = {
+      ...base,
+      scenario_id: 'od_01',
+      origin: { label: 'Origin A', latitude: 10.79, longitude: 106.66 },
+      destination: { label: 'Dest A', latitude: 10.8, longitude: 106.68 },
+    }
+    const second: Scenario = {
+      ...base,
+      scenario_id: 'od_05',
+      origin: { label: 'Park Gate', latitude: 10.75, longitude: 106.63 },
+      destination: { label: 'Market Hall', latitude: 10.78, longitude: 106.68 },
+    }
+    const scenarios = [first, second]
+    expect(
+      findScenarioId(
+        scenarios,
+        scenarioOriginKey(first),
+        scenarioDestKey(first),
+      ),
+    ).toBe('od_01')
+    expect(
+      findScenarioId(
+        scenarios,
+        scenarioOriginKey(first),
+        scenarioDestKey(second),
+      ),
+    ).toBeNull()
+    expect(
+      findScenarioId(
+        scenarios,
+        scenarioDestKey(first),
+        scenarioOriginKey(first),
+      ),
+    ).toBeNull()
   })
 
   it('names route cards without medical language', () => {

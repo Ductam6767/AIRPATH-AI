@@ -1,7 +1,7 @@
 import { IS_MOBILE_BUILD } from '../constants'
 import { useI18n } from '../i18n/LanguageContext'
 import type { Scenario, TimeWindow, TravelMode } from '../types'
-import { destinationsForOrigin, originLabel, uniqueOrigins } from '../utils/labels'
+import { uniquePlaces } from '../utils/labels'
 import { DeltaSlider } from './DeltaSlider'
 import { ModeToggle, type MobilityChoice } from './ModeToggle'
 import { TimeWindowToggle } from './TimeWindowToggle'
@@ -19,6 +19,7 @@ interface SearchBarProps {
   compact?: boolean
   onOriginChange: (key: string) => void
   onDestinationChange: (key: string) => void
+  onSwapEnds: () => void
   onModeChange: (mode: TravelMode) => void
   onMobilityChange: (choice: MobilityChoice) => void
   onTimeWindowChange: (value: TimeWindow) => void
@@ -38,6 +39,7 @@ export function SearchBar({
   compact = false,
   onOriginChange,
   onDestinationChange,
+  onSwapEnds,
   onModeChange,
   onMobilityChange,
   onTimeWindowChange,
@@ -45,60 +47,65 @@ export function SearchBar({
   onFindRoutes,
 }: SearchBarProps) {
   const { t } = useI18n()
-  const origins = uniqueOrigins(scenarios)
-  const destinations = originKey
-    ? destinationsForOrigin(scenarios, originKey)
-    : []
-  const origin = origins.find((item) => item.key === originKey)
-  const selectedScenario = scenarios.find(
-    (scenario) =>
-      `${scenario.origin.latitude.toFixed(6)},${scenario.origin.longitude.toFixed(6)}` ===
-      originKey,
-  )
+  const places = uniquePlaces(scenarios)
+  const fromPlaces = places.filter((place) => place.key !== destinationKey)
+  const toPlaces = places.filter((place) => place.key !== originKey)
 
   return (
     <section className={compact ? 'search-bar search-bar--compact' : 'search-bar'}>
-      <label className="field" htmlFor="destination-select">
-        <span>{t.whereTo}</span>
-          <select
-            id="destination-select"
-            value={destinationKey}
-            onChange={(event) => onDestinationChange(event.target.value)}
-            disabled={destinations.length === 0}
-          >
-            <option value="">{t.chooseDestination}</option>
-            {destinations.map((destination) => (
-              <option
-                key={destination.key}
-                value={destination.key}
-                title={destination.secondary}
-              >
-                {destination.label}
-              </option>
-            ))}
-          </select>
-      </label>
-
-      <label className="field" htmlFor="origin-select">
-        <span>{t.from}</span>
+      <div className="search-bar__ends">
+        <label className="field" htmlFor="origin-select">
+          <span>{t.from}</span>
           <select
             id="origin-select"
+            name="origin"
             value={originKey}
             onChange={(event) => onOriginChange(event.target.value)}
+            aria-label={t.from}
           >
             <option value="">{t.chooseOrigin}</option>
-            {origins.map((item) => (
+            {fromPlaces.map((item) => (
               <option key={item.key} value={item.key} title={item.secondary}>
                 {item.label}
               </option>
             ))}
           </select>
-        {origin && selectedScenario ? (
-          <p className="muted small search-bar__here">
-            {t.currentLocation}: {originLabel(selectedScenario)}
-          </p>
-        ) : null}
-      </label>
+        </label>
+
+        <div className="search-bar__swap">
+          <button
+            type="button"
+            className="icon-btn"
+            onClick={onSwapEnds}
+            disabled={!originKey && !destinationKey}
+            aria-label={t.swapEnds}
+          >
+            ↕
+          </button>
+        </div>
+
+        <label className="field" htmlFor="destination-select">
+          <span>{t.to}</span>
+          <select
+            id="destination-select"
+            name="destination"
+            value={destinationKey}
+            onChange={(event) => onDestinationChange(event.target.value)}
+            aria-label={t.to}
+          >
+            <option value="">{t.chooseDestination}</option>
+            {toPlaces.map((place) => (
+              <option
+                key={place.key}
+                value={place.key}
+                title={place.secondary}
+              >
+                {place.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
 
       {compact ? null : (
         <>
@@ -133,7 +140,12 @@ export function SearchBar({
             type="button"
             className="primary-btn"
             onClick={onFindRoutes}
-            disabled={loadingRoutes || !originKey || !destinationKey}
+            disabled={
+              loadingRoutes ||
+              !originKey ||
+              !destinationKey ||
+              originKey === destinationKey
+            }
           >
             {loadingRoutes ? t.comparing : t.compare}
           </button>

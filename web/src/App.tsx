@@ -198,7 +198,9 @@ function AppInner() {
 
   const handleOriginChange = (key: string) => {
     setOriginKey(key)
-    setDestinationKey('')
+    if (key && key === destinationKey) {
+      setDestinationKey('')
+    }
     setRoutesPayload(null)
     setSelectedRouteId(null)
     setHasRequested(false)
@@ -208,6 +210,19 @@ function AppInner() {
 
   const handleDestinationChange = (key: string) => {
     setDestinationKey(key)
+    if (key && key === originKey) {
+      setOriginKey('')
+    }
+    setRoutesPayload(null)
+    setSelectedRouteId(null)
+    setHasRequested(false)
+    setError(null)
+    setFlow('plan')
+  }
+
+  const handleSwapEnds = () => {
+    setOriginKey(destinationKey)
+    setDestinationKey(originKey)
     setRoutesPayload(null)
     setSelectedRouteId(null)
     setHasRequested(false)
@@ -354,6 +369,7 @@ function AppInner() {
                   compact={false}
                   onOriginChange={handleOriginChange}
                   onDestinationChange={handleDestinationChange}
+                  onSwapEnds={handleSwapEnds}
                   onModeChange={setMode}
                   onMobilityChange={setMobility}
                   onTimeWindowChange={setTimeWindow}

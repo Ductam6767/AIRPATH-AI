@@ -56,6 +56,7 @@ export const STRINGS = {
     prototypeNote: 'Prototype · estimated exposure · not medical advice',
     chooseOrigin: 'Choose origin',
     chooseDestination: 'Choose destination',
+    swapEnds: 'Swap origin and destination',
     from: 'From',
     to: 'To',
     travelMode: 'Mode',
@@ -90,7 +91,7 @@ export const STRINGS = {
     loadingScenarios: 'Loading demo scenarios…',
     loadingRoutes: 'Loading precomputed routes…',
     choosePair:
-      'Choose origin and destination, then press Compare routes. Pairs are precomputed demo trips, not live city search.',
+      'Choose any origin and destination, then Compare routes. Only precomputed pilot pairs return a route — this is not live city search.',
     bundledNote: 'Using bundled demo pack (offline / API fallback). Not live air quality.',
     liveApiNote: 'Connected to demo API.',
     langEn: 'EN',
@@ -199,6 +200,7 @@ export const STRINGS = {
     prototypeNote: 'Nguyên mẫu · phơi nhiễm ước lượng · không phải tư vấn y tế',
     chooseOrigin: 'Chọn điểm đi',
     chooseDestination: 'Chọn điểm đến',
+    swapEnds: 'Đảo điểm đi và điểm đến',
     from: 'Điểm đi',
     to: 'Điểm đến',
     travelMode: 'Phương tiện',
@@ -233,7 +235,7 @@ export const STRINGS = {
     loadingScenarios: 'Đang tải kịch bản demo…',
     loadingRoutes: 'Đang tải tuyến đã tính sẵn…',
     choosePair:
-      'Chọn điểm đi và điểm đến, rồi nhấn So sánh tuyến. Các cặp là chuyến demo đã tính sẵn, không phải tìm kiếm thành phố live.',
+      'Chọn tự do điểm đi và điểm đến, rồi So sánh tuyến. Chỉ các cặp pilot đã tính sẵn mới có tuyến — không phải tìm kiếm thành phố live.',
     bundledNote: 'Đang dùng gói demo đóng trong app (offline / API lỗi). Không phải không khí realtime.',
     liveApiNote: 'Đã kết nối API demo.',
     langEn: 'EN',

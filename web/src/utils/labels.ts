@@ -135,6 +135,52 @@ export function scenarioDestKey(scenario: Scenario): string {
   return `${scenario.destination.latitude.toFixed(6)},${scenario.destination.longitude.toFixed(6)}`
 }
 
+export function uniquePlaces(scenarios: Scenario[]): {
+  key: string
+  label: string
+  secondary: string
+}[] {
+  const map = new Map<
+    string,
+    { key: string; label: string; secondary: string }
+  >()
+  const isNumbered = (label: string) =>
+    /^(Origin|Destination)\s+\d+$/i.test(label)
+
+  const upsert = (key: string, label: string, lat: number, lon: number) => {
+    const existing = map.get(key)
+    if (!existing) {
+      map.set(key, {
+        key,
+        label,
+        secondary: formatCoord(lat, lon),
+      })
+      return
+    }
+    if (isNumbered(existing.label) && !isNumbered(label)) {
+      existing.label = label
+    }
+  }
+
+  for (const scenario of scenarios) {
+    upsert(
+      scenarioOriginKey(scenario),
+      originLabel(scenario),
+      scenario.origin.latitude,
+      scenario.origin.longitude,
+    )
+    upsert(
+      scenarioDestKey(scenario),
+      destinationLabel(scenario),
+      scenario.destination.latitude,
+      scenario.destination.longitude,
+    )
+  }
+  return [...map.values()].sort((a, b) =>
+    a.label.localeCompare(b.label, 'vi', { sensitivity: 'base' }),
+  )
+}
+
 export function uniqueOrigins(scenarios: Scenario[]): {
   key: string
   label: string
