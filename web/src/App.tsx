@@ -16,7 +16,7 @@ import {
 } from './components/ModeToggle'
 import { NavigationInstruction } from './components/NavigationInstruction'
 import { OnboardingCard, shouldShowOnboarding } from './components/OnboardingCard'
-import { RouteCards } from './components/RouteCards'
+import { RouteCards, RouteCardsNotes } from './components/RouteCards'
 import { RouteMap } from './components/RouteMap'
 import { SearchBar } from './components/SearchBar'
 import { StatusBanner } from './components/StatusBanner'
@@ -465,6 +465,7 @@ function AppInner() {
                         onStart={startNavigation}
                       />
                     ) : null}
+                    <RouteCardsNotes alternatives={routesPayload.alternatives} />
                     <button
                       type="button"
                       className="linkish"
