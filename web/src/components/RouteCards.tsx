@@ -157,6 +157,20 @@ export function RouteCards({
         })}
       </ul>
 
+    </section>
+  )
+}
+
+export function RouteCardsNotes({
+  alternatives,
+}: {
+  alternatives: RouteRecord[]
+}) {
+  const { t } = useI18n()
+  const hasLowerExposureAlt = hasLowerPredictedExposureAlternative(alternatives)
+
+  return (
+    <div className="route-cards-notes">
       {hasLowerExposureAlt ? (
         <p className="muted small">{t.altsCompareNote}</p>
       ) : (
@@ -170,6 +184,6 @@ export function RouteCards({
         </div>
       )}
       <p className="muted small search-bar__pack-note">{t.packFinding}</p>
-    </section>
+    </div>
   )
 }

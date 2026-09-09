@@ -16,7 +16,7 @@ import {
 } from './components/ModeToggle'
 import { NavigationInstruction } from './components/NavigationInstruction'
 import { OnboardingCard, shouldShowOnboarding } from './components/OnboardingCard'
-import { RouteCards } from './components/RouteCards'
+import { RouteCards, RouteCardsNotes } from './components/RouteCards'
 import { RouteMap } from './components/RouteMap'
 import { SearchBar } from './components/SearchBar'
 import { StatusBanner } from './components/StatusBanner'
@@ -461,22 +461,11 @@ function AppInner() {
                     {selectedRoute ? (
                       <WhyThisRoute
                         route={selectedRoute}
-                        deltaMinutes={deltaMinutes}
-                        hasLowerExposureAlt={hasLowerPredictedExposureAlternative(
-                          routesPayload.alternatives,
-                        )}
+                        fastestRoute={routesPayload.fastest_route}
+                        onStart={startNavigation}
                       />
                     ) : null}
-                    <div className="sheet-actions">
-                      <button
-                        type="button"
-                        className="primary-btn"
-                        onClick={startNavigation}
-                        disabled={!selectedRoute}
-                      >
-                        {t.startNav}
-                      </button>
-                    </div>
+                    <RouteCardsNotes alternatives={routesPayload.alternatives} />
                     <button
                       type="button"
                       className="linkish"
