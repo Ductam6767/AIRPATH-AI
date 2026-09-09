@@ -24,6 +24,18 @@ function isGenericEndpointLabel(label: string, kind: 'origin' | 'destination'): 
   return pattern.test(label)
 }
 
+export function isGenericPlaceLabel(label: string): boolean {
+  const trimmed = label.trim()
+  if (!trimmed) return true
+  if (/^od_\d+\s+(origin|destination)$/i.test(trimmed)) return true
+  if (/^(Origin|Destination)\s+\d+$/i.test(trimmed)) return true
+  return false
+}
+
+function normalizePlaceLabel(label: string): string {
+  return label.trim().toLocaleLowerCase('vi')
+}
+
 export function originLabel(scenario: Scenario): string {
   const label = scenario.origin.label?.trim()
   if (label && !isGenericEndpointLabel(label, 'origin')) {
@@ -251,10 +263,17 @@ export function uniquePlaces(scenarios: Scenario[]): {
     string,
     { key: string; label: string; secondary: string }
   >()
-  const isNumbered = (label: string) =>
-    /^(Origin|Destination)\s+\d+$/i.test(label)
+  const labelToKey = new Map<string, string>()
 
   const upsert = (key: string, label: string, lat: number, lon: number) => {
+    if (isGenericPlaceLabel(label)) return
+
+    const normalized = normalizePlaceLabel(label)
+    const existingKey = labelToKey.get(normalized)
+    if (existingKey && existingKey !== key) {
+      return
+    }
+
     const existing = map.get(key)
     if (!existing) {
       map.set(key, {
@@ -262,10 +281,13 @@ export function uniquePlaces(scenarios: Scenario[]): {
         label,
         secondary: formatCoord(lat, lon),
       })
+      labelToKey.set(normalized, key)
       return
     }
-    if (isNumbered(existing.label) && !isNumbered(label)) {
+    if (isGenericPlaceLabel(existing.label) && !isGenericPlaceLabel(label)) {
+      labelToKey.delete(normalizePlaceLabel(existing.label))
       existing.label = label
+      labelToKey.set(normalized, key)
     }
   }
 

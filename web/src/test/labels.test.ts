@@ -3,6 +3,7 @@ import {
   destinationLabel,
   findScenarioId,
   hasLowerPredictedExposureAlternative,
+  isGenericPlaceLabel,
   isLowerPredictedExposure,
   originLabel,
   pickRecommendedRoute,
@@ -76,9 +77,36 @@ describe('labels', () => {
     const places = uniquePlaces([first, second])
     const labels = places.map((place) => place.label)
     expect(labels).toEqual(
-      expect.arrayContaining(['Origin 01', 'Destination 01', 'Park Gate', 'Market Hall']),
+      expect.arrayContaining(['Park Gate', 'Market Hall']),
     )
-    expect(places).toHaveLength(4)
+    expect(labels).not.toEqual(
+      expect.arrayContaining(['Origin 01', 'Destination 01']),
+    )
+    expect(places).toHaveLength(2)
+  })
+
+  it('drops duplicate street labels from the place list', () => {
+    const first: Scenario = {
+      ...base,
+      scenario_id: 'od_01',
+      origin: { label: 'Main Street · Ward A', latitude: 10.79, longitude: 106.66 },
+      destination: { label: 'Side Street · Ward B', latitude: 10.8, longitude: 106.68 },
+    }
+    const second: Scenario = {
+      ...base,
+      scenario_id: 'od_02',
+      origin: { label: 'Main Street · Ward A', latitude: 10.791, longitude: 106.661 },
+      destination: { label: 'Other Street · Ward C', latitude: 10.81, longitude: 106.69 },
+    }
+    const places = uniquePlaces([first, second])
+    expect(places.filter((place) => place.label === 'Main Street · Ward A')).toHaveLength(1)
+    expect(places).toHaveLength(3)
+  })
+
+  it('recognizes generic placeholder labels', () => {
+    expect(isGenericPlaceLabel('od_03 origin')).toBe(true)
+    expect(isGenericPlaceLabel('Origin 03')).toBe(true)
+    expect(isGenericPlaceLabel('Hẻm Cao Thắng · Hòa Hưng')).toBe(false)
   })
 
   it('lists destinations independently of the selected origin', () => {

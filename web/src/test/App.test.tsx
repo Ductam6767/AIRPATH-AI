@@ -60,8 +60,8 @@ async function choosePlace(
 async function chooseDefaultTrip() {
   const user = userEvent.setup()
   await screen.findByLabelText('From')
-  await choosePlace(user, 'From', 'Origin 01')
-  await choosePlace(user, 'To', 'Destination 01')
+  await choosePlace(user, 'From', 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+  await choosePlace(user, 'To', 'Nguyễn Văn Đậu · Đức Nhuận')
   await user.click(screen.getByRole('button', { name: 'Compare routes' }))
   await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
   return user
@@ -106,7 +106,7 @@ describe('AIRPATH frontend', () => {
     const to = screen.getByLabelText('To')
     expect(from).toHaveDisplayValue('Choose origin')
     expect(to).toHaveDisplayValue('Choose destination')
-    expect(within(from).getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
+    expect(within(from).getByRole('option', { name: 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa' })).toBeInTheDocument()
     expect(within(from).getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
@@ -120,12 +120,12 @@ describe('AIRPATH frontend', () => {
     render(<App />)
     const to = await screen.findByLabelText('To')
     expect(to).not.toBeDisabled()
-    expect(within(to).getByRole('option', { name: 'Destination 01' })).toBeInTheDocument()
+    expect(within(to).getByRole('option', { name: 'Nguyễn Văn Đậu · Đức Nhuận' })).toBeInTheDocument()
     expect(within(to).getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
     expect(within(to).getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
-    await user.selectOptions(to, 'Destination 01')
-    expect(screen.getByLabelText('From')).toHaveDisplayValue('Origin 01')
-    expect(to).toHaveDisplayValue('Destination 01')
+    await user.selectOptions(to, 'Nguyễn Văn Đậu · Đức Nhuận')
+    expect(screen.getByLabelText('From')).toHaveDisplayValue('Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    expect(to).toHaveDisplayValue('Nguyễn Văn Đậu · Đức Nhuận')
     expect(
       within(to).queryByRole('option', { name: 'Market Hall' }),
     ).not.toBeInTheDocument()
@@ -147,10 +147,10 @@ describe('AIRPATH frontend', () => {
     render(<App />)
     const from = await screen.findByLabelText('From')
     const to = screen.getByLabelText('To')
-    await user.selectOptions(from, 'Origin 01')
-    expect(from).toHaveDisplayValue('Origin 01')
-    expect(to).toHaveDisplayValue('Destination 01')
-    expect(within(to).getByRole('option', { name: 'Destination 01' })).toBeInTheDocument()
+    await user.selectOptions(from, 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    expect(from).toHaveDisplayValue('Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    expect(to).toHaveDisplayValue('Nguyễn Văn Đậu · Đức Nhuận')
+    expect(within(to).getByRole('option', { name: 'Nguyễn Văn Đậu · Đức Nhuận' })).toBeInTheDocument()
     expect(
       within(to).queryByRole('option', { name: 'Market Hall' }),
     ).not.toBeInTheDocument()
@@ -168,8 +168,8 @@ describe('AIRPATH frontend', () => {
     stubApi()
     render(<App />)
     await screen.findByLabelText('From')
-    await user.selectOptions(screen.getByLabelText('From'), 'Origin 01')
-    expect(screen.getByLabelText('To')).toHaveDisplayValue('Destination 01')
+    await user.selectOptions(screen.getByLabelText('From'), 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    expect(screen.getByLabelText('To')).toHaveDisplayValue('Nguyễn Văn Đậu · Đức Nhuận')
     await user.selectOptions(screen.getByLabelText('From'), 'Park Gate')
     expect(screen.getByLabelText('From')).toHaveDisplayValue('Park Gate')
     expect(screen.getByLabelText('To')).toHaveDisplayValue('Market Hall')
@@ -183,13 +183,13 @@ describe('AIRPATH frontend', () => {
     stubApi()
     render(<App />)
     await screen.findByLabelText('From')
-    await choosePlace(user, 'From', 'Origin 01')
-    await choosePlace(user, 'To', 'Destination 01')
+    await choosePlace(user, 'From', 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    await choosePlace(user, 'To', 'Nguyễn Văn Đậu · Đức Nhuận')
     await user.click(screen.getByRole('button', { name: 'Compare routes' }))
     await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
     await user.click(screen.getByRole('button', { name: 'Swap origin and destination' }))
-    expect(screen.getByLabelText('From')).toHaveDisplayValue('Destination 01')
-    expect(screen.getByLabelText('To')).toHaveDisplayValue('Origin 01')
+    expect(screen.getByLabelText('From')).toHaveDisplayValue('Nguyễn Văn Đậu · Đức Nhuận')
+    expect(screen.getByLabelText('To')).toHaveDisplayValue('Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
     await user.click(screen.getByRole('button', { name: 'Compare routes' }))
     expect(
       await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
@@ -202,13 +202,13 @@ describe('AIRPATH frontend', () => {
     render(<App />)
     const from = await screen.findByLabelText('From')
     const to = screen.getByLabelText('To')
-    await user.selectOptions(from, 'Origin 01')
+    await user.selectOptions(from, 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
     ).not.toBeInTheDocument()
-    await user.selectOptions(to, 'Destination 01')
-    expect(from).toHaveDisplayValue('Origin 01')
-    expect(to).toHaveDisplayValue('Destination 01')
+    await user.selectOptions(to, 'Nguyễn Văn Đậu · Đức Nhuận')
+    expect(from).toHaveDisplayValue('Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    expect(to).toHaveDisplayValue('Nguyễn Văn Đậu · Đức Nhuận')
     expect(
       screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
     ).not.toBeInTheDocument()
@@ -223,8 +223,8 @@ describe('AIRPATH frontend', () => {
     stubApi()
     render(<App />)
     await screen.findByLabelText('From')
-    await user.selectOptions(screen.getByLabelText('From'), 'Origin 01')
-    expect(screen.getByLabelText('To')).toHaveDisplayValue('Destination 01')
+    await user.selectOptions(screen.getByLabelText('From'), 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    expect(screen.getByLabelText('To')).toHaveDisplayValue('Nguyễn Văn Đậu · Đức Nhuận')
     expect(
       within(screen.getByLabelText('To')).queryByRole('option', {
         name: 'Market Hall',
@@ -253,7 +253,7 @@ describe('AIRPATH frontend', () => {
       screen.getByRole('button', { name: 'Compare routes' }),
     ).toBeInTheDocument()
     expect(
-      within(screen.getByLabelText('From')).getByRole('option', { name: 'Origin 01' }),
+      within(screen.getByLabelText('From')).getByRole('option', { name: 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa' }),
     ).toBeInTheDocument()
     expect(
       within(screen.getByLabelText('To')).getByRole('option', { name: 'Park Gate' }),
@@ -424,7 +424,7 @@ describe('AIRPATH frontend', () => {
     render(<App />)
     expect(await screen.findByText(/bundled demo pack/i)).toBeInTheDocument()
     expect(
-      within(screen.getByLabelText('From')).getByRole('option', { name: 'Origin 01' }),
+      within(screen.getByLabelText('From')).getByRole('option', { name: 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa' }),
     ).toBeInTheDocument()
     expect(screen.queryByText(/demo API is unavailable/i)).not.toBeInTheDocument()
   })
