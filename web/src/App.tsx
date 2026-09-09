@@ -461,22 +461,10 @@ function AppInner() {
                     {selectedRoute ? (
                       <WhyThisRoute
                         route={selectedRoute}
-                        deltaMinutes={deltaMinutes}
-                        hasLowerExposureAlt={hasLowerPredictedExposureAlternative(
-                          routesPayload.alternatives,
-                        )}
+                        fastestRoute={routesPayload.fastest_route}
+                        onStart={startNavigation}
                       />
                     ) : null}
-                    <div className="sheet-actions">
-                      <button
-                        type="button"
-                        className="primary-btn"
-                        onClick={startNavigation}
-                        disabled={!selectedRoute}
-                      >
-                        {t.startNav}
-                      </button>
-                    </div>
                     <button
                       type="button"
                       className="linkish"

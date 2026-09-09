@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
   destinationLabel,
+  extraDistanceMeters,
   findScenarioId,
+  formatSignedDistanceKm,
+  formatSignedMinutes,
   hasLowerPredictedExposureAlternative,
   isGenericPlaceLabel,
   isLowerPredictedExposure,
@@ -260,6 +263,41 @@ describe('labels', () => {
       [10.79, 106.66],
     ])
     expect(route.geometry[0]).toEqual([10.79, 106.66])
+  })
+
+  it('formats extra time and distance against the fastest route', () => {
+    const fastest: RouteRecord = {
+      route_id: 'w-1',
+      route_type: 'fastest',
+      rank: 0,
+      is_fastest: true,
+      is_feasible: true,
+      travel_time_minutes: 69.6,
+      additional_time_vs_fastest_minutes: 0,
+      predicted_exposure_index: 1000,
+      predicted_exposure_reduction_percent: 0,
+      distance_m: 5800,
+      geometry: [],
+    }
+    const selected: RouteRecord = {
+      ...fastest,
+      route_id: 'w-2',
+      is_fastest: false,
+      travel_time_minutes: 73.9,
+      additional_time_vs_fastest_minutes: 4.3,
+      distance_m: 6200,
+      predicted_exposure_reduction_percent: 53,
+    }
+    expect(formatSignedMinutes(selected.additional_time_vs_fastest_minutes)).toBe(
+      '+4.3 min',
+    )
+    expect(formatSignedMinutes(0)).toBe('+0 min')
+    expect(formatSignedDistanceKm(extraDistanceMeters(selected, fastest))).toBe(
+      '+0.4 km',
+    )
+    expect(formatSignedDistanceKm(extraDistanceMeters(fastest, fastest))).toBe(
+      '+0 km',
+    )
   })
 
   it('names route cards without medical language', () => {

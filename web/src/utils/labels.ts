@@ -63,6 +63,32 @@ export function formatDistanceKm(meters: number): string {
   return Number.isInteger(rounded) ? `${rounded} km` : `${rounded.toFixed(1)} km`
 }
 
+export function formatSignedMinutes(value: number): string {
+  if (!Number.isFinite(value)) return '—'
+  const rounded = Math.round(value * 10) / 10
+  if (Math.abs(rounded) < 0.05) return '+0 min'
+  const sign = rounded > 0 ? '+' : ''
+  return `${sign}${formatMinutes(rounded)} min`
+}
+
+export function formatSignedDistanceKm(meters: number): string {
+  if (!Number.isFinite(meters)) return '—'
+  const km = meters / 1000
+  const rounded = Math.abs(km) < 10 ? Math.round(km * 10) / 10 : Math.round(km)
+  if (Math.abs(rounded) < 0.05) return '+0 km'
+  const magnitude = Number.isInteger(Math.abs(rounded))
+    ? `${Math.abs(rounded)} km`
+    : `${Math.abs(rounded).toFixed(1)} km`
+  return `${rounded > 0 ? '+' : '-'}${magnitude}`
+}
+
+export function extraDistanceMeters(
+  selected: RouteRecord,
+  fastest: RouteRecord,
+): number {
+  return selected.distance_m - fastest.distance_m
+}
+
 export type ProductRouteKind = 'fastest' | 'health' | 'balanced'
 
 export function productRouteKind(route: RouteRecord): ProductRouteKind {

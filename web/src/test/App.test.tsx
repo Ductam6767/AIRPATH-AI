@@ -265,7 +265,16 @@ describe('AIRPATH frontend', () => {
     expect(screen.getByText('Health-first')).toBeInTheDocument()
     expect(screen.getAllByText(/28% lower predicted exposure/i).length).toBeGreaterThan(0)
     expect(screen.getByText('Lower predicted exposure')).toBeInTheDocument()
-    expect(screen.getByText(/Why this route/i)).toBeInTheDocument()
+    const why = screen.getByRole('region', { name: /Why this route/i })
+    expect(within(why).getByText('↓ 28%')).toBeInTheDocument()
+    expect(within(why).getByText('42 min')).toBeInTheDocument()
+    expect(within(why).getByText('+2 min')).toBeInTheDocument()
+    expect(within(why).getByText('3.5 km')).toBeInTheDocument()
+    expect(within(why).getByText('+0.2 km')).toBeInTheDocument()
+    expect(within(why).getByText('START')).toBeInTheDocument()
+    expect(
+      screen.queryByText(/AIRPATH estimates that this route provides lower PM2.5 exposure/i),
+    ).not.toBeInTheDocument()
     expect(
       screen.getByText(
         /beat Fastest on the demo increment \(OSM road class/i,
@@ -280,17 +289,24 @@ describe('AIRPATH frontend', () => {
     stubApi()
     render(<App />)
     const user = await chooseDefaultTrip()
+    const why = screen.getByRole('region', { name: /Why this route/i })
+    expect(within(why).getByText('↓ 28%')).toBeInTheDocument()
+    expect(within(why).getByText('+2 min')).toBeInTheDocument()
+    expect(within(why).getByText('+0.2 km')).toBeInTheDocument()
     expect(
-      screen.getByText(
+      screen.queryByText(
         /this route provides lower PM2.5 exposure while remaining within the applicable travel-time constraint/i,
       ),
-    ).toBeInTheDocument()
+    ).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /Fastest, 40 minutes/i }))
+    expect(within(why).getByText('0%')).toBeInTheDocument()
+    expect(within(why).getByText('+0 min')).toBeInTheDocument()
+    expect(within(why).getByText('+0 km')).toBeInTheDocument()
     expect(
-      screen.getByText(
+      screen.queryByText(
         /This is the hurry option: shortest time. Another feasible route has lower predicted exposure/i,
       ),
-    ).toBeInTheDocument()
+    ).not.toBeInTheDocument()
     expect(
       screen.queryByText(/also the lowest predicted time-weighted PM2.5/i),
     ).not.toBeInTheDocument()
