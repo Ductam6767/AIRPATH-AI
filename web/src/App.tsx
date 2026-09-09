@@ -42,7 +42,6 @@ import type {
 } from './types'
 import {
   friendlyApiError,
-  hasLowerPredictedExposureAlternative,
   lookupPlace,
   matchDemoPair,
   parsePlaceKey,
