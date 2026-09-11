@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import {
   MapContainer,
   TileLayer,
@@ -9,7 +9,6 @@ import {
 } from 'react-leaflet'
 import L from 'leaflet'
 import type { Coordinate, RouteRecord } from '../types'
-import { COLORS } from '../constants'
 import {
   angleDiffDeg,
   bearingDeg,
@@ -17,6 +16,7 @@ import {
   pointAlongRoute,
 } from '../maneuver/geo'
 import { formatCoord, routeCardTitle, safeGeometry } from '../utils/labels'
+import { routeLinePaint } from '../utils/routeLinePaint'
 import 'leaflet/dist/leaflet.css'
 
 const originIcon = L.divIcon({
@@ -207,22 +207,61 @@ function LockMapInteraction({ locked }: { locked: boolean }) {
   return null
 }
 
-function lineStyle(
-  route: RouteRecord,
-  selectedRouteId: string | null,
-): { color: string; weight: number; opacity: number; dashArray?: string } {
-  const selected = route.route_id === selectedRouteId
-  if (route.is_fastest) {
-    return {
-      color: COLORS.sky,
-      weight: selected ? 8 : 5,
-      opacity: selected ? 0.96 : 0.72,
+function useMapZoom(): number {
+  const map = useMap()
+  const [zoom, setZoom] = useState(() => map.getZoom())
+  useEffect(() => {
+    const sync = () => setZoom(map.getZoom())
+    map.on('zoomend', sync)
+    sync()
+    return () => {
+      map.off('zoomend', sync)
     }
-  }
-  if (selected) {
-    return { color: COLORS.eco, weight: 8, opacity: 0.96 }
-  }
-  return { color: COLORS.altMuted, weight: 4, opacity: 0.5, dashArray: '7 8' }
+  }, [map])
+  return zoom
+}
+
+function RoutePolylines({
+  routes,
+  selectedRouteId,
+  onSelectRoute,
+  followActive,
+}: {
+  routes: RouteRecord[]
+  selectedRouteId: string | null
+  onSelectRoute: (routeId: string) => void
+  followActive: boolean
+}) {
+  const zoom = useMapZoom()
+  return (
+    <>
+      {routes.map((route) => {
+        const geometry = safeGeometry(route.geometry)
+        if (geometry.length < 2) return null
+        const paint = routeLinePaint(route, selectedRouteId, followActive, zoom)
+        return (
+          <Fragment key={route.route_id}>
+            <Polyline
+              positions={geometry}
+              pathOptions={paint.casing}
+              eventHandlers={{
+                click: () => onSelectRoute(route.route_id),
+              }}
+            />
+            <Polyline
+              positions={geometry}
+              pathOptions={paint.fill}
+              eventHandlers={{
+                click: () => onSelectRoute(route.route_id),
+              }}
+            >
+              <Popup>{routeCardTitle(route)}</Popup>
+            </Polyline>
+          </Fragment>
+        )
+      })}
+    </>
+  )
 }
 
 export function RouteMap({
@@ -283,28 +322,12 @@ export function RouteMap({
             distanceAlongM={distanceAlongM}
           />
         ) : null}
-        {ordered.map((route) => {
-          const geometry = safeGeometry(route.geometry)
-          if (geometry.length < 2) return null
-          const style = lineStyle(route, selectedRouteId)
-          if (followActive) {
-            style.weight = 10
-            style.opacity = 1
-            style.dashArray = undefined
-          }
-          return (
-            <Polyline
-              key={route.route_id}
-              positions={geometry}
-              pathOptions={style}
-              eventHandlers={{
-                click: () => onSelectRoute(route.route_id),
-              }}
-            >
-              <Popup>{routeCardTitle(route)}</Popup>
-            </Polyline>
-          )
-        })}
+        <RoutePolylines
+          routes={ordered}
+          selectedRouteId={selectedRouteId}
+          onSelectRoute={onSelectRoute}
+          followActive={followActive}
+        />
         {fromPlace ? (
           <Marker
             position={[fromPlace.latitude, fromPlace.longitude]}
