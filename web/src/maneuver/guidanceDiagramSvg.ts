@@ -72,21 +72,24 @@ function annularSector(
   a0: number,
   a1: number,
 ): string {
+  // Walk decreasing polar angle: bottom → right → top (VN RHT, island on the left).
+  // Polylines avoid SVG arc sweep-flag flipping on a 180° semicircle.
   let span = (a0 - a1 + 360) % 360
   if (span < 12) span = 90
-  const end = a0 - span
-  const large = span > 180 ? 1 : 0
-  const outerStart = polar(cx, cy, rOut, a0)
-  const outerEnd = polar(cx, cy, rOut, end)
-  const innerEnd = polar(cx, cy, rIn, end)
-  const innerStart = polar(cx, cy, rIn, a0)
-  return [
-    `M ${outerStart[0].toFixed(1)} ${outerStart[1].toFixed(1)}`,
-    `A ${rOut} ${rOut} 0 ${large} 0 ${outerEnd[0].toFixed(1)} ${outerEnd[1].toFixed(1)}`,
-    `L ${innerEnd[0].toFixed(1)} ${innerEnd[1].toFixed(1)}`,
-    `A ${rIn} ${rIn} 0 ${large} 1 ${innerStart[0].toFixed(1)} ${innerStart[1].toFixed(1)}`,
-    'Z',
-  ].join(' ')
+  const steps = Math.max(12, Math.round(span / 8) + (Math.round(span / 8) % 2))
+  const outer: string[] = []
+  const inner: string[] = []
+  for (let i = 0; i <= steps; i++) {
+    const deg = a0 - (span * i) / steps
+    const [ox, oy] = polar(cx, cy, rOut, deg)
+    outer.push(`${ox.toFixed(1)} ${oy.toFixed(1)}`)
+  }
+  for (let i = steps; i >= 0; i--) {
+    const deg = a0 - (span * i) / steps
+    const [ix, iy] = polar(cx, cy, rIn, deg)
+    inner.push(`${ix.toFixed(1)} ${iy.toFixed(1)}`)
+  }
+  return `M ${outer[0]} L ${outer.slice(1).join(' L ')} L ${inner.join(' L ')} Z`
 }
 
 function arrowHead(tip: [number, number], deg: number, size = 10): string {

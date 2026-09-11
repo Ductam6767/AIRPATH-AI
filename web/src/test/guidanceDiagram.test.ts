@@ -27,6 +27,9 @@ describe('guidance diagrams', () => {
     expect(roundaboutTravelAngle(0)).toBe(90)
     expect(roundaboutTravelAngle(90)).toBe(0)
     expect(roundaboutTravelAngle(180)).toBe(-90)
+    // Exit 2 paints the RIGHT half of the ring (bottom → right → top), not the left.
+    const sector = [...svg.matchAll(/class="rb-taken-paint" d="([^"]+)"/g)][0]?.[1] ?? ''
+    expect(sector).toMatch(/9[0-9]\.[0-9] 60\./)
   })
 
   it('spaces clustered OSM arms evenly so every road stays visible', () => {
