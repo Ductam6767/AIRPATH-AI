@@ -3,8 +3,11 @@ import type { TurnDirection } from './types'
 /** Arm the turn signal only when the next left/right is this close. */
 export const TURN_SIGNAL_ARM_M = 62.5
 
-/** Keep the completed turn’s signal on until the rider has gone this far past it. */
-export const TURN_SIGNAL_HOLD_AFTER_M = 5
+/**
+ * Keep this corner’s blinker on with the confirm LED, then go dark.
+ * Next blinker may not arm until after TURN_SIGNAL_QUIET_AFTER_M.
+ */
+export const TURN_SIGNAL_HOLD_AFTER_M = 1.5
 
 /** Still “active” in the last metres before the corner. */
 export const TURN_SIGNAL_CLOSE_M = 40
@@ -17,19 +20,42 @@ export const TURN_SIGNAL_CLOSE_M = 40
 export const TURN_CONFIRM_M = 6
 export const TURN_CONFIRM_HOLD_AFTER_M = 1.5
 
+/** After the confirm LED goes off, stay dark before the next blinker. */
+export const TURN_SIGNAL_QUIET_AFTER_M = 4
+
+function hasPassedTurn(
+  lastTurn: TurnDirection | null | undefined,
+  distancePastLastTurnM: number | undefined,
+): boolean {
+  return (
+    (lastTurn === 'left' || lastTurn === 'right') &&
+    Number.isFinite(distancePastLastTurnM) &&
+    (distancePastLastTurnM as number) >= 0
+  )
+}
+
+export function isAfterTurnQuiet(
+  lastTurn: TurnDirection | null | undefined,
+  distancePastLastTurnM: number | undefined,
+): boolean {
+  if (!hasPassedTurn(lastTurn, distancePastLastTurnM)) return false
+  const past = distancePastLastTurnM as number
+  return (
+    past > TURN_CONFIRM_HOLD_AFTER_M &&
+    past <= TURN_CONFIRM_HOLD_AFTER_M + TURN_SIGNAL_QUIET_AFTER_M
+  )
+}
+
 export function armedTurnDirection(
   turn: TurnDirection | null | undefined,
   distanceToNextM: number,
   lastTurn: TurnDirection | null | undefined = null,
   distancePastLastTurnM: number | undefined = Number.POSITIVE_INFINITY,
 ): 'left' | 'right' | null {
-  if (
-    (lastTurn === 'left' || lastTurn === 'right') &&
-    Number.isFinite(distancePastLastTurnM) &&
-    distancePastLastTurnM >= 0 &&
-    distancePastLastTurnM <= TURN_SIGNAL_HOLD_AFTER_M
-  ) {
-    return lastTurn
+  if (hasPassedTurn(lastTurn, distancePastLastTurnM)) {
+    const past = distancePastLastTurnM as number
+    if (past <= TURN_SIGNAL_HOLD_AFTER_M) return lastTurn as 'left' | 'right'
+    if (isAfterTurnQuiet(lastTurn, past)) return null
   }
   if (turn !== 'left' && turn !== 'right') return null
   if (!Number.isFinite(distanceToNextM) || distanceToNextM > TURN_SIGNAL_ARM_M) {
@@ -45,13 +71,10 @@ export function isCornerConfirm(
   lastTurn: TurnDirection | null | undefined = null,
   distancePastLastTurnM: number | undefined = Number.POSITIVE_INFINITY,
 ): boolean {
-  if (
-    (lastTurn === 'left' || lastTurn === 'right') &&
-    Number.isFinite(distancePastLastTurnM) &&
-    distancePastLastTurnM >= 0 &&
-    distancePastLastTurnM <= TURN_CONFIRM_HOLD_AFTER_M
-  ) {
-    return true
+  if (hasPassedTurn(lastTurn, distancePastLastTurnM)) {
+    const past = distancePastLastTurnM as number
+    if (past <= TURN_CONFIRM_HOLD_AFTER_M) return true
+    if (isAfterTurnQuiet(lastTurn, past)) return false
   }
   if (turn !== 'left' && turn !== 'right') return false
   if (!Number.isFinite(distanceToNextM)) return false

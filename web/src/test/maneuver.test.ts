@@ -122,7 +122,7 @@ describe('extractManeuvers', () => {
     )
   })
 
-  it('tracks the last passed left/right for the 5 m signal hold', () => {
+  it('tracks the last passed left/right after the corner', () => {
     const geom: [number, number][] = []
     for (let i = 0; i <= 8; i += 1) {
       geom.push([10.77 + i * 0.00012, 106.66])

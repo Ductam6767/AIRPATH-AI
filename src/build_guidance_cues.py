@@ -29,6 +29,8 @@ MIN_TURN_DEG = 32
 LOOK_M = 18
 WIDE_LANES = 4
 LANE_LEAD_M = 15
+ROUNDABOUT_CLUSTER_M = 22
+ARM_BIN_DEG = 36.0
 BRIDGE_SNAP_M = 12
 BRIDGE_CLUSTER_M = 140
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"
@@ -148,6 +150,11 @@ def heading_ccw_sweep(h0: float, h1: float) -> float:
     return (h0 - h1) % 360
 
 
+def quantize_bearing(deg: float, bin_deg: float = ARM_BIN_DEG) -> int:
+    n = max(1, int(round(360.0 / bin_deg)))
+    return int(round((deg % 360) / bin_deg) % n)
+
+
 def exit_from_sweep(sweep: float, arm_count: int) -> int:
     """Map CCW ring travel onto evenly spaced exits (1 = first right in VN RHT)."""
     n = max(3, min(7, arm_count))
@@ -164,9 +171,29 @@ def infer_exit(entry_bearing: float, exit_bearing: float, arm_count: int) -> int
 def collect_roundabout_arms(
     clusters: list[dict[str, Any]],
 ) -> None:
-    """Even 4-arm heading-up schematic; exit from this route's CCW ring sweep."""
+    """Count real arms from routes on the same island; draw them evenly."""
+    originals = [
+        (
+            cluster["entry_bearing"] % 360,
+            cluster["exit_bearing"] % 360,
+            cluster["center"],
+        )
+        for cluster in clusters
+    ]
     for cluster in clusters:
-        n = 4
+        bears: list[float] = [
+            cluster["entry_bearing"] % 360,
+            cluster["exit_bearing"] % 360,
+        ]
+        for entry, leave, center in originals:
+            if haversine_m(cluster["center"], center) > ROUNDABOUT_CLUSTER_M:
+                continue
+            bears.extend([entry, leave])
+        bins: dict[int, list[float]] = {}
+        for bearing in bears:
+            key = quantize_bearing(bearing)
+            bins.setdefault(key, []).append(bearing)
+        n = max(3, min(7, len(bins)))
         cluster["arms"] = n
         sweep = float(
             cluster.get("sweep_deg")
@@ -176,7 +203,7 @@ def collect_roundabout_arms(
             sweep = 90.0
         cluster["sweep_deg"] = round(sweep, 1)
         cluster["exit"] = exit_from_sweep(sweep, n)
-        cluster["arm_deg"] = [0, 90, 180, 270]
+        cluster["arm_deg"] = [int(i * 360 / n) for i in range(n)]
 
 
 def roundabout_cues_for_route(

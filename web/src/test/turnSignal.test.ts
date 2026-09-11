@@ -22,12 +22,14 @@ describe('turn signal arming', () => {
     expect(assistPayloadTurn('arrive', 10)).toBe('straight')
   })
 
-  it('keeps the signal on for 5 m after the corner, then turns it off', () => {
-    expect(armedTurnDirection('right', 40, 'left', 2)).toBe('left')
-    expect(armedTurnDirection('right', 200, 'left', 5)).toBe('left')
-    expect(armedTurnDirection('right', 200, 'left', 5.1)).toBeNull()
-    expect(assistPayloadTurn('right', 200, 'left', 3)).toBe('left')
-    expect(assistPayloadTurn('right', 200, 'left', 6)).toBe('straight')
+  it('keeps this corner’s blinker until confirm ends, then stays dark before the next', () => {
+    expect(armedTurnDirection('right', 40, 'left', 1)).toBe('left')
+    expect(armedTurnDirection('right', 40, 'left', 1.5)).toBe('left')
+    expect(armedTurnDirection('right', 40, 'left', 2)).toBeNull()
+    expect(armedTurnDirection('right', 40, 'left', 5.5)).toBeNull()
+    expect(armedTurnDirection('right', 40, 'left', 5.6)).toBe('right')
+    expect(assistPayloadTurn('right', 40, 'left', 3)).toBe('straight')
+    expect(assistPayloadTurn('right', 40, 'left', 6)).toBe('right')
   })
 
   it('marks the UI ready, off, armed, then active', () => {
@@ -65,5 +67,7 @@ describe('turn signal arming', () => {
     expect(isCornerConfirm('straight', 4)).toBe(false)
     expect(isCornerConfirm('right', 200, 'left', 1)).toBe(true)
     expect(isCornerConfirm('right', 200, 'left', 2)).toBe(false)
+    expect(isCornerConfirm('right', 5, 'left', 3)).toBe(false)
+    expect(isCornerConfirm('right', 5, 'left', 5.6)).toBe(true)
   })
 })

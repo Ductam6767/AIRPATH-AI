@@ -57,6 +57,23 @@ describe('guidance diagrams', () => {
     expect(svg.match(/class="rb-taken-paint"/g)?.length).toBe(3)
   })
 
+  it('draws all five arms when the junction is a 5-way', () => {
+    const svg = guidanceDiagramInner({
+      kind: 'roundabout',
+      lat: 10.8,
+      lng: 106.66,
+      exit: 3,
+      arms: 5,
+      arm_deg: [0, 72, 144, 216, 288],
+    })
+    expect(svg.match(/class="rb-arm"/g)?.length).toBe(5)
+    expect(svg).toContain('>1</text>')
+    expect(svg).toContain('>2</text>')
+    expect(svg).toContain('>3</text>')
+    expect(svg).toContain('>4</text>')
+    expect(svg).toContain('fill="#ea580c"')
+  })
+
   it('highlights the inner lane for a left turn', () => {
     const svg = guidanceDiagramInner({
       kind: 'lane',

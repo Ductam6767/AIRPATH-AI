@@ -131,7 +131,7 @@ function roundaboutSvg(cue: GuidanceCue, emphasized: boolean): string {
   const cy = 60
   const ringR = 26
   const roadR = 56
-  const hw = emphasized ? 8.4 : 7.4
+  const hw = (emphasized ? 8.4 : 7.4) * (arms >= 5 ? 0.82 : 1)
   const casing = 1.7
   const rOut = ringR + hw
   const rIn = ringR - hw
@@ -174,9 +174,11 @@ function roundaboutSvg(cue: GuidanceCue, emphasized: boolean): string {
     .slice(1)
     .map((deg, i) => {
       const n = i + 1
-      const [x, y] = polar(cx, cy, 41, roundaboutTravelAngle(deg))
+      const badgeR = arms >= 5 ? 7.8 : 9.6
+      const font = arms >= 5 ? 10.5 : 12
+      const [x, y] = polar(cx, cy, arms >= 5 ? 39 : 41, roundaboutTravelAngle(deg))
       const active = n === exit
-      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9.6" fill="${active ? TAKEN : '#fff'}" stroke="${active ? TAKEN_DARK : INK}" stroke-width="2.3"/><text x="${x.toFixed(1)}" y="${(y + 4.4).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="900" font-family="ui-sans-serif,system-ui,sans-serif" fill="${active ? '#fff' : INK}">${n}</text>`
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${badgeR}" fill="${active ? TAKEN : '#fff'}" stroke="${active ? TAKEN_DARK : INK}" stroke-width="2.1"/><text x="${x.toFixed(1)}" y="${(y + (arms >= 5 ? 3.8 : 4.4)).toFixed(1)}" text-anchor="middle" font-size="${font}" font-weight="900" font-family="ui-sans-serif,system-ui,sans-serif" fill="${active ? '#fff' : INK}">${n}</text>`
     })
     .join('')
 
