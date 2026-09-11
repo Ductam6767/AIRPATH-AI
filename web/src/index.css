@@ -177,10 +177,6 @@ a:focus-visible {
   min-height: 100%;
 }
 
-.map-legend--hidden {
-  display: none;
-}
-
 .map-legend {
   position: absolute;
   left: 10px;
@@ -196,6 +192,10 @@ a:focus-visible {
   border: 1px solid var(--border);
   font-size: 0.7rem;
   color: var(--text);
+}
+
+.map-legend.map-legend--hidden {
+  display: none;
 }
 
 .app-shell--nav .map-shell {
