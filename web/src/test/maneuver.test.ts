@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { cumulativeDistances, distanceM } from '../maneuver/geo'
+import {
+  cumulativeDistances,
+  distanceM,
+  pointAlongRoute,
+  upcomingRouteSlice,
+} from '../maneuver/geo'
 import { extractManeuvers, distanceToManeuver } from '../maneuver/extractManeuvers'
 import { suggestedSpeedKmh } from '../maneuver/speedProfile'
 
@@ -20,6 +25,21 @@ describe('maneuver geo', () => {
     const cum = cumulativeDistances(geom)
     expect(cum[0]).toBe(0)
     expect(cum[2]).toBeGreaterThan(cum[1]!)
+  })
+
+  it('slices the upcoming path from the traveler for follow-camera bounds', () => {
+    const geom: [number, number][] = [
+      [10.799, 106.661],
+      [10.798, 106.662],
+      [10.797, 106.663],
+      [10.796, 106.664],
+    ]
+    const start = pointAlongRoute(geom, 0)
+    const slice = upcomingRouteSlice(geom, 0, 80)
+    expect(start).toEqual(geom[0])
+    expect(slice[0]).toEqual(geom[0])
+    expect(slice.length).toBeGreaterThan(1)
+    expect(slice[slice.length - 1]).not.toEqual(geom[0])
   })
 })
 
