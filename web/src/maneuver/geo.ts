@@ -64,3 +64,29 @@ export function pointAlongRoute(
   }
   return geometry[geometry.length - 1]!
 }
+
+/** Upcoming polyline from the traveler through the next stretch of road. */
+export function upcomingRouteSlice(
+  geometry: [number, number][],
+  distanceAlongM: number,
+  lookaheadM: number,
+): [number, number][] {
+  const start = pointAlongRoute(geometry, distanceAlongM)
+  if (!start) return []
+  const end = pointAlongRoute(geometry, distanceAlongM + lookaheadM) ?? start
+  const cum = cumulativeDistances(geometry)
+  const from = Math.max(0, distanceAlongM)
+  const to = from + Math.max(0, lookaheadM)
+  const points: [number, number][] = [start]
+  for (let i = 0; i < geometry.length; i += 1) {
+    const at = cum[i] ?? 0
+    if (at > from && at < to) {
+      points.push(geometry[i]!)
+    }
+  }
+  const last = points[points.length - 1]
+  if (!last || last[0] !== end[0] || last[1] !== end[1]) {
+    points.push(end)
+  }
+  return points
+}
