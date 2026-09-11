@@ -164,6 +164,30 @@ export function reductionBadgeText(percent: number): string | null {
   return 'Similar predicted exposure'
 }
 
+export function exposureCompareHeadline(
+  percent: number,
+  isFastest: boolean,
+): { value: string; caption: string; tone: 'eco' | 'warn' | 'neutral' } {
+  if (isFastest) {
+    return { value: '0%', caption: 'baseline exposure', tone: 'neutral' }
+  }
+  if (isLowerPredictedExposure(percent)) {
+    return {
+      value: `↓ ${Math.round(percent)}%`,
+      caption: 'lower estimated exposure',
+      tone: 'eco',
+    }
+  }
+  if (percent < -0.5) {
+    return {
+      value: `↑ ${Math.round(Math.abs(percent))}%`,
+      caption: 'higher estimated exposure',
+      tone: 'warn',
+    }
+  }
+  return { value: '0%', caption: 'similar estimated exposure', tone: 'neutral' }
+}
+
 export function hasLowerPredictedExposureAlternative(
   alternatives: RouteRecord[],
 ): boolean {

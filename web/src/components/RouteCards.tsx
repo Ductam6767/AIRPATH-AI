@@ -2,11 +2,12 @@ import type { RouteRecord } from '../types'
 import { EXPOSURE_NOTE } from '../constants'
 import { useI18n } from '../i18n/LanguageContext'
 import {
+  exposureCompareHeadline,
   formatDistanceKm,
   formatExposure,
   formatMinutes,
+  formatSignedMinutes,
   hasLowerPredictedExposureAlternative,
-  isLowerPredictedExposure,
   productRouteKind,
   reductionBadgeText,
   routeCardTitle,
@@ -77,9 +78,13 @@ export function RouteCards({
           const kind = productRouteKind(route)
           const extra = route.is_fastest
             ? '+0 min'
-            : `+${formatMinutes(route.additional_time_vs_fastest_minutes)} min`
+            : formatSignedMinutes(route.additional_time_vs_fastest_minutes)
           const reduction = reductionBadgeText(
             route.predicted_exposure_reduction_percent,
+          )
+          const exposureCompare = exposureCompareHeadline(
+            route.predicted_exposure_reduction_percent,
+            route.is_fastest,
           )
           const tone = route.is_fastest
             ? 'fastest'
@@ -125,22 +130,17 @@ export function RouteCards({
                   </span>
                 </div>
                 <p className="route-card__distance">{formatDistanceKm(route.distance_m)}</p>
-                <div className="route-card__meta">
-                  <span className="chip">{extra}</span>
-                  {!route.is_fastest && reduction ? (
-                    <span
-                      className={
-                        isLowerPredictedExposure(
-                          route.predicted_exposure_reduction_percent,
-                        )
-                          ? 'chip chip--eco'
-                          : 'chip'
-                      }
-                    >
-                      {reduction}
-                    </span>
-                  ) : null}
+                <div className="route-card__stats">
+                  <div className="route-stat">
+                    <span className="route-stat__value">{extra}</span>
+                    <span className="route-stat__label">Extra time</span>
+                  </div>
+                  <div className={`route-stat route-stat--${exposureCompare.tone}`}>
+                    <span className="route-stat__value">{exposureCompare.value}</span>
+                    <span className="route-stat__label">{exposureCompare.caption}</span>
+                  </div>
                 </div>
+                {reduction ? <span className="sr-only">{reduction}</span> : null}
                 <p className="route-card__exposure">
                   Predicted exposure{' '}
                   <strong>{formatExposure(route.predicted_exposure_index)}</strong>

@@ -171,9 +171,13 @@ a:focus-visible {
   color: var(--text);
 }
 
-.app-shell--nav .map-legend,
-.map-legend--hidden {
-  display: none;
+.app-shell--nav .map-shell {
+  overflow: hidden;
+  background: #dbe4ea;
+}
+
+.app-shell--nav .route-map.leaflet-container {
+  background: #dbe4ea;
 }
 
 .app-shell--nav .map-stage .status-banner {
@@ -247,10 +251,19 @@ a:focus-visible {
 
 .od-marker--progress {
   background: var(--eco);
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   font-size: 0.95rem;
   z-index: 600;
+}
+
+.od-marker__chevron {
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 12px solid #fff;
+  margin-top: -2px;
 }
 
 .od-marker--progress .od-marker__pulse {
@@ -772,10 +785,66 @@ a:focus-visible {
   font-size: 1.05rem;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .route-card__distance {
   margin: 0;
   font-size: 0.85rem;
   color: var(--muted);
+}
+
+.route-card__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+  margin: 0.15rem 0 0.1rem;
+}
+
+.route-stat {
+  padding: 0.55rem 0.6rem 0.5rem;
+  border-radius: 12px;
+  background: rgba(18, 24, 38, 0.04);
+  min-width: 0;
+}
+
+.route-stat--eco {
+  background: var(--soft-green);
+}
+
+.route-stat--warn {
+  background: rgba(18, 24, 38, 0.05);
+}
+
+.route-stat__value {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--navy);
+}
+
+.route-stat--eco .route-stat__value {
+  color: var(--eco);
+}
+
+.route-stat__label {
+  display: block;
+  margin-top: 0.18rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  line-height: 1.25;
 }
 
 .route-card__meta {

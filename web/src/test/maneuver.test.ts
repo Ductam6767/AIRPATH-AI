@@ -4,6 +4,7 @@ import {
   bearingDeg,
   cumulativeDistances,
   distanceM,
+  lerpHeadingDeg,
   pointAlongRoute,
   upcomingRouteSlice,
 } from '../maneuver/geo'
@@ -55,6 +56,7 @@ describe('extractManeuvers', () => {
     expect(bearingDeg([10.77, 106.66], [10.77, 106.67])).toBeCloseTo(90, 0)
     expect(classifyTurn(angleDiffDeg(0, 90))).toBe('right')
     expect(classifyTurn(angleDiffDeg(0, -90))).toBe('left')
+    expect(lerpHeadingDeg(0, 90, 0.5)).toBeCloseTo(45, 5)
   })
 
   it('labels a north-then-west corner left, even with dense OSM vertices', () => {

@@ -11,6 +11,7 @@ import {
   originLabel,
   pickRecommendedRoute,
   reductionBadgeText,
+  exposureCompareHeadline,
   matchDemoPair,
   reverseRouteGeometry,
   routeCardTitle,
@@ -346,6 +347,12 @@ describe('labels', () => {
     expect(routeKindLabel(higher)).toBe('Feasible alternative')
     expect(reductionBadgeText(28)).toBe('28% lower predicted exposure')
     expect(reductionBadgeText(-9.7)).toBe('+10% higher predicted exposure')
+    expect(exposureCompareHeadline(28, false)).toEqual({
+      value: '↓ 28%',
+      caption: 'lower estimated exposure',
+      tone: 'eco',
+    })
+    expect(exposureCompareHeadline(0, true).value).toBe('0%')
   })
 
   it('detects whether any feasible alternative has lower predicted exposure', () => {
