@@ -6,6 +6,7 @@ import {
   formatMinutes,
   routeCardTitle,
 } from '../utils/labels'
+import { armedTurnDirection } from '../maneuver/turnSignal'
 import { BlinkerArrow } from './BlinkerArrow'
 
 interface NavigationInstructionProps {
@@ -39,12 +40,15 @@ export function NavigationInstruction({
     route.travel_time_minutes * (1 - progress),
   )
 
-  const turn = snapshot.next?.turn
+  const blinker = armedTurnDirection(
+    snapshot.next?.turn,
+    snapshot.distanceToNextM,
+  )
 
   return (
     <article className="nav-card" aria-live="polite">
       <div className="nav-card__primary">
-        <BlinkerArrow turn={turn} size="lg" />
+        <BlinkerArrow turn={blinker} size="lg" />
         <div className="nav-card__copy">
           <p className="nav-card__turn">{maneuverTitle(snapshot, t)}</p>
           <p className="nav-card__distance">
