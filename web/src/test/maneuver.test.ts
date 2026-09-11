@@ -1,11 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import {
+  angleDiffDeg,
+  bearingDeg,
   cumulativeDistances,
   distanceM,
   pointAlongRoute,
   upcomingRouteSlice,
 } from '../maneuver/geo'
-import { extractManeuvers, distanceToManeuver } from '../maneuver/extractManeuvers'
+import {
+  classifyTurn,
+  extractManeuvers,
+  distanceToManeuver,
+} from '../maneuver/extractManeuvers'
 import { suggestedSpeedKmh } from '../maneuver/speedProfile'
 
 describe('maneuver geo', () => {
@@ -44,6 +50,39 @@ describe('maneuver geo', () => {
 })
 
 describe('extractManeuvers', () => {
+  it('uses navigation bearings: north then east is a right turn', () => {
+    expect(bearingDeg([10.77, 106.66], [10.78, 106.66])).toBeCloseTo(0, 0)
+    expect(bearingDeg([10.77, 106.66], [10.77, 106.67])).toBeCloseTo(90, 0)
+    expect(classifyTurn(angleDiffDeg(0, 90))).toBe('right')
+    expect(classifyTurn(angleDiffDeg(0, -90))).toBe('left')
+  })
+
+  it('labels a north-then-west corner left, even with dense OSM vertices', () => {
+    const geom: [number, number][] = []
+    for (let i = 0; i <= 8; i += 1) {
+      geom.push([10.77 + i * 0.00012, 106.66])
+    }
+    const lastNorth = geom[geom.length - 1]!
+    for (let i = 1; i <= 8; i += 1) {
+      geom.push([lastNorth[0], lastNorth[1] - i * 0.00012])
+    }
+    const turns = extractManeuvers(geom).filter((m) => m.turn !== 'arrive')
+    expect(turns.map((m) => m.turn)).toEqual(['left'])
+  })
+
+  it('labels a north-then-east corner right', () => {
+    const geom: [number, number][] = []
+    for (let i = 0; i <= 8; i += 1) {
+      geom.push([10.77 + i * 0.00012, 106.66])
+    }
+    const lastNorth = geom[geom.length - 1]!
+    for (let i = 1; i <= 8; i += 1) {
+      geom.push([lastNorth[0], lastNorth[1] + i * 0.00012])
+    }
+    const turns = extractManeuvers(geom).filter((m) => m.turn !== 'arrive')
+    expect(turns.map((m) => m.turn)).toEqual(['right'])
+  })
+
   it('adds arrive maneuver at route end', () => {
     const geom: [number, number][] = [
       [10.799, 106.661],
