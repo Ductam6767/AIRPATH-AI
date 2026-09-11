@@ -10,7 +10,6 @@ import {
 import L from 'leaflet'
 import type { Coordinate, RouteRecord } from '../types'
 import { COLORS } from '../constants'
-import { upcomingRouteSlice } from '../maneuver/geo'
 import { formatCoord, routeCardTitle, safeGeometry } from '../utils/labels'
 import 'leaflet/dist/leaflet.css'
 
@@ -43,8 +42,6 @@ interface RouteMapProps {
   onSelectRoute: (routeId: string) => void
   progressLatLng?: [number, number] | null
   followActive?: boolean
-  followGeometry?: [number, number][]
-  distanceAlongM?: number
 }
 
 function FitRoutes({
@@ -92,57 +89,54 @@ function FitRoutes({
   return null
 }
 
-function followPadding(map: L.Map): L.Point[] {
-  const size = map.getSize()
-  const mobile = size.x < 900
-  const sheet = mobile ? Math.min(size.y * 0.46, 420) : 16
-  const top = mobile ? 18 : 28
-  const side = mobile ? 22 : 32
-  return [L.point(side, top), L.point(side, sheet + (mobile ? 18 : 16))]
+const FOLLOW_ZOOM = 16
+
+function followTargetY(size: L.Point): number {
+  const phone = size.x <= 480
+  if (!phone) return size.y * 0.5
+  const sheet = Math.min(size.y * 0.42, 360)
+  const visible = Math.max(140, size.y - sheet)
+  return visible * 0.55
 }
 
 function FollowProgress({
   progress,
-  geometry,
-  distanceAlongM,
 }: {
   progress: [number, number]
-  geometry: [number, number][]
-  distanceAlongM: number
 }) {
   const map = useMap()
-  const primed = useRef(false)
+  const sized = useRef(false)
 
   useEffect(() => {
-    const frame = () => {
+    map.invalidateSize({ animate: false })
+    sized.current = true
+  }, [map])
+
+  useEffect(() => {
+    const size = map.getSize()
+    if (size.x < 40 || size.y < 40) return
+    if (!sized.current) {
       map.invalidateSize({ animate: false })
-      const mobile = map.getSize().x < 900
-      const lookaheadM = mobile ? 260 : 340
-      const slice = upcomingRouteSlice(geometry, distanceAlongM, lookaheadM)
-      const points = slice.length > 0 ? slice : [progress]
-      const [topLeft, bottomRight] = followPadding(map)
-      const animate = primed.current
-      if (points.length === 1) {
-        map.setView(progress, mobile ? 16 : 16, {
-          animate,
-          duration: 0.55,
-        })
-      } else {
-        const bounds = L.latLngBounds(points.map(([lat, lon]) => L.latLng(lat, lon)))
-        map.fitBounds(bounds, {
-          paddingTopLeft: topLeft,
-          paddingBottomRight: bottomRight,
-          maxZoom: mobile ? 17 : 17,
-          animate,
-          duration: 0.55,
-        })
-      }
-      primed.current = true
+      sized.current = true
     }
-    frame()
-    const id = window.requestAnimationFrame(frame)
-    return () => window.cancelAnimationFrame(id)
-  }, [map, progress, geometry, distanceAlongM])
+
+    const here = L.latLng(progress[0], progress[1])
+    // Keep an integer street zoom so OSM tiles stay loaded. Do not fitBounds
+    // or animate zoom — that unloads tiles and leaves a gray map.
+    if (map.getZoom() !== FOLLOW_ZOOM) {
+      map.setView(here, FOLLOW_ZOOM, { animate: false })
+    } else {
+      map.panTo(here, { animate: false, noMoveStart: true })
+    }
+
+    const now = map.latLngToContainerPoint(here)
+    const want = L.point(size.x / 2, followTargetY(size))
+    const dx = now.x - want.x
+    const dy = now.y - want.y
+    if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
+      map.panBy([dx, dy], { animate: false, noMoveStart: true })
+    }
+  }, [map, progress])
 
   return null
 }
@@ -195,8 +189,6 @@ export function RouteMap({
   onSelectRoute,
   progressLatLng,
   followActive = false,
-  followGeometry = [],
-  distanceAlongM = 0,
 }: RouteMapProps) {
   const visibleRoutes = followActive
     ? routes.filter((route) => route.route_id === selectedRouteId)
@@ -213,13 +205,17 @@ export function RouteMap({
         center={[10.78, 106.66]}
         zoom={12}
         className="route-map"
-        scrollWheelZoom={!followActive}
-        zoomControl={!followActive}
-        attributionControl={!followActive}
+        scrollWheelZoom
+        zoomControl
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          maxZoom={19}
+          maxNativeZoom={19}
+          minZoom={11}
+          keepBuffer={6}
+          updateWhenZooming={false}
         />
         <LockMapInteraction locked={followActive} />
         <FitRoutes
@@ -229,11 +225,7 @@ export function RouteMap({
           disabled={followActive}
         />
         {followActive && progressLatLng ? (
-          <FollowProgress
-            progress={progressLatLng}
-            geometry={followGeometry.length > 0 ? followGeometry : []}
-            distanceAlongM={distanceAlongM}
-          />
+          <FollowProgress progress={progressLatLng} />
         ) : null}
         {ordered.map((route) => {
           const geometry = safeGeometry(route.geometry)

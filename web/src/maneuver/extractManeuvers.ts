@@ -1,13 +1,43 @@
-import { angleDiffDeg, bearingDeg, cumulativeDistances } from './geo'
+import {
+  angleDiffDeg,
+  bearingDeg,
+  cumulativeDistances,
+  distanceM,
+  pointAlongRoute,
+} from './geo'
 import type { Maneuver, TurnDirection } from './types'
 
-const MIN_TURN_DEG = 28
-const MIN_LEG_M = 25
+/** Heading change sampled over this inbound/outbound window. */
+const LOOK_M = 50
+const MIN_SAMPLE_M = 14
+const MIN_TURN_DEG = 32
+const MERGE_M = 55
 
-function classifyTurn(delta: number): TurnDirection {
-  if (delta > MIN_TURN_DEG) return 'right'
-  if (delta < -MIN_TURN_DEG) return 'left'
+/**
+ * Navigation bearings: 0° north, +90° east.
+ * Positive angleDiff (clockwise) is a right turn for the traveler.
+ */
+export function classifyTurn(deltaDeg: number): TurnDirection {
+  if (deltaDeg > MIN_TURN_DEG) return 'right'
+  if (deltaDeg < -MIN_TURN_DEG) return 'left'
   return 'straight'
+}
+
+export function turnDeltaAt(
+  geometry: [number, number][],
+  distanceAlongM: number,
+  lookM: number = LOOK_M,
+): number | null {
+  const cum = cumulativeDistances(geometry)
+  const routeLen = cum[cum.length - 1] ?? 0
+  if (routeLen < lookM) return null
+  const at = Math.min(Math.max(distanceAlongM, 0), routeLen)
+  const a = pointAlongRoute(geometry, Math.max(0, at - lookM))
+  const b = pointAlongRoute(geometry, at)
+  const c = pointAlongRoute(geometry, Math.min(routeLen, at + lookM))
+  if (!a || !b || !c) return null
+  if (distanceM(a, b) < MIN_SAMPLE_M || distanceM(b, c) < MIN_SAMPLE_M) return null
+  return angleDiffDeg(bearingDeg(a, b), bearingDeg(b, c))
 }
 
 function instructionFor(turn: TurnDirection, distanceM: number): string {
@@ -20,47 +50,52 @@ function instructionFor(turn: TurnDirection, distanceM: number): string {
 
 /**
  * Extract coarse maneuvers from a frozen route polyline ([lat, lon][]).
- * Used for demo navigation + ESP32 sync — not OSM turn-by-turn.
+ * Incoming/outgoing headings use a 50 m window so dense OSM vertices do not
+ * skip the corner the rider actually sees, or pick the following opposite turn.
  */
 export function extractManeuvers(geometry: [number, number][]): Maneuver[] {
   if (geometry.length < 2) return []
 
   const cum = cumulativeDistances(geometry)
-  const maneuvers: Maneuver[] = []
-  let maneuverIndex = 0
+  const routeLen = cum[cum.length - 1] ?? 0
+  const hits: { distanceM: number; delta: number; turn: TurnDirection; lat: number; lon: number }[] =
+    []
 
   for (let i = 1; i < geometry.length - 1; i += 1) {
-    const prev = geometry[i - 1]!
-    const curr = geometry[i]!
-    const next = geometry[i + 1]!
-    const legIn = cum[i]! - cum[i - 1]!
-    const legOut = cum[i + 1]! - cum[i]!
-    if (legIn < MIN_LEG_M || legOut < MIN_LEG_M) continue
-
-    const bIn = bearingDeg(prev, curr)
-    const bOut = bearingDeg(curr, next)
-    const delta = angleDiffDeg(bIn, bOut)
+    const at = cum[i]!
+    const delta = turnDeltaAt(geometry, at)
+    if (delta == null) continue
     const turn = classifyTurn(delta)
     if (turn === 'straight') continue
-
-    const [lat, lon] = curr
-    maneuvers.push({
-      id: `m${maneuverIndex}`,
-      index: maneuverIndex,
-      distanceFromStartM: cum[i]!,
-      turn,
-      instruction: instructionFor(turn, 0),
-      lat,
-      lon,
-    })
-    maneuverIndex += 1
+    const [lat, lon] = geometry[i]!
+    hits.push({ distanceM: at, delta, turn, lat, lon })
   }
+
+  const merged: typeof hits = []
+  for (const hit of hits) {
+    const last = merged[merged.length - 1]
+    if (last && Math.abs(hit.distanceM - last.distanceM) < MERGE_M) {
+      if (Math.abs(hit.delta) > Math.abs(last.delta)) merged[merged.length - 1] = hit
+    } else {
+      merged.push(hit)
+    }
+  }
+
+  const maneuvers: Maneuver[] = merged.map((hit, index) => ({
+    id: `m${index}`,
+    index,
+    distanceFromStartM: hit.distanceM,
+    turn: hit.turn,
+    instruction: instructionFor(hit.turn, 0),
+    lat: hit.lat,
+    lon: hit.lon,
+  }))
 
   const last = geometry[geometry.length - 1]!
   maneuvers.push({
-    id: `m${maneuverIndex}`,
-    index: maneuverIndex,
-    distanceFromStartM: cum[cum.length - 1]!,
+    id: `m${maneuvers.length}`,
+    index: maneuvers.length,
+    distanceFromStartM: routeLen,
     turn: 'arrive',
     instruction: instructionFor('arrive', 0),
     lat: last[0],
