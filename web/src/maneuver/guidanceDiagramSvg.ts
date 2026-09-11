@@ -3,7 +3,7 @@ import type { GuidanceCue } from './guidanceCues'
 const TAKEN = '#ea580c'
 const TAKEN_DARK = '#9a3412'
 const ROAD = '#94a3b8'
-const ROAD_FILL = '#e2e8f0'
+const ROAD_FILL = '#d6dde6'
 const INK = '#0f172a'
 
 function polar(cx: number, cy: number, r: number, deg: number): [number, number] {
@@ -11,17 +11,87 @@ function polar(cx: number, cy: number, r: number, deg: number): [number, number]
   return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)]
 }
 
-function svgAngle(armDeg: number): number {
-  return 90 + armDeg
+/** Heading-up, Vietnam RHT: entry at bottom, 1st exit right, then top, then left. */
+export function roundaboutTravelAngle(armDeg: number): number {
+  return 90 - armDeg
 }
 
-function dualStroke(d: string, outer: number, inner: number): string {
-  return `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${outer}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${TAKEN}" stroke-width="${inner}" stroke-linecap="round" stroke-linejoin="round"/>`
+function minArmGap(armDeg: number[]): number {
+  if (armDeg.length < 2) return 360
+  const sorted = [...armDeg]
+    .map((deg) => ((deg % 360) + 360) % 360)
+    .sort((a, b) => a - b)
+  let gap = 360
+  for (let i = 0; i < sorted.length; i++) {
+    const next = sorted[(i + 1) % sorted.length]!
+    const delta = (next - sorted[i]! + 360) % 360
+    if (delta > 0 && delta < gap) gap = delta
+  }
+  return gap
 }
 
-function arrowHead(tip: [number, number], deg: number, size = 9): string {
+function evenArms(count: number): number[] {
+  return Array.from({ length: count }, (_, i) => (i * 360) / count)
+}
+
+export function resolveRoundaboutArms(cue: GuidanceCue, arms: number): number[] {
+  const raw = (cue.arm_deg ?? []).filter((deg) => Number.isFinite(deg))
+  if (raw.length < arms || minArmGap(raw.slice(0, arms)) < 40) {
+    return evenArms(arms)
+  }
+  return raw.slice(0, arms)
+}
+
+function roadQuad(
+  cx: number,
+  cy: number,
+  deg: number,
+  r0: number,
+  r1: number,
+  hw: number,
+): string {
   const rad = (deg * Math.PI) / 180
-  const back = 11
+  const ux = Math.cos(rad)
+  const uy = Math.sin(rad)
+  const px = -uy
+  const py = ux
+  const corners = [
+    [cx + ux * r0 + px * hw, cy + uy * r0 + py * hw],
+    [cx + ux * r1 + px * hw, cy + uy * r1 + py * hw],
+    [cx + ux * r1 - px * hw, cy + uy * r1 - py * hw],
+    [cx + ux * r0 - px * hw, cy + uy * r0 - py * hw],
+  ]
+  return corners.map((p) => `${p[0]!.toFixed(1)},${p[1]!.toFixed(1)}`).join(' ')
+}
+
+function annularSector(
+  cx: number,
+  cy: number,
+  rIn: number,
+  rOut: number,
+  a0: number,
+  a1: number,
+): string {
+  let span = (a0 - a1 + 360) % 360
+  if (span < 12) span = 90
+  const end = a0 - span
+  const large = span > 180 ? 1 : 0
+  const outerStart = polar(cx, cy, rOut, a0)
+  const outerEnd = polar(cx, cy, rOut, end)
+  const innerEnd = polar(cx, cy, rIn, end)
+  const innerStart = polar(cx, cy, rIn, a0)
+  return [
+    `M ${outerStart[0].toFixed(1)} ${outerStart[1].toFixed(1)}`,
+    `A ${rOut} ${rOut} 0 ${large} 0 ${outerEnd[0].toFixed(1)} ${outerEnd[1].toFixed(1)}`,
+    `L ${innerEnd[0].toFixed(1)} ${innerEnd[1].toFixed(1)}`,
+    `A ${rIn} ${rIn} 0 ${large} 1 ${innerStart[0].toFixed(1)} ${innerStart[1].toFixed(1)}`,
+    'Z',
+  ].join(' ')
+}
+
+function arrowHead(tip: [number, number], deg: number, size = 10): string {
+  const rad = (deg * Math.PI) / 180
+  const back = 12
   const base: [number, number] = [
     tip[0] - Math.cos(rad) * back,
     tip[1] - Math.sin(rad) * back,
@@ -31,53 +101,87 @@ function arrowHead(tip: [number, number], deg: number, size = 9): string {
   return `<polygon points="${tip[0].toFixed(1)},${tip[1].toFixed(1)} ${left[0].toFixed(1)},${left[1].toFixed(1)} ${right[0].toFixed(1)},${right[1].toFixed(1)}" fill="${TAKEN}" stroke="${INK}" stroke-width="1.4" stroke-linejoin="round"/>`
 }
 
+function youChevron(at: [number, number], deg: number): string {
+  const rad = (deg * Math.PI) / 180
+  const tip: [number, number] = [
+    at[0] + Math.cos(rad) * 7,
+    at[1] + Math.sin(rad) * 7,
+  ]
+  const back: [number, number] = [
+    at[0] - Math.cos(rad) * 6,
+    at[1] - Math.sin(rad) * 6,
+  ]
+  const left = polar(back[0], back[1], 6.5, deg - 90)
+  const right = polar(back[0], back[1], 6.5, deg + 90)
+  return `<polygon points="${tip[0].toFixed(1)},${tip[1].toFixed(1)} ${left[0].toFixed(1)},${left[1].toFixed(1)} ${right[0].toFixed(1)},${right[1].toFixed(1)}" fill="${INK}" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/>`
+}
+
+function dualStroke(d: string, outer: number, inner: number): string {
+  return `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${outer}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${TAKEN}" stroke-width="${inner}" stroke-linecap="round" stroke-linejoin="round"/>`
+}
+
 function roundaboutSvg(cue: GuidanceCue, emphasized: boolean): string {
   const arms = Math.max(3, Math.min(7, cue.arms ?? 4))
   const exit = Math.max(1, Math.min(arms - 1, cue.exit ?? 1))
-  let armDeg = (cue.arm_deg ?? []).filter((d) => Number.isFinite(d))
-  if (armDeg.length < arms) {
-    armDeg = Array.from({ length: arms }, (_, i) => (i * 360) / arms)
-  } else {
-    armDeg = armDeg.slice(0, arms)
-  }
+  const armDeg = resolveRoundaboutArms(cue, arms)
   const cx = 60
   const cy = 60
-  const ringR = 24
-  const roadR = 52
-  const numbered = armDeg
-    .map((deg) => deg)
-    .filter((deg) => deg % 360 !== 0)
-    .sort((a, b) => (a % 360) - (b % 360))
-  const roads = armDeg
+  const ringR = 26
+  const roadR = 56
+  const hw = emphasized ? 8.4 : 7.4
+  const casing = 1.7
+  const rOut = ringR + hw
+  const rIn = ringR - hw
+  const entryA = roundaboutTravelAngle(0)
+  const takenA = roundaboutTravelAngle(armDeg[exit] ?? 180)
+
+  const greyArms = armDeg
     .map((deg) => {
-      const a = polar(cx, cy, 10, svgAngle(deg))
-      const b = polar(cx, cy, roadR, svgAngle(deg))
-      return `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${INK}" stroke-width="13" stroke-linecap="butt"/><line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${ROAD_FILL}" stroke-width="9" stroke-linecap="butt"/>`
+      const a = roundaboutTravelAngle(deg)
+      return `<polygon class="rb-arm" points="${roadQuad(cx, cy, a, ringR - 2, roadR, hw)}" fill="${ROAD_FILL}" stroke="${INK}" stroke-width="1.8" stroke-linejoin="round"/>`
     })
     .join('')
-  const takenDeg = numbered[exit - 1] ?? 180
-  const start = polar(cx, cy, ringR, svgAngle(0))
-  const endRing = polar(cx, cy, ringR, svgAngle(takenDeg))
-  const endRoad = polar(cx, cy, roadR - 1, svgAngle(takenDeg))
-  const entry = polar(cx, cy, roadR - 1, svgAngle(0))
-  const large = takenDeg > 180 ? 1 : 0
-  const path = [
-    `M ${entry[0].toFixed(1)} ${entry[1].toFixed(1)}`,
-    `L ${start[0].toFixed(1)} ${start[1].toFixed(1)}`,
-    `A ${ringR} ${ringR} 0 ${large} 1 ${endRing[0].toFixed(1)} ${endRing[1].toFixed(1)}`,
-    `L ${endRoad[0].toFixed(1)} ${endRoad[1].toFixed(1)}`,
-  ].join(' ')
-  const outer = emphasized ? 11 : 9.5
-  const inner = emphasized ? 7 : 5.8
-  const numbers = numbered
+
+  const greyRing = `<circle cx="${cx}" cy="${cy}" r="${rOut.toFixed(1)}" fill="${ROAD_FILL}" stroke="${INK}" stroke-width="1.8"/><circle cx="${cx}" cy="${cy}" r="${rIn.toFixed(1)}" fill="#fff" stroke="${INK}" stroke-width="1.6"/>`
+
+  const entryPts = roadQuad(cx, cy, entryA, rOut - 0.8, roadR, hw + casing)
+  const exitPts = roadQuad(cx, cy, takenA, rOut - 0.8, roadR, hw + casing)
+  const sectorCasing = annularSector(
+    cx,
+    cy,
+    Math.max(6, rIn - casing),
+    rOut + casing,
+    entryA,
+    takenA,
+  )
+  const entryFill = roadQuad(cx, cy, entryA, rOut - 1.2, roadR - 0.4, hw)
+  const exitFill = roadQuad(cx, cy, takenA, rOut - 1.2, roadR - 0.4, hw)
+  const sectorFill = annularSector(cx, cy, rIn, rOut, entryA, takenA)
+
+  const paint = [
+    `<polygon class="rb-taken-casing" points="${entryPts}" fill="${INK}"/>`,
+    `<polygon class="rb-taken-casing" points="${exitPts}" fill="${INK}"/>`,
+    `<path class="rb-taken-casing" d="${sectorCasing}" fill="${INK}"/>`,
+    `<polygon class="rb-taken-paint" points="${entryFill}" fill="${TAKEN}"/>`,
+    `<polygon class="rb-taken-paint" points="${exitFill}" fill="${TAKEN}"/>`,
+    `<path class="rb-taken-paint" d="${sectorFill}" fill="${TAKEN}"/>`,
+  ].join('')
+
+  const numbers = armDeg
+    .slice(1)
     .map((deg, i) => {
       const n = i + 1
-      const [x, y] = polar(cx, cy, 38, svgAngle(deg))
+      const [x, y] = polar(cx, cy, 41, roundaboutTravelAngle(deg))
       const active = n === exit
-      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9.2" fill="${active ? TAKEN : '#fff'}" stroke="${active ? TAKEN_DARK : INK}" stroke-width="2.2"/><text x="${x.toFixed(1)}" y="${(y + 4.2).toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="900" font-family="ui-sans-serif,system-ui,sans-serif" fill="${active ? '#fff' : INK}">${n}</text>`
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9.6" fill="${active ? TAKEN : '#fff'}" stroke="${active ? TAKEN_DARK : INK}" stroke-width="2.3"/><text x="${x.toFixed(1)}" y="${(y + 4.4).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="900" font-family="ui-sans-serif,system-ui,sans-serif" fill="${active ? '#fff' : INK}">${n}</text>`
     })
     .join('')
-  return `<rect x="2" y="2" width="116" height="116" rx="14" fill="#fff"/>${roads}<circle cx="${cx}" cy="${cy}" r="${ringR + 8}" fill="${ROAD_FILL}" stroke="${INK}" stroke-width="12"/><circle cx="${cx}" cy="${cy}" r="${ringR + 8}" fill="none" stroke="${ROAD}" stroke-width="8"/><circle cx="${cx}" cy="${cy}" r="${ringR - 8}" fill="#fff" stroke="${INK}" stroke-width="1.4"/>${dualStroke(path, outer, inner)}${arrowHead(endRoad, svgAngle(takenDeg))}${numbers}`
+
+  const tip = polar(cx, cy, roadR - 1, takenA)
+  const youAt = polar(cx, cy, 49, entryA)
+  const island = `<circle cx="${cx}" cy="${cy}" r="${Math.max(7, rIn - 3).toFixed(1)}" fill="#fff" stroke="${INK}" stroke-width="1.2"/>`
+
+  return `<rect x="2" y="2" width="116" height="116" rx="14" fill="#fff"/>${greyArms}${greyRing}${paint}${island}${arrowHead(tip, takenA)}${youChevron(youAt, entryA + 180)}${numbers}`
 }
 
 function laneSvg(cue: GuidanceCue, emphasized: boolean): string {

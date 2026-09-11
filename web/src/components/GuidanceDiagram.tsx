@@ -12,7 +12,7 @@ export function GuidanceDiagram({
   size = 'hud',
   emphasized = false,
 }: GuidanceDiagramProps) {
-  const px = size === 'hud' ? 188 : 88
+  const px = size === 'hud' ? 216 : 88
   return (
     <svg
       className={`guidance-diagram guidance-diagram--${size}${emphasized ? ' is-active' : ''}`}

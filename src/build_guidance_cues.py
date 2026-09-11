@@ -29,7 +29,6 @@ MIN_TURN_DEG = 32
 LOOK_M = 18
 WIDE_LANES = 4
 LANE_LEAD_M = 15
-ROUNDABOUT_CLUSTER_M = 45
 BRIDGE_SNAP_M = 12
 BRIDGE_CLUSTER_M = 140
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"
@@ -60,10 +59,6 @@ def bearing_deg(a: tuple[float, float], b: tuple[float, float]) -> float:
 
 def angle_diff_deg(frm: float, to: float) -> float:
     return (to - frm + 540) % 360 - 180
-
-
-def wrap360(deg: float) -> float:
-    return deg % 360
 
 
 def cumulative_m(geometry: list[tuple[float, float]]) -> list[float]:
@@ -148,69 +143,40 @@ def centroid(points: list[tuple[float, float]]) -> tuple[float, float]:
     )
 
 
-def ccw_span_deg(start: float, end: float) -> float:
-    return (end - start) % 360
+def heading_ccw_sweep(h0: float, h1: float) -> float:
+    """Degrees traveled circulating CCW (island on the left, Vietnam RHT)."""
+    return (h0 - h1) % 360
 
 
-def quantize_bearing(deg: float, bin_deg: float = 28.0) -> int:
-    return int(round(wrap360(deg) / bin_deg) % (360 / bin_deg))
+def exit_from_sweep(sweep: float, arm_count: int) -> int:
+    """Map CCW ring travel onto evenly spaced exits (1 = first right in VN RHT)."""
+    n = max(3, min(7, arm_count))
+    span = sweep if sweep >= 35 else 90.0
+    step = 360.0 / n
+    return max(1, min(n - 1, int(span / step + 0.35)))
 
 
 def infer_exit(entry_bearing: float, exit_bearing: float, arm_count: int) -> int:
-    """Number exits 1..N in circulation order (VN right-hand = CCW)."""
-    span = ccw_span_deg(wrap360(entry_bearing + 180), wrap360(exit_bearing))
-    if span < 18:
-        span = 18
-    n = max(3, min(7, arm_count))
-    step = 360.0 / n
-    idx = int(round(span / step))
-    return max(1, min(n - 1, idx if idx > 0 else 1))
+    """Fallback when only approach/leave bearings are available."""
+    return exit_from_sweep(heading_ccw_sweep(entry_bearing, exit_bearing), arm_count)
 
 
 def collect_roundabout_arms(
     clusters: list[dict[str, Any]],
 ) -> None:
-    """Fill arm bearings from every demo route sharing a roundabout cluster."""
+    """Even 4-arm heading-up schematic; exit from this route's CCW ring sweep."""
     for cluster in clusters:
-        cluster["_arms"] = [cluster["entry_bearing"], cluster["exit_bearing"]]
-    for i, a in enumerate(clusters):
-        for b in clusters[i + 1 :]:
-            if haversine_m(a["center"], b["center"]) > ROUNDABOUT_CLUSTER_M:
-                continue
-            a["_arms"].extend([b["entry_bearing"], b["exit_bearing"]])
-            b["_arms"].extend([a["entry_bearing"], a["exit_bearing"]])
-    for cluster in clusters:
-        bins: dict[int, list[float]] = {}
-        for bearing in cluster["_arms"]:
-            key = quantize_bearing(bearing)
-            bins.setdefault(key, []).append(bearing)
-        arms = [sum(vals) / len(vals) for vals in bins.values()]
-        cluster["arms"] = max(4, min(6, len(arms)))
-        cluster["exit"] = infer_exit(
-            cluster["entry_bearing"], cluster["exit_bearing"], cluster["arms"]
+        n = 4
+        cluster["arms"] = n
+        sweep = float(
+            cluster.get("sweep_deg")
+            or heading_ccw_sweep(cluster["entry_bearing"], cluster["exit_bearing"])
         )
-        entry = wrap360(cluster["entry_bearing"] + 180)
-        relatives = sorted(
-            {round(ccw_span_deg(entry, wrap360(arm)) / 15) * 15 for arm in arms}
-        )
-        if 0 not in relatives:
-            relatives = [0, *relatives]
-        n = cluster["arms"]
-        if len(relatives) > n:
-            # Keep evenly spaced samples including entry (0) and the taken exit.
-            exit_rel = round(
-                ccw_span_deg(entry, wrap360(cluster["exit_bearing"])) / 15
-            ) * 15
-            keep = {0, exit_rel % 360}
-            for deg in relatives:
-                if len(keep) >= n:
-                    break
-                keep.add(deg)
-            relatives = sorted(keep)
-        while len(relatives) < n:
-            relatives.append(int(round(360 * len(relatives) / n / 15) * 15) % 360)
-            relatives = sorted({int(deg) % 360 for deg in relatives})
-        cluster["arm_deg"] = relatives[:n] or [0, 90, 180, 270]
+        if sweep < 35:
+            sweep = 90.0
+        cluster["sweep_deg"] = round(sweep, 1)
+        cluster["exit"] = exit_from_sweep(sweep, n)
+        cluster["arm_deg"] = [0, 90, 180, 270]
 
 
 def roundabout_cues_for_route(
@@ -232,7 +198,14 @@ def roundabout_cues_for_route(
         entry_pt = geometry[max(0, start - 1)]
         exit_pt = geometry[min(len(geometry) - 1, end)]
         entry_bearing = bearing_deg(entry_pt, geometry[start])
-        exit_bearing = bearing_deg(geometry[end - 1], exit_pt)
+        leave_a = geometry[max(start, end - 2)]
+        leave_b = geometry[min(len(geometry) - 1, end)]
+        exit_bearing = bearing_deg(leave_a, leave_b)
+        ring_a = geometry[start]
+        ring_b = geometry[min(end, start + 1)]
+        ring_start_h = bearing_deg(ring_a, ring_b)
+        ring_end_h = exit_bearing
+        sweep = heading_ccw_sweep(ring_start_h, ring_end_h)
         cues.append(
             {
                 "kind": "roundabout",
@@ -241,6 +214,7 @@ def roundabout_cues_for_route(
                 "center": center,
                 "entry_bearing": entry_bearing,
                 "exit_bearing": exit_bearing,
+                "sweep_deg": round(sweep, 1),
                 "at_hint_m": cum[start],
             }
         )
@@ -553,7 +527,7 @@ def route_key(scenario_id: str, mode: str, route_id: str) -> str:
 
 def public_cue(raw: dict[str, Any]) -> dict[str, Any]:
     if raw["kind"] == "roundabout":
-        return {
+        out = {
             "kind": "roundabout",
             "lat": raw["lat"],
             "lng": raw["lng"],
@@ -561,6 +535,9 @@ def public_cue(raw: dict[str, Any]) -> dict[str, Any]:
             "arms": int(raw["arms"]),
             "arm_deg": [int(v) for v in raw["arm_deg"]],
         }
+        if raw.get("sweep_deg") is not None:
+            out["sweep_deg"] = int(round(float(raw["sweep_deg"])))
+        return out
     if raw["kind"] == "lane":
         return {
             "kind": "lane",
@@ -665,5 +642,58 @@ def build_cues(
     return payload
 
 
+def rebuild_roundabout_sidecar(
+    *,
+    candidate_path: Path = CANDIDATE_PATH,
+    od_path: Path = OD_PATH,
+    output_path: Path | None = None,
+) -> dict[str, Any]:
+    """Rewrite roundabout fields only. Keeps baked lane/bridge cues (no Overpass)."""
+    dest = output_path or (DEFAULT_OUTPUT_DIR / "guidance_cues.json")
+    existing = json.loads(dest.read_text(encoding="utf-8"))
+    od = select_demo_scenarios(pd.read_csv(od_path))
+    demo_ids = [str(sid) for sid in od["scenario_id"].tolist()]
+    candidates = pd.read_csv(candidate_path)
+    demo = candidates.loc[candidates["scenario_id"].astype(str).isin(demo_ids)].copy()
+    way_lookup = load_way_attributes()
+    unique = demo.drop_duplicates(["scenario_id", "mode", "route_id"])
+
+    all_roundabouts: list[dict[str, Any]] = []
+    by_key: dict[str, list[dict[str, Any]]] = {}
+    for row in unique.itertuples(index=False):
+        scenario_id = str(row.scenario_id)
+        mode = str(row.mode)
+        route_id = str(row.route_id)
+        geometry = parse_geometry(str(row.geometry))
+        edges = parse_edges(str(row.ordered_edge_ids))
+        key = route_key(scenario_id, mode, route_id)
+        rbs = roundabout_cues_for_route(geometry, edges, way_lookup)
+        for cue in rbs:
+            cue["_key"] = key
+            all_roundabouts.append(cue)
+        by_key[key] = rbs
+
+    collect_roundabout_arms(all_roundabouts)
+    routes = existing.setdefault("routes", {})
+    for key, rbs in by_key.items():
+        rest = [c for c in routes.get(key, []) if c.get("kind") != "roundabout"]
+        routes[key] = [public_cue(c) for c in rbs] + rest
+
+    dest.write_text(json.dumps(existing, ensure_ascii=False, indent=2), encoding="utf-8")
+    count = sum(
+        1
+        for cues in routes.values()
+        for cue in cues
+        if cue.get("kind") == "roundabout"
+    )
+    print(f"updated roundabouts={count} routes={len(by_key)} -> {dest}")
+    return existing
+
+
 if __name__ == "__main__":
-    build_cues()
+    import sys
+
+    if "--roundabouts-only" in sys.argv:
+        rebuild_roundabout_sidecar()
+    else:
+        build_cues()

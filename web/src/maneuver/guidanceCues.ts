@@ -21,6 +21,7 @@ export interface GuidanceCue {
   exit?: number
   arms?: number
   arm_deg?: number[]
+  sweep_deg?: number
   lanes?: number
   turn?: LaneTurn
   target?: number
@@ -53,6 +54,9 @@ function asCue(raw: unknown, index: number): GuidanceCue | null {
     cue.arm_deg = Array.isArray(row.arm_deg)
       ? row.arm_deg.map((value) => Number(value)).filter(Number.isFinite)
       : [0, 90, 180, 270]
+    if (Number.isFinite(Number(row.sweep_deg))) {
+      cue.sweep_deg = Math.round(Number(row.sweep_deg))
+    }
   }
   if (kind === 'lane') {
     cue.lanes = Math.max(3, Math.min(8, Math.round(Number(row.lanes) || 4)))

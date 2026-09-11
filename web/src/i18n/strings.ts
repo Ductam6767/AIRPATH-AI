@@ -155,6 +155,7 @@ export const STRINGS = {
     cueBridgeOver: 'Bridge ahead — stay on this road over',
     cueBridgeUnder: 'Road goes under the bridge',
     cueDiagram: 'Junction diagram',
+    cuePaintPath: 'Orange = the road to take',
     trialsTitle: 'N-run experiment log',
     trialsIntro:
       'Record each trial for the poster (assistant On vs Off). Data stays on this device until you export CSV.',
@@ -374,6 +375,7 @@ export const STRINGS = {
     cueBridgeOver: 'Cầu phía trước — đi trên cầu',
     cueBridgeUnder: 'Đường đi dưới cầu',
     cueDiagram: 'Sơ đồ nút giao',
+    cuePaintPath: 'Cam = đường cần đi vào',
     trialsTitle: 'Nhật ký thí nghiệm N lượt',
     trialsIntro:
       'Ghi từng lượt cho poster (có/không trợ lý). Dữ liệu lưu trên máy cho tới khi xuất CSV.',

@@ -88,6 +88,7 @@ describe('NavigationInstruction blinker', () => {
     )
     expect(screen.getByLabelText('Junction diagram')).toBeInTheDocument()
     expect(screen.getByText(/Roundabout · take exit 2/)).toBeInTheDocument()
+    expect(screen.getByText('Orange = the road to take')).toBeInTheDocument()
     expect(screen.getByText('in 50 m')).toBeInTheDocument()
   })
 

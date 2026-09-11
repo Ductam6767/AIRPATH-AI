@@ -98,6 +98,9 @@ export function NavigationInstruction({
       {hudCue ? (
         <div className="nav-card__diagram" aria-label={t.cueDiagram}>
           <GuidanceDiagram cue={hudCue} size="hud" emphasized={cueOn} />
+          {hudCue.kind === 'roundabout' ? (
+            <p className="nav-card__paint-hint">{t.cuePaintPath}</p>
+          ) : null}
         </div>
       ) : null}
       <p className="nav-card__meta">

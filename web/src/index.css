@@ -1127,12 +1127,22 @@ a:focus-visible {
 
 .nav-card__diagram {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   margin: 0.15rem 0 0.55rem;
-  padding: 0.35rem;
+  padding: 0.35rem 0.35rem 0.45rem;
   border-radius: 18px;
   background: rgba(248, 250, 252, 0.96);
   border: 1px solid var(--border);
+}
+
+.nav-card__paint-hint {
+  margin: 0.28rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #c2410c;
+  letter-spacing: 0.01em;
 }
 
 .nav-card__diagram .guidance-diagram {
