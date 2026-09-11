@@ -46,6 +46,7 @@ import {
   matchDemoPair,
   parsePlaceKey,
   pickRecommendedRoute,
+  safeGeometry,
   scenarioForRequestedEnds,
   soleCompatiblePlace,
 } from './utils/labels'
@@ -387,6 +388,10 @@ function AppInner() {
               onSelectRoute={setSelectedRouteId}
               progressLatLng={progressLatLng}
               followActive={navigating}
+              followGeometry={
+                selectedRoute ? safeGeometry(selectedRoute.geometry) : []
+              }
+              distanceAlongM={assistSnapshot.distanceAlongM}
             />
           </main>
 

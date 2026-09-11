@@ -34,6 +34,12 @@ export function angleDiffDeg(from: number, to: number): number {
   return d
 }
 
+/** Move heading toward a target bearing without crossing the ±180° cut. */
+export function lerpHeadingDeg(from: number, to: number, t: number): number {
+  const k = Math.min(1, Math.max(0, t))
+  return from + angleDiffDeg(from, to) * k
+}
+
 /** Cumulative distance at each geometry vertex (meters). */
 export function cumulativeDistances(geometry: [number, number][]): number[] {
   const out = [0]

@@ -10,6 +10,12 @@ import {
 import L from 'leaflet'
 import type { Coordinate, RouteRecord } from '../types'
 import { COLORS } from '../constants'
+import {
+  angleDiffDeg,
+  bearingDeg,
+  lerpHeadingDeg,
+  pointAlongRoute,
+} from '../maneuver/geo'
 import { formatCoord, routeCardTitle, safeGeometry } from '../utils/labels'
 import 'leaflet/dist/leaflet.css'
 
@@ -29,9 +35,10 @@ const destinationIcon = L.divIcon({
 
 const progressIcon = L.divIcon({
   className: 'od-marker od-marker--progress',
-  html: '<span class="od-marker__pulse" aria-hidden="true"></span><span aria-hidden="true">●</span>',
-  iconSize: [32, 32],
-  iconAnchor: [16, 16],
+  html:
+    '<span class="od-marker__pulse" aria-hidden="true"></span><span class="od-marker__chevron" aria-hidden="true"></span>',
+  iconSize: [36, 36],
+  iconAnchor: [18, 22],
 })
 
 interface RouteMapProps {
@@ -42,6 +49,8 @@ interface RouteMapProps {
   onSelectRoute: (routeId: string) => void
   progressLatLng?: [number, number] | null
   followActive?: boolean
+  followGeometry?: [number, number][]
+  distanceAlongM?: number
 }
 
 function FitRoutes({
@@ -101,15 +110,26 @@ function followTargetY(size: L.Point): number {
 
 function FollowProgress({
   progress,
+  geometry,
+  distanceAlongM,
 }: {
   progress: [number, number]
+  geometry: [number, number][]
+  distanceAlongM: number
 }) {
   const map = useMap()
   const sized = useRef(false)
+  const headingRef = useRef<number | null>(null)
 
   useEffect(() => {
     map.invalidateSize({ animate: false })
     sized.current = true
+    return () => {
+      const el = map.getContainer()
+      el.style.transform = ''
+      el.style.transformOrigin = ''
+      headingRef.current = null
+    }
   }, [map])
 
   useEffect(() => {
@@ -121,22 +141,42 @@ function FollowProgress({
     }
 
     const here = L.latLng(progress[0], progress[1])
-    // Keep an integer street zoom so OSM tiles stay loaded. Do not fitBounds
-    // or animate zoom — that unloads tiles and leaves a gray map.
     if (map.getZoom() !== FOLLOW_ZOOM) {
       map.setView(here, FOLLOW_ZOOM, { animate: false })
     } else {
       map.panTo(here, { animate: false, noMoveStart: true })
     }
 
+    const originX = size.x / 2
+    const originY = followTargetY(size)
     const now = map.latLngToContainerPoint(here)
-    const want = L.point(size.x / 2, followTargetY(size))
+    const want = L.point(originX, originY)
     const dx = now.x - want.x
     const dy = now.y - want.y
     if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
       map.panBy([dx, dy], { animate: false, noMoveStart: true })
     }
-  }, [map, progress])
+
+    const ahead = pointAlongRoute(geometry, distanceAlongM + 48)
+    if (
+      ahead &&
+      (Math.abs(ahead[0] - progress[0]) > 1e-7 ||
+        Math.abs(ahead[1] - progress[1]) > 1e-7)
+    ) {
+      const raw = bearingDeg(progress, ahead)
+      headingRef.current =
+        headingRef.current == null
+          ? raw
+          : Math.abs(angleDiffDeg(headingRef.current, raw)) < 3
+            ? headingRef.current
+            : lerpHeadingDeg(headingRef.current, raw, 0.38)
+    }
+
+    const heading = headingRef.current ?? 0
+    const el = map.getContainer()
+    el.style.transformOrigin = `${originX}px ${originY}px`
+    el.style.transform = `rotate(${-heading}deg) scale(1.42)`
+  }, [map, progress, geometry, distanceAlongM])
 
   return null
 }
@@ -189,6 +229,8 @@ export function RouteMap({
   onSelectRoute,
   progressLatLng,
   followActive = false,
+  followGeometry = [],
+  distanceAlongM = 0,
 }: RouteMapProps) {
   const visibleRoutes = followActive
     ? routes.filter((route) => route.route_id === selectedRouteId)
@@ -225,7 +267,11 @@ export function RouteMap({
           disabled={followActive}
         />
         {followActive && progressLatLng ? (
-          <FollowProgress progress={progressLatLng} />
+          <FollowProgress
+            progress={progressLatLng}
+            geometry={followGeometry}
+            distanceAlongM={distanceAlongM}
+          />
         ) : null}
         {ordered.map((route) => {
           const geometry = safeGeometry(route.geometry)
