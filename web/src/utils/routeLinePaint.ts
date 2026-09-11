@@ -4,6 +4,9 @@ import type { RouteRecord } from '../types'
 
 export const ROUTE_CASING_COLOR = '#111111'
 
+/** Must match the follow-camera world transform in RouteMap. */
+export const FOLLOW_MAP_SCALE = 1.58
+
 type RouteRole = 'selected' | 'fastest' | 'other'
 
 function roleOf(route: RouteRecord, selectedRouteId: string | null): RouteRole {
@@ -12,7 +15,11 @@ function roleOf(route: RouteRecord, selectedRouteId: string | null): RouteRole {
   return 'other'
 }
 
-/** Keep the coloured fill inside a typical OSM carriageway at street zoom. */
+function screenPx(px: number, followActive: boolean): number {
+  return followActive ? px / FOLLOW_MAP_SCALE : px
+}
+
+/** Coloured fill in screen pixels, then shrunk in follow mode so CSS scale does not flood the OSM carriageway. */
 export function innerRouteWeight(
   zoom: number,
   role: RouteRole,
@@ -20,9 +27,9 @@ export function innerRouteWeight(
 ): number {
   const z = Math.max(11, Math.min(19, zoom))
   if (followActive) {
-    if (z >= 17) return 4
-    if (z >= 16) return 4.25
-    return 5
+    if (z >= 17) return screenPx(3.15, true)
+    if (z >= 16) return screenPx(3.45, true)
+    return screenPx(3.8, true)
   }
   if (role === 'selected') {
     if (z >= 16) return 4.25
@@ -39,9 +46,10 @@ export function innerRouteWeight(
   return 3.75
 }
 
-/** Black outline on both sides of the fill (~1.15px each edge). */
-export function casingRouteWeight(inner: number): number {
-  return inner + 2.3
+/** Black outline on both sides. Extra is in screen pixels (~1px each edge). */
+export function casingRouteWeight(inner: number, followActive = false): number {
+  const extra = followActive ? screenPx(2, true) : 2.3
+  return inner + extra
 }
 
 export function routeLinePaint(
@@ -68,8 +76,8 @@ export function routeLinePaint(
   }
   const casing: PathOptions = {
     color: ROUTE_CASING_COLOR,
-    weight: casingRouteWeight(inner),
-    opacity: 0.92,
+    weight: casingRouteWeight(inner, followActive),
+    opacity: 0.95,
     lineCap: 'round',
     lineJoin: 'round',
     interactive: true,

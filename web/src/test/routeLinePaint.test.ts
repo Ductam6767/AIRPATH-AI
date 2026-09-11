@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   casingRouteWeight,
+  FOLLOW_MAP_SCALE,
   innerRouteWeight,
   routeLinePaint,
   ROUTE_CASING_COLOR,
@@ -24,7 +25,6 @@ const fastest: RouteRecord = {
 describe('routeLinePaint', () => {
   it('keeps street-zoom strokes thinner than the old 8–10px overlay', () => {
     expect(innerRouteWeight(16, 'selected', false)).toBeLessThan(5)
-    expect(innerRouteWeight(16, 'selected', true)).toBeLessThan(5)
     expect(casingRouteWeight(4.25)).toBeLessThan(8)
   })
 
@@ -34,6 +34,18 @@ describe('routeLinePaint', () => {
     expect(paint.fill.weight).toBeLessThan(paint.casing.weight as number)
     expect((paint.casing.weight as number) - (paint.fill.weight as number)).toBeGreaterThan(
       1.5,
+    )
+  })
+
+  it('compensates follow-camera scale so the line stays inside the street', () => {
+    const paint = routeLinePaint(fastest, 'f', true, 16)
+    const visualFill = (paint.fill.weight as number) * FOLLOW_MAP_SCALE
+    const visualCasing = (paint.casing.weight as number) * FOLLOW_MAP_SCALE
+    expect(visualFill).toBeCloseTo(3.45, 5)
+    expect(visualCasing - visualFill).toBeCloseTo(2, 5)
+    expect(visualCasing).toBeLessThan(6)
+    expect(innerRouteWeight(16, 'selected', true)).toBeLessThan(
+      innerRouteWeight(16, 'selected', false),
     )
   })
 })

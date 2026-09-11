@@ -16,7 +16,7 @@ import {
   pointAlongRoute,
 } from '../maneuver/geo'
 import { formatCoord, routeCardTitle, safeGeometry } from '../utils/labels'
-import { routeLinePaint } from '../utils/routeLinePaint'
+import { FOLLOW_MAP_SCALE, routeLinePaint } from '../utils/routeLinePaint'
 import 'leaflet/dist/leaflet.css'
 
 const originIcon = L.divIcon({
@@ -178,7 +178,7 @@ function FollowProgress({
     const world = map.getContainer().closest('.map-rotate-world')
     if (world instanceof HTMLElement) {
       world.style.transformOrigin = `${originX}px ${originY}px`
-      world.style.transform = `rotate(${-heading}deg) scale(1.58)`
+      world.style.transform = `rotate(${-heading}deg) scale(${FOLLOW_MAP_SCALE})`
     }
   }, [map, progress, geometry, distanceAlongM])
 
