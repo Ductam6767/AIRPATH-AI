@@ -9,6 +9,7 @@ import { speedStepsAhead, suggestedSpeedKmh } from '../maneuver/speedProfile'
 import type { AssistPayload, Maneuver } from '../maneuver/types'
 import type { RouteRecord } from '../types'
 import { sendAssistPayload } from '../ble/bleTransport'
+import { assistPayloadTurn } from '../maneuver/turnSignal'
 
 export type AssistMode = 'off' | 'demo' | 'live'
 
@@ -57,7 +58,7 @@ function buildSnapshot(
   const speedSteps = next ? speedStepsAhead(distTo) : []
   const turn = next?.turn ?? 'straight'
   const payload: AssistPayload = {
-    turn: turn === 'arrive' ? 'straight' : turn,
+    turn: assistPayloadTurn(turn, distTo),
     distance_m: Math.round(distTo),
     speed_target_kmh: speedTargetKmh,
     maneuver_index: next?.index ?? 0,

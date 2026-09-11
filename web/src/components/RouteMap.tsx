@@ -37,8 +37,8 @@ const progressIcon = L.divIcon({
   className: 'od-marker od-marker--progress',
   html:
     '<span class="od-marker__pulse" aria-hidden="true"></span><span class="od-marker__chevron" aria-hidden="true"></span>',
-  iconSize: [36, 36],
-  iconAnchor: [18, 22],
+  iconSize: [12, 12],
+  iconAnchor: [6, 8],
 })
 
 interface RouteMapProps {

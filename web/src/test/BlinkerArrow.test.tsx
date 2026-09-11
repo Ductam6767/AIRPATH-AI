@@ -6,14 +6,14 @@ import type { AssistSnapshot } from '../hooks/useAssistNavigation'
 import type { Maneuver } from '../maneuver/types'
 import { mockRoutesWithAlts } from './fixtures'
 
-function snapshot(next: Maneuver | null): AssistSnapshot {
+function snapshot(next: Maneuver | null, distanceToNextM = 80): AssistSnapshot {
   return {
     active: true,
     mode: 'demo',
     distanceAlongM: 40,
     routeLengthM: 3500,
     next,
-    distanceToNextM: 80,
+    distanceToNextM,
     speedTargetKmh: 18,
     speedSteps: [18, 12],
     payload: null,
@@ -45,15 +45,24 @@ describe('BlinkerArrow', () => {
 })
 
 describe('NavigationInstruction blinker', () => {
-  it('shows a blinking left arrow on the next maneuver', () => {
-    render(
+  it('shows a blinking left arrow only when the turn is within 100 m', () => {
+    const { rerender } = render(
       <NavigationInstruction
         route={mockRoutesWithAlts.alternatives[0]!}
-        snapshot={snapshot(leftTurn)}
+        snapshot={snapshot(leftTurn, 180)}
+      />,
+    )
+    expect(screen.queryByTestId('blinker-left')).not.toBeInTheDocument()
+    expect(screen.getByText('Left')).toBeInTheDocument()
+    expect(screen.getByText('in 180 m')).toBeInTheDocument()
+
+    rerender(
+      <NavigationInstruction
+        route={mockRoutesWithAlts.alternatives[0]!}
+        snapshot={snapshot(leftTurn, 80)}
       />,
     )
     expect(screen.getByTestId('blinker-left')).toBeInTheDocument()
-    expect(screen.getByText('Left')).toBeInTheDocument()
     expect(screen.getByText('in 80 m')).toBeInTheDocument()
   })
 })
