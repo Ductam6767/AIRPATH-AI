@@ -7,11 +7,18 @@ import {
   routeCardTitle,
 } from '../utils/labels'
 import { armedTurnDirection } from '../maneuver/turnSignal'
+import {
+  isCueEmphasized,
+  remainingToCue,
+  type PlacedCue,
+} from '../maneuver/guidanceCues'
 import { BlinkerArrow } from './BlinkerArrow'
+import { GuidanceDiagram } from './GuidanceDiagram'
 
 interface NavigationInstructionProps {
   route: RouteRecord
   snapshot: AssistSnapshot
+  hudCue?: PlacedCue | null
 }
 
 function maneuverTitle(
@@ -25,9 +32,21 @@ function maneuverTitle(
   return t.turnContinue
 }
 
+function cueTitle(
+  cue: PlacedCue,
+  t: ReturnType<typeof useI18n>['t'],
+): string {
+  if (cue.kind === 'roundabout') return t.cueRoundabout(cue.exit ?? 1)
+  if (cue.kind === 'lane') {
+    return cue.turn === 'right' ? t.cueLaneOuter : t.cueLaneInner
+  }
+  return cue.relation === 'under' ? t.cueBridgeUnder : t.cueBridgeOver
+}
+
 export function NavigationInstruction({
   route,
   snapshot,
+  hudCue = null,
 }: NavigationInstructionProps) {
   const { t } = useI18n()
   const remainingM = Math.max(0, route.distance_m - snapshot.distanceAlongM)
@@ -46,18 +65,36 @@ export function NavigationInstruction({
     snapshot.lastTurn?.turn,
     snapshot.distancePastLastTurnM,
   )
+  const cueRemaining = hudCue
+    ? remainingToCue(hudCue.atM, snapshot.distanceAlongM)
+    : null
+  const cueOn =
+    hudCue != null &&
+    cueRemaining != null &&
+    isCueEmphasized(hudCue.kind, cueRemaining)
 
   return (
     <article className="nav-card" aria-live="polite">
       <div className="nav-card__primary">
         <BlinkerArrow turn={blinker} size="lg" />
         <div className="nav-card__copy">
-          <p className="nav-card__turn">{maneuverTitle(snapshot, t)}</p>
+          <p className="nav-card__turn">
+            {hudCue ? cueTitle(hudCue, t) : maneuverTitle(snapshot, t)}
+          </p>
           <p className="nav-card__distance">
-            {snapshot.next ? t.inDistance(snapshot.distanceToNextM) : t.turnArrive}
+            {hudCue && cueRemaining != null
+              ? t.inDistance(Math.max(0, cueRemaining))
+              : snapshot.next
+                ? t.inDistance(snapshot.distanceToNextM)
+                : t.turnArrive}
           </p>
         </div>
       </div>
+      {hudCue ? (
+        <div className="nav-card__diagram" aria-label={t.cueDiagram}>
+          <GuidanceDiagram cue={hudCue} size="hud" emphasized={cueOn} />
+        </div>
+      ) : null}
       <p className="nav-card__meta">
         {formatMinutes(remainingMin)} {t.minLeft}
         <span aria-hidden="true"> · </span>

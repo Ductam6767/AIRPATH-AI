@@ -32,6 +32,11 @@ import {
   useAssistNavigation,
 } from './hooks/useAssistNavigation'
 import { pointAlongRoute } from './maneuver/geo'
+import {
+  cuesForRoute,
+  pickHudCue,
+  placeCues,
+} from './maneuver/guidanceCues'
 import type {
   Gap1Exhibit,
   RouteRecord,
@@ -131,6 +136,23 @@ function AppInner() {
     if (assistMode === 'off' || !selectedRoute) return null
     return pointAlongRoute(selectedRoute.geometry, assistSnapshot.distanceAlongM)
   }, [assistMode, selectedRoute, assistSnapshot.distanceAlongM])
+
+  const placedCues = useMemo(() => {
+    if (!selectedRoute || !routesPayload) return []
+    return placeCues(
+      cuesForRoute(
+        routesPayload.scenario_id,
+        String(routesPayload.mode),
+        selectedRoute.route_id,
+      ),
+      selectedRoute.geometry,
+    )
+  }, [selectedRoute, routesPayload])
+
+  const hudCue = useMemo(
+    () => pickHudCue(placedCues, assistSnapshot.distanceAlongM),
+    [placedCues, assistSnapshot.distanceAlongM],
+  )
 
   useEffect(() => {
     const controller = new AbortController()
@@ -392,6 +414,7 @@ function AppInner() {
                 selectedRoute ? safeGeometry(selectedRoute.geometry) : []
               }
               distanceAlongM={assistSnapshot.distanceAlongM}
+              guidanceCues={navigating ? placedCues : []}
             />
           </main>
 
@@ -404,6 +427,7 @@ function AppInner() {
                 <NavigationInstruction
                   route={selectedRoute}
                   snapshot={assistSnapshot}
+                  hudCue={hudCue}
                 />
                 <TurnSignalStatus snapshot={assistSnapshot} />
                 <button type="button" className="end-nav-btn" onClick={endNavigation}>

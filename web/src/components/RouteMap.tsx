@@ -12,9 +12,18 @@ import type { Coordinate, RouteRecord } from '../types'
 import {
   angleDiffDeg,
   bearingDeg,
+  headingAlongRoute,
   lerpHeadingDeg,
   pointAlongRoute,
 } from '../maneuver/geo'
+import {
+  isBridgeIconVisible,
+  isCueEmphasized,
+  isMapDiagramVisible,
+  remainingToCue,
+  type PlacedCue,
+} from '../maneuver/guidanceCues'
+import { guidanceDiagramInner } from '../maneuver/guidanceDiagramSvg'
 import { formatCoord, routeCardTitle, safeGeometry } from '../utils/labels'
 import { FOLLOW_MAP_SCALE, routeLinePaint } from '../utils/routeLinePaint'
 import 'leaflet/dist/leaflet.css'
@@ -52,6 +61,7 @@ interface RouteMapProps {
   followActive?: boolean
   followGeometry?: [number, number][]
   distanceAlongM?: number
+  guidanceCues?: PlacedCue[]
 }
 
 function FitRoutes({
@@ -208,6 +218,67 @@ function LockMapInteraction({ locked }: { locked: boolean }) {
   return null
 }
 
+const BRIDGE_PIN_SVG =
+  '<svg class="guidance-bridge-pin" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="#0f172a" d="M3 17.5V14c0-4.2 4-6.5 9-6.5s9 2.3 9 6.5v3.5h-2V14c0-2.8-3.1-4.5-7-4.5s-7 1.7-7 4.5v3.5H3z"/><path fill="none" stroke="#f8fafc" stroke-width="1.6" d="M4 18.2h16"/><path fill="none" stroke="#0f766e" stroke-width="1.8" d="M6 18.2V15.4c0-2 2.7-3.2 6-3.2s6 1.2 6 3.2v2.8"/></svg>'
+
+function cueMapIcon(
+  cue: PlacedCue,
+  heading: number,
+  emphasized: boolean,
+  variant: 'diagram' | 'bridge-icon',
+): L.DivIcon {
+  const size = variant === 'diagram' ? (emphasized ? 72 : 58) : 26
+  const scale =
+    (1 / FOLLOW_MAP_SCALE) * (emphasized && variant === 'diagram' ? 1.1 : 1)
+  const inner =
+    variant === 'bridge-icon'
+      ? BRIDGE_PIN_SVG
+      : `<svg viewBox="0 0 120 120" width="${size}" height="${size}" aria-hidden="true">${guidanceDiagramInner(cue, emphasized)}</svg>`
+  return L.divIcon({
+    className: 'guidance-map-wrap',
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    html: `<div class="guidance-map-pin${emphasized ? ' is-active' : ''}${variant === 'bridge-icon' ? ' guidance-map-pin--bridge' : ''}" style="transform:rotate(${heading}deg) scale(${scale})">${inner}</div>`,
+  })
+}
+
+function GuidanceOverlays({
+  cues,
+  geometry,
+  distanceAlongM,
+}: {
+  cues: PlacedCue[]
+  geometry: [number, number][]
+  distanceAlongM: number
+}) {
+  const heading = headingAlongRoute(geometry, distanceAlongM)
+  const headingKey = Math.round(heading / 2) * 2
+  return (
+    <>
+      {cues.map((cue) => {
+        const remaining = remainingToCue(cue.atM, distanceAlongM)
+        const showDiagram = isMapDiagramVisible(cue.kind, remaining)
+        const showBridge =
+          cue.kind === 'bridge' &&
+          !showDiagram &&
+          isBridgeIconVisible(remaining)
+        if (!showDiagram && !showBridge) return null
+        const emphasized = isCueEmphasized(cue.kind, remaining)
+        const variant = showDiagram ? 'diagram' : 'bridge-icon'
+        return (
+          <Marker
+            key={`${cue.id}-${variant}-${headingKey}-${emphasized ? 'on' : 'off'}`}
+            position={[cue.lat, cue.lng]}
+            icon={cueMapIcon(cue, heading, emphasized, variant)}
+            interactive={false}
+            zIndexOffset={showDiagram ? 700 : 500}
+          />
+        )
+      })}
+    </>
+  )
+}
+
 function useMapZoom(): number {
   const map = useMap()
   const [zoom, setZoom] = useState(() => map.getZoom())
@@ -275,6 +346,7 @@ export function RouteMap({
   followActive = false,
   followGeometry = [],
   distanceAlongM = 0,
+  guidanceCues = [],
 }: RouteMapProps) {
   const visibleRoutes = followActive
     ? routes.filter((route) => route.route_id === selectedRouteId)
@@ -361,6 +433,13 @@ export function RouteMap({
           <Marker position={progressLatLng} icon={progressIcon}>
             <Popup>Demo / GPS progress</Popup>
           </Marker>
+        ) : null}
+        {followActive && guidanceCues.length > 0 ? (
+          <GuidanceOverlays
+            cues={guidanceCues}
+            geometry={followGeometry}
+            distanceAlongM={distanceAlongM}
+          />
         ) : null}
           </MapContainer>
         </div>

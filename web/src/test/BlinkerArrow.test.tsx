@@ -67,4 +67,26 @@ describe('NavigationInstruction blinker', () => {
     expect(screen.getByTestId('blinker-left')).toBeInTheDocument()
     expect(screen.getByText('in 50 m')).toBeInTheDocument()
   })
+
+  it('draws the enlarged junction diagram in the nav sheet', () => {
+    render(
+      <NavigationInstruction
+        route={mockRoutesWithAlts.alternatives[0]!}
+        snapshot={snapshot(leftTurn, 50)}
+        hudCue={{
+          id: 'rb',
+          kind: 'roundabout',
+          lat: 10.8,
+          lng: 106.67,
+          atM: 90,
+          exit: 2,
+          arms: 4,
+          arm_deg: [0, 90, 180, 270],
+        }}
+      />,
+    )
+    expect(screen.getByLabelText('Junction diagram')).toBeInTheDocument()
+    expect(screen.getByText(/Roundabout · take exit 2/)).toBeInTheDocument()
+    expect(screen.getByText('in 50 m')).toBeInTheDocument()
+  })
 })

@@ -1,0 +1,3566 @@
+{
+  "purpose": "Demo navigation diagrams for roundabouts, lane changes, and bridges. OSM tags + frozen candidate geometry. Not live routing.",
+  "source": "OpenStreetMap contributors, ODbL 1.0",
+  "trigger_m": {
+    "roundabout": 10,
+    "lane": 15,
+    "bridge": 20,
+    "hud": 20
+  },
+  "overpass_used": true,
+  "bridge_way_count": 243,
+  "tunnel_way_count": 60,
+  "routes": {
+    "od_01|walking|walking-1": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7987671,
+        "lng": 106.6623509,
+        "exit": 2,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          15,
+          105,
+          180
+        ]
+      }
+    ],
+    "od_01|walking|walking-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8002577,
+        "lng": 106.6610035,
+        "exit": 3,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          30,
+          45,
+          180,
+          240
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8000091,
+        "lng": 106.6606224,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8002847,
+        "lng": 106.6665994,
+        "relation": "under"
+      }
+    ],
+    "od_01|walking|walking-3": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8004745,
+        "lng": 106.6609301,
+        "exit": 4,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          30,
+          45,
+          180,
+          240
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8000091,
+        "lng": 106.6606224,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8024931,
+        "lng": 106.6634671,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      }
+    ],
+    "od_01|walking|walking-4": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7986487,
+        "lng": 106.6623317,
+        "exit": 1,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          15,
+          105,
+          180
+        ]
+      }
+    ],
+    "od_01|walking|walking-5": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8002577,
+        "lng": 106.6610035,
+        "exit": 3,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          30,
+          45,
+          180,
+          240
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8000091,
+        "lng": 106.6606224,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8004094,
+        "lng": 106.6652391,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8002584,
+        "lng": 106.6668744,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8001935,
+        "lng": 106.6665905,
+        "relation": "over"
+      }
+    ],
+    "od_01|walking|walking-6": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7987671,
+        "lng": 106.6623509,
+        "exit": 2,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          15,
+          105,
+          180
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8002736,
+        "lng": 106.6667158,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8006653,
+        "lng": 106.6669406,
+        "lanes": 5,
+        "turn": "right",
+        "target": 4
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8002847,
+        "lng": 106.6665994,
+        "relation": "under"
+      }
+    ],
+    "od_01|walking|walking-7": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7987671,
+        "lng": 106.6623509,
+        "exit": 2,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          15,
+          105,
+          180
+        ]
+      }
+    ],
+    "od_01|walking|walking-8": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7987671,
+        "lng": 106.6623509,
+        "exit": 2,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          15,
+          105,
+          180
+        ]
+      }
+    ],
+    "od_01|motorbike|motorbike-1": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7986678,
+        "lng": 106.6623766,
+        "exit": 1,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          15,
+          105,
+          180
+        ]
+      }
+    ],
+    "od_01|motorbike|motorbike-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8002577,
+        "lng": 106.6610035,
+        "exit": 3,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          30,
+          45,
+          180,
+          240
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8000091,
+        "lng": 106.6606224,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8002847,
+        "lng": 106.6665994,
+        "relation": "under"
+      }
+    ],
+    "od_01|motorbike|motorbike-3": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7986487,
+        "lng": 106.6623317,
+        "exit": 1,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          15,
+          105,
+          180
+        ]
+      }
+    ],
+    "od_01|motorbike|motorbike-4": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8004175,
+        "lng": 106.6610817,
+        "exit": 1,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          30,
+          45,
+          180,
+          240
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8001295,
+        "lng": 106.6607459,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8059046,
+        "lng": 106.6643717,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      }
+    ],
+    "od_01|motorbike|motorbike-5": [],
+    "od_01|motorbike|motorbike-6": [
+      {
+        "kind": "lane",
+        "lat": 10.7982085,
+        "lng": 106.6807181,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7984925,
+        "lng": 106.6849686,
+        "relation": "under"
+      }
+    ],
+    "od_01|motorbike|motorbike-7": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7986736,
+        "lng": 106.6622893,
+        "exit": 2,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          15,
+          105,
+          180
+        ]
+      }
+    ],
+    "od_01|motorbike|motorbike-8": [
+      {
+        "kind": "bridge",
+        "lat": 10.7880273,
+        "lng": 106.6704048,
+        "relation": "over"
+      }
+    ],
+    "od_02|walking|walking-1": [],
+    "od_02|walking|walking-2": [],
+    "od_02|walking|walking-3": [],
+    "od_02|walking|walking-4": [],
+    "od_02|walking|walking-5": [],
+    "od_02|walking|walking-6": [],
+    "od_02|walking|walking-7": [],
+    "od_02|walking|walking-8": [],
+    "od_02|motorbike|motorbike-1": [],
+    "od_02|motorbike|motorbike-2": [],
+    "od_02|motorbike|motorbike-3": [],
+    "od_02|motorbike|motorbike-4": [],
+    "od_02|motorbike|motorbike-5": [],
+    "od_02|motorbike|motorbike-6": [],
+    "od_02|motorbike|motorbike-7": [],
+    "od_02|motorbike|motorbike-8": [],
+    "od_03|walking|walking-1": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7689952,
+        "lng": 106.6518411,
+        "exit": 3,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          15,
+          105,
+          120,
+          210
+        ]
+      }
+    ],
+    "od_03|walking|walking-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7668688,
+        "lng": 106.6424994,
+        "exit": 3,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          90,
+          105,
+          150,
+          210
+        ]
+      }
+    ],
+    "od_03|walking|walking-3": [],
+    "od_03|walking|walking-4": [],
+    "od_03|walking|walking-5": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7667403,
+        "lng": 106.6421993,
+        "exit": 3,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          45,
+          75,
+          105,
+          135,
+          165
+        ]
+      }
+    ],
+    "od_03|walking|walking-6": [],
+    "od_03|walking|walking-7": [],
+    "od_03|walking|walking-8": [],
+    "od_03|motorbike|motorbike-1": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7691306,
+        "lng": 106.6520606,
+        "exit": 2,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          75,
+          150,
+          165,
+          180
+        ]
+      }
+    ],
+    "od_03|motorbike|motorbike-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7669351,
+        "lng": 106.6423985,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          90,
+          105,
+          150,
+          180
+        ]
+      }
+    ],
+    "od_03|motorbike|motorbike-3": [],
+    "od_03|motorbike|motorbike-4": [],
+    "od_03|motorbike|motorbike-5": [],
+    "od_03|motorbike|motorbike-6": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7666784,
+        "lng": 106.6424357,
+        "exit": 3,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          30,
+          60,
+          90,
+          120,
+          195
+        ]
+      },
+      {
+        "kind": "roundabout",
+        "lat": 10.7669351,
+        "lng": 106.6423985,
+        "exit": 1,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          75,
+          105,
+          150,
+          180
+        ]
+      }
+    ],
+    "od_03|motorbike|motorbike-7": [],
+    "od_03|motorbike|motorbike-8": [
+      {
+        "kind": "bridge",
+        "lat": 10.7637914,
+        "lng": 106.6356987,
+        "relation": "over"
+      }
+    ],
+    "od_04|walking|walking-1": [
+      {
+        "kind": "bridge",
+        "lat": 10.7607471,
+        "lng": 106.6198839,
+        "relation": "over"
+      }
+    ],
+    "od_04|walking|walking-2": [],
+    "od_04|walking|walking-3": [],
+    "od_04|walking|walking-4": [
+      {
+        "kind": "bridge",
+        "lat": 10.760278,
+        "lng": 106.6287291,
+        "relation": "over"
+      }
+    ],
+    "od_04|walking|walking-5": [
+      {
+        "kind": "bridge",
+        "lat": 10.7607471,
+        "lng": 106.6198839,
+        "relation": "over"
+      }
+    ],
+    "od_04|walking|walking-6": [
+      {
+        "kind": "bridge",
+        "lat": 10.7607471,
+        "lng": 106.6198839,
+        "relation": "over"
+      }
+    ],
+    "od_04|walking|walking-7": [
+      {
+        "kind": "bridge",
+        "lat": 10.7607471,
+        "lng": 106.6198839,
+        "relation": "over"
+      }
+    ],
+    "od_04|walking|walking-8": [
+      {
+        "kind": "bridge",
+        "lat": 10.7607471,
+        "lng": 106.6198839,
+        "relation": "over"
+      }
+    ],
+    "od_04|motorbike|motorbike-1": [
+      {
+        "kind": "bridge",
+        "lat": 10.7607471,
+        "lng": 106.6198839,
+        "relation": "over"
+      }
+    ],
+    "od_04|motorbike|motorbike-2": [],
+    "od_04|motorbike|motorbike-3": [],
+    "od_04|motorbike|motorbike-4": [
+      {
+        "kind": "bridge",
+        "lat": 10.760278,
+        "lng": 106.6287291,
+        "relation": "over"
+      }
+    ],
+    "od_04|motorbike|motorbike-5": [
+      {
+        "kind": "bridge",
+        "lat": 10.7582089,
+        "lng": 106.6335943,
+        "relation": "over"
+      }
+    ],
+    "od_04|motorbike|motorbike-6": [
+      {
+        "kind": "bridge",
+        "lat": 10.760278,
+        "lng": 106.6287291,
+        "relation": "over"
+      }
+    ],
+    "od_04|motorbike|motorbike-7": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7668675,
+        "lng": 106.6422404,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          105,
+          180,
+          210,
+          240
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7565733,
+        "lng": 106.633454,
+        "relation": "over"
+      }
+    ],
+    "od_04|motorbike|motorbike-8": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7541165,
+        "lng": 106.6342739,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          105,
+          150,
+          180
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7589291,
+        "lng": 106.6341421,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7553197,
+        "lng": 106.6374244,
+        "relation": "over"
+      }
+    ],
+    "od_05|walking|walking-1": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7542266,
+        "lng": 106.6343535,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          105,
+          150,
+          180
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7687469,
+        "lng": 106.6666426,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547739,
+        "lng": 106.6377266,
+        "relation": "over"
+      }
+    ],
+    "od_05|walking|walking-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7680699,
+        "lng": 106.6679239,
+        "exit": 2,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          135,
+          180,
+          225
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7547925,
+        "lng": 106.6319972,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7565733,
+        "lng": 106.633454,
+        "relation": "over"
+      }
+    ],
+    "od_05|walking|walking-3": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7690947,
+        "lng": 106.6519731,
+        "exit": 1,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          105,
+          180,
+          210,
+          255
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7717573,
+        "lng": 106.6654224,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7565733,
+        "lng": 106.633454,
+        "relation": "over"
+      }
+    ],
+    "od_05|walking|walking-4": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7537447,
+        "lng": 106.6345536,
+        "exit": 5,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          60,
+          75,
+          180,
+          300
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7546422,
+        "lng": 106.6380395,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7544321,
+        "lng": 106.636401,
+        "relation": "over"
+      }
+    ],
+    "od_05|walking|walking-5": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7542266,
+        "lng": 106.6343535,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          105,
+          150,
+          180
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7687469,
+        "lng": 106.6666426,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547739,
+        "lng": 106.6377266,
+        "relation": "over"
+      }
+    ],
+    "od_05|walking|walking-6": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7542266,
+        "lng": 106.6343535,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          105,
+          150,
+          180
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7687469,
+        "lng": 106.6666426,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547739,
+        "lng": 106.6377266,
+        "relation": "over"
+      }
+    ],
+    "od_05|walking|walking-7": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7542266,
+        "lng": 106.6343535,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          105,
+          150,
+          180
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7687469,
+        "lng": 106.6666426,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547739,
+        "lng": 106.6377266,
+        "relation": "over"
+      }
+    ],
+    "od_05|walking|walking-8": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7542266,
+        "lng": 106.6343535,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          105,
+          150,
+          180
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7687469,
+        "lng": 106.6666426,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547739,
+        "lng": 106.6377266,
+        "relation": "over"
+      }
+    ],
+    "od_05|motorbike|motorbike-1": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7542266,
+        "lng": 106.6343535,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          105,
+          150,
+          180
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7687469,
+        "lng": 106.6666426,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547739,
+        "lng": 106.6377266,
+        "relation": "over"
+      }
+    ],
+    "od_05|motorbike|motorbike-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7690947,
+        "lng": 106.6519731,
+        "exit": 1,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          105,
+          180,
+          210,
+          255
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7717573,
+        "lng": 106.6654224,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7565733,
+        "lng": 106.633454,
+        "relation": "over"
+      }
+    ],
+    "od_05|motorbike|motorbike-3": [
+      {
+        "kind": "bridge",
+        "lat": 10.7684212,
+        "lng": 106.6684451,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.767251,
+        "lng": 106.6662777,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7565733,
+        "lng": 106.633454,
+        "relation": "over"
+      }
+    ],
+    "od_05|motorbike|motorbike-4": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7540635,
+        "lng": 106.6341842,
+        "exit": 4,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          105,
+          165,
+          180,
+          210,
+          255
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547739,
+        "lng": 106.6377266,
+        "relation": "over"
+      }
+    ],
+    "od_05|motorbike|motorbike-5": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7668675,
+        "lng": 106.6422404,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          105,
+          180,
+          210,
+          240
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7637914,
+        "lng": 106.6356987,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7582089,
+        "lng": 106.6335943,
+        "relation": "over"
+      }
+    ],
+    "od_05|motorbike|motorbike-6": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7682074,
+        "lng": 106.6678489,
+        "exit": 2,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          135,
+          180,
+          225
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7688682,
+        "lng": 106.6665866,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.760278,
+        "lng": 106.6287291,
+        "relation": "over"
+      }
+    ],
+    "od_05|motorbike|motorbike-7": [],
+    "od_05|motorbike|motorbike-8": [],
+    "od_07|walking|walking-1": [],
+    "od_07|walking|walking-2": [],
+    "od_07|walking|walking-3": [],
+    "od_07|walking|walking-4": [],
+    "od_07|walking|walking-5": [],
+    "od_07|walking|walking-6": [],
+    "od_07|walking|walking-7": [],
+    "od_07|walking|walking-8": [],
+    "od_07|motorbike|motorbike-1": [],
+    "od_07|motorbike|motorbike-2": [],
+    "od_07|motorbike|motorbike-3": [],
+    "od_07|motorbike|motorbike-4": [],
+    "od_07|motorbike|motorbike-5": [
+      {
+        "kind": "bridge",
+        "lat": 10.7931795,
+        "lng": 106.6594927,
+        "relation": "over"
+      }
+    ],
+    "od_07|motorbike|motorbike-6": [],
+    "od_07|motorbike|motorbike-7": [],
+    "od_07|motorbike|motorbike-8": [],
+    "od_08|walking|walking-1": [
+      {
+        "kind": "bridge",
+        "lat": 10.7908136,
+        "lng": 106.6656862,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7984925,
+        "lng": 106.6849686,
+        "relation": "under"
+      }
+    ],
+    "od_08|walking|walking-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8002577,
+        "lng": 106.6610035,
+        "exit": 4,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          45,
+          75,
+          105,
+          150,
+          240
+        ]
+      },
+      {
+        "kind": "roundabout",
+        "lat": 10.7902284,
+        "lng": 106.6523395,
+        "exit": 2,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          15,
+          120,
+          150,
+          180
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8002588,
+        "lng": 106.6608786,
+        "lanes": 8,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8002847,
+        "lng": 106.6665994,
+        "relation": "under"
+      }
+    ],
+    "od_08|walking|walking-3": [
+      {
+        "kind": "bridge",
+        "lat": 10.7879008,
+        "lng": 106.6708041,
+        "relation": "over"
+      }
+    ],
+    "od_08|walking|walking-4": [
+      {
+        "kind": "bridge",
+        "lat": 10.7916511,
+        "lng": 106.6623259,
+        "relation": "over"
+      }
+    ],
+    "od_08|walking|walking-5": [
+      {
+        "kind": "lane",
+        "lat": 10.7985183,
+        "lng": 106.6805811,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      }
+    ],
+    "od_08|walking|walking-6": [
+      {
+        "kind": "lane",
+        "lat": 10.796168,
+        "lng": 106.6816701,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7903762,
+        "lng": 106.666662,
+        "relation": "over"
+      }
+    ],
+    "od_08|walking|walking-7": [
+      {
+        "kind": "bridge",
+        "lat": 10.7908136,
+        "lng": 106.6656862,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7984925,
+        "lng": 106.6849686,
+        "relation": "under"
+      }
+    ],
+    "od_08|walking|walking-8": [
+      {
+        "kind": "bridge",
+        "lat": 10.7908136,
+        "lng": 106.6656862,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7984925,
+        "lng": 106.6849686,
+        "relation": "under"
+      }
+    ],
+    "od_08|motorbike|motorbike-1": [
+      {
+        "kind": "bridge",
+        "lat": 10.791736,
+        "lng": 106.6617747,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7984925,
+        "lng": 106.6849686,
+        "relation": "under"
+      }
+    ],
+    "od_08|motorbike|motorbike-2": [
+      {
+        "kind": "bridge",
+        "lat": 10.7903762,
+        "lng": 106.666662,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7984925,
+        "lng": 106.6849686,
+        "relation": "under"
+      }
+    ],
+    "od_08|motorbike|motorbike-3": [],
+    "od_08|motorbike|motorbike-4": [
+      {
+        "kind": "lane",
+        "lat": 10.796168,
+        "lng": 106.6816701,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7878099,
+        "lng": 106.6710784,
+        "relation": "over"
+      }
+    ],
+    "od_08|motorbike|motorbike-5": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8004745,
+        "lng": 106.6609301,
+        "exit": 1,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          30,
+          60,
+          90,
+          135,
+          165
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7985183,
+        "lng": 106.6805811,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8024787,
+        "lng": 106.6637143,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8002588,
+        "lng": 106.6608786,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      }
+    ],
+    "od_08|motorbike|motorbike-6": [
+      {
+        "kind": "bridge",
+        "lat": 10.7957994,
+        "lng": 106.6906984,
+        "relation": "over"
+      }
+    ],
+    "od_08|motorbike|motorbike-7": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7780305,
+        "lng": 106.681817,
+        "exit": 2,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          15,
+          180,
+          195
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7779137,
+        "lng": 106.6819605,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7957119,
+        "lng": 106.6928337,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7943008,
+        "lng": 106.6932758,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7684212,
+        "lng": 106.6684451,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.767251,
+        "lng": 106.6662777,
+        "relation": "over"
+      }
+    ],
+    "od_08|motorbike|motorbike-8": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7902284,
+        "lng": 106.6523395,
+        "exit": 2,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          15,
+          120,
+          150,
+          180
+        ]
+      }
+    ],
+    "od_10|walking|walking-1": [],
+    "od_10|walking|walking-2": [],
+    "od_10|walking|walking-3": [],
+    "od_10|walking|walking-4": [],
+    "od_10|walking|walking-5": [],
+    "od_10|walking|walking-6": [],
+    "od_10|walking|walking-7": [],
+    "od_10|walking|walking-8": [],
+    "od_10|motorbike|motorbike-1": [],
+    "od_10|motorbike|motorbike-2": [],
+    "od_10|motorbike|motorbike-3": [],
+    "od_10|motorbike|motorbike-4": [],
+    "od_10|motorbike|motorbike-5": [],
+    "od_10|motorbike|motorbike-6": [],
+    "od_10|motorbike|motorbike-7": [],
+    "od_10|motorbike|motorbike-8": [],
+    "od_11|walking|walking-1": [
+      {
+        "kind": "lane",
+        "lat": 10.812288,
+        "lng": 106.6649261,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      }
+    ],
+    "od_11|walking|walking-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8005566,
+        "lng": 106.6609723,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          30,
+          60,
+          90,
+          135,
+          165
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8047208,
+        "lng": 106.6646139,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8045685,
+        "lng": 106.6642764,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8021287,
+        "lng": 106.6631483,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8008557,
+        "lng": 106.6617715,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      }
+    ],
+    "od_11|walking|walking-3": [
+      {
+        "kind": "lane",
+        "lat": 10.8124595,
+        "lng": 106.6649379,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8014094,
+        "lng": 106.6550873,
+        "relation": "under"
+      }
+    ],
+    "od_11|walking|walking-4": [
+      {
+        "kind": "lane",
+        "lat": 10.8124595,
+        "lng": 106.6649379,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      }
+    ],
+    "od_11|walking|walking-5": [
+      {
+        "kind": "lane",
+        "lat": 10.812288,
+        "lng": 106.6649261,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8021287,
+        "lng": 106.6631483,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8008557,
+        "lng": 106.6617715,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      }
+    ],
+    "od_11|walking|walking-6": [
+      {
+        "kind": "lane",
+        "lat": 10.8124595,
+        "lng": 106.6649379,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8021287,
+        "lng": 106.6631483,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8008557,
+        "lng": 106.6617715,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      }
+    ],
+    "od_11|walking|walking-7": [
+      {
+        "kind": "lane",
+        "lat": 10.812288,
+        "lng": 106.6649261,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      }
+    ],
+    "od_11|walking|walking-8": [
+      {
+        "kind": "lane",
+        "lat": 10.8124595,
+        "lng": 106.6649379,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      }
+    ],
+    "od_11|motorbike|motorbike-1": [
+      {
+        "kind": "bridge",
+        "lat": 10.8019919,
+        "lng": 106.6474857,
+        "relation": "under"
+      }
+    ],
+    "od_11|motorbike|motorbike-2": [
+      {
+        "kind": "lane",
+        "lat": 10.812288,
+        "lng": 106.6649261,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8063217,
+        "lng": 106.6550498,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8067598,
+        "lng": 106.6550491,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8081002,
+        "lng": 106.6551541,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.808892,
+        "lng": 106.6540115,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8090257,
+        "lng": 106.6523663,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8091239,
+        "lng": 106.6506347,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8094583,
+        "lng": 106.6484075,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.809555,
+        "lng": 106.6470818,
+        "relation": "over"
+      }
+    ],
+    "od_11|motorbike|motorbike-3": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8004745,
+        "lng": 106.6609301,
+        "exit": 1,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          30,
+          60,
+          90,
+          135,
+          165
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.812288,
+        "lng": 106.6649261,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8041459,
+        "lng": 106.6641762,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8021287,
+        "lng": 106.6631483,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8008557,
+        "lng": 106.6617715,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8002588,
+        "lng": 106.6608786,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      }
+    ],
+    "od_11|motorbike|motorbike-4": [
+      {
+        "kind": "lane",
+        "lat": 10.8033688,
+        "lng": 106.6649035,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8037255,
+        "lng": 106.6623099,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      }
+    ],
+    "od_11|motorbike|motorbike-5": [],
+    "od_11|motorbike|motorbike-6": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8137564,
+        "lng": 106.6786356,
+        "exit": 1,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          90,
+          105,
+          180
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.791736,
+        "lng": 106.6617747,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8138795,
+        "lng": 106.6782653,
+        "relation": "under"
+      }
+    ],
+    "od_11|motorbike|motorbike-7": [
+      {
+        "kind": "lane",
+        "lat": 10.8094886,
+        "lng": 106.6648221,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.812288,
+        "lng": 106.6649261,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8105925,
+        "lng": 106.6647913,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.808949,
+        "lng": 106.6646425,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      }
+    ],
+    "od_11|motorbike|motorbike-8": [
+      {
+        "kind": "lane",
+        "lat": 10.8079681,
+        "lng": 106.6646812,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.812288,
+        "lng": 106.6649261,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8063217,
+        "lng": 106.6550498,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8016031,
+        "lng": 106.6545823,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      }
+    ],
+    "od_12|walking|walking-1": [
+      {
+        "kind": "bridge",
+        "lat": 10.7879008,
+        "lng": 106.6708041,
+        "relation": "over"
+      }
+    ],
+    "od_12|walking|walking-2": [
+      {
+        "kind": "bridge",
+        "lat": 10.7879008,
+        "lng": 106.6708041,
+        "relation": "over"
+      }
+    ],
+    "od_12|walking|walking-3": [
+      {
+        "kind": "lane",
+        "lat": 10.8003891,
+        "lng": 106.6654787,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8012894,
+        "lng": 106.6659545,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.791736,
+        "lng": 106.6617747,
+        "relation": "over"
+      }
+    ],
+    "od_12|walking|walking-4": [
+      {
+        "kind": "bridge",
+        "lat": 10.7878099,
+        "lng": 106.6710784,
+        "relation": "over"
+      }
+    ],
+    "od_12|walking|walking-5": [
+      {
+        "kind": "bridge",
+        "lat": 10.7879008,
+        "lng": 106.6708041,
+        "relation": "over"
+      }
+    ],
+    "od_12|walking|walking-6": [
+      {
+        "kind": "bridge",
+        "lat": 10.7879008,
+        "lng": 106.6708041,
+        "relation": "over"
+      }
+    ],
+    "od_12|walking|walking-7": [
+      {
+        "kind": "bridge",
+        "lat": 10.7879008,
+        "lng": 106.6708041,
+        "relation": "over"
+      }
+    ],
+    "od_12|walking|walking-8": [
+      {
+        "kind": "bridge",
+        "lat": 10.7879008,
+        "lng": 106.6708041,
+        "relation": "over"
+      }
+    ],
+    "od_12|motorbike|motorbike-1": [
+      {
+        "kind": "bridge",
+        "lat": 10.7878249,
+        "lng": 106.6710351,
+        "relation": "over"
+      }
+    ],
+    "od_12|motorbike|motorbike-2": [
+      {
+        "kind": "bridge",
+        "lat": 10.7878249,
+        "lng": 106.6710351,
+        "relation": "over"
+      }
+    ],
+    "od_12|motorbike|motorbike-3": [
+      {
+        "kind": "lane",
+        "lat": 10.8003891,
+        "lng": 106.6654787,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8006653,
+        "lng": 106.6669406,
+        "lanes": 5,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7916511,
+        "lng": 106.6623259,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8002847,
+        "lng": 106.6665994,
+        "relation": "under"
+      }
+    ],
+    "od_12|motorbike|motorbike-4": [
+      {
+        "kind": "lane",
+        "lat": 10.7982085,
+        "lng": 106.6807181,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7861896,
+        "lng": 106.6751074,
+        "relation": "over"
+      }
+    ],
+    "od_12|motorbike|motorbike-5": [
+      {
+        "kind": "lane",
+        "lat": 10.8004362,
+        "lng": 106.6673336,
+        "lanes": 5,
+        "turn": "right",
+        "target": 4
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8012144,
+        "lng": 106.666073,
+        "lanes": 5,
+        "turn": "right",
+        "target": 4
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7908136,
+        "lng": 106.6656862,
+        "relation": "over"
+      }
+    ],
+    "od_12|motorbike|motorbike-6": [
+      {
+        "kind": "lane",
+        "lat": 10.7970077,
+        "lng": 106.6812884,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7845068,
+        "lng": 106.6804681,
+        "relation": "over"
+      }
+    ],
+    "od_12|motorbike|motorbike-7": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8004175,
+        "lng": 106.6610817,
+        "exit": 1,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          30,
+          45,
+          180,
+          240
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8001295,
+        "lng": 106.6607459,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8059046,
+        "lng": 106.6643717,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      }
+    ],
+    "od_12|motorbike|motorbike-8": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7777768,
+        "lng": 106.6818112,
+        "exit": 1,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          15,
+          180,
+          345
+        ]
+      },
+      {
+        "kind": "roundabout",
+        "lat": 10.814094,
+        "lng": 106.678754,
+        "exit": 3,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          165,
+          180,
+          345
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7740656,
+        "lng": 106.6645247,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.77762,
+        "lng": 106.681487,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7925611,
+        "lng": 106.6861381,
+        "relation": "over"
+      }
+    ],
+    "od_13|walking|walking-1": [
+      {
+        "kind": "bridge",
+        "lat": 10.7908136,
+        "lng": 106.6656862,
+        "relation": "over"
+      }
+    ],
+    "od_13|walking|walking-2": [
+      {
+        "kind": "lane",
+        "lat": 10.8003891,
+        "lng": 106.6654787,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.791736,
+        "lng": 106.6617747,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8002847,
+        "lng": 106.6665994,
+        "relation": "under"
+      }
+    ],
+    "od_13|walking|walking-3": [
+      {
+        "kind": "bridge",
+        "lat": 10.7916511,
+        "lng": 106.6623259,
+        "relation": "over"
+      }
+    ],
+    "od_13|walking|walking-4": [
+      {
+        "kind": "bridge",
+        "lat": 10.7935083,
+        "lng": 106.6960458,
+        "relation": "over"
+      }
+    ],
+    "od_13|walking|walking-5": [
+      {
+        "kind": "bridge",
+        "lat": 10.7908136,
+        "lng": 106.6656862,
+        "relation": "over"
+      }
+    ],
+    "od_13|walking|walking-6": [
+      {
+        "kind": "bridge",
+        "lat": 10.7908136,
+        "lng": 106.6656862,
+        "relation": "over"
+      }
+    ],
+    "od_13|walking|walking-7": [
+      {
+        "kind": "bridge",
+        "lat": 10.7908136,
+        "lng": 106.6656862,
+        "relation": "over"
+      }
+    ],
+    "od_13|walking|walking-8": [
+      {
+        "kind": "bridge",
+        "lat": 10.7908136,
+        "lng": 106.6656862,
+        "relation": "over"
+      }
+    ],
+    "od_13|motorbike|motorbike-1": [
+      {
+        "kind": "bridge",
+        "lat": 10.7916511,
+        "lng": 106.6623259,
+        "relation": "over"
+      }
+    ],
+    "od_13|motorbike|motorbike-2": [
+      {
+        "kind": "bridge",
+        "lat": 10.7880273,
+        "lng": 106.6704048,
+        "relation": "over"
+      }
+    ],
+    "od_13|motorbike|motorbike-3": [
+      {
+        "kind": "bridge",
+        "lat": 10.7935815,
+        "lng": 106.6975315,
+        "relation": "over"
+      }
+    ],
+    "od_13|motorbike|motorbike-4": [
+      {
+        "kind": "roundabout",
+        "lat": 10.790227,
+        "lng": 106.6525596,
+        "exit": 2,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          15,
+          135,
+          165,
+          210
+        ]
+      },
+      {
+        "kind": "roundabout",
+        "lat": 10.8002577,
+        "lng": 106.6610035,
+        "exit": 3,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          30,
+          45,
+          180,
+          240
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8001295,
+        "lng": 106.6607459,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8002847,
+        "lng": 106.6665994,
+        "relation": "under"
+      }
+    ],
+    "od_13|motorbike|motorbike-5": [
+      {
+        "kind": "bridge",
+        "lat": 10.7931795,
+        "lng": 106.6594927,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7984925,
+        "lng": 106.6849686,
+        "relation": "under"
+      }
+    ],
+    "od_13|motorbike|motorbike-6": [
+      {
+        "kind": "bridge",
+        "lat": 10.7861896,
+        "lng": 106.6751074,
+        "relation": "over"
+      }
+    ],
+    "od_13|motorbike|motorbike-7": [
+      {
+        "kind": "bridge",
+        "lat": 10.7908136,
+        "lng": 106.6656862,
+        "relation": "over"
+      }
+    ],
+    "od_13|motorbike|motorbike-8": [
+      {
+        "kind": "bridge",
+        "lat": 10.7935083,
+        "lng": 106.6960458,
+        "relation": "over"
+      }
+    ],
+    "od_16|walking|walking-1": [],
+    "od_16|walking|walking-2": [],
+    "od_16|walking|walking-3": [],
+    "od_16|walking|walking-4": [],
+    "od_16|walking|walking-5": [],
+    "od_16|walking|walking-6": [],
+    "od_16|walking|walking-7": [],
+    "od_16|walking|walking-8": [],
+    "od_16|motorbike|motorbike-1": [],
+    "od_16|motorbike|motorbike-2": [],
+    "od_16|motorbike|motorbike-3": [],
+    "od_16|motorbike|motorbike-4": [],
+    "od_16|motorbike|motorbike-5": [],
+    "od_16|motorbike|motorbike-6": [],
+    "od_16|motorbike|motorbike-7": [],
+    "od_16|motorbike|motorbike-8": [],
+    "od_22|walking|walking-1": [
+      {
+        "kind": "bridge",
+        "lat": 10.7565733,
+        "lng": 106.633454,
+        "relation": "over"
+      }
+    ],
+    "od_22|walking|walking-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7541165,
+        "lng": 106.6342739,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          105,
+          150,
+          180
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547692,
+        "lng": 106.6370345,
+        "relation": "over"
+      }
+    ],
+    "od_22|walking|walking-3": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7537447,
+        "lng": 106.6345536,
+        "exit": 5,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          60,
+          75,
+          180,
+          300
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7546422,
+        "lng": 106.6380395,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7544321,
+        "lng": 106.636401,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7545295,
+        "lng": 106.6429406,
+        "relation": "under"
+      }
+    ],
+    "od_22|walking|walking-4": [
+      {
+        "kind": "bridge",
+        "lat": 10.7637914,
+        "lng": 106.6356987,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7582089,
+        "lng": 106.6335943,
+        "relation": "over"
+      }
+    ],
+    "od_22|walking|walking-5": [
+      {
+        "kind": "lane",
+        "lat": 10.7543077,
+        "lng": 106.6431073,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547739,
+        "lng": 106.6377266,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7529108,
+        "lng": 106.6378014,
+        "relation": "over"
+      }
+    ],
+    "od_22|walking|walking-6": [
+      {
+        "kind": "bridge",
+        "lat": 10.7565733,
+        "lng": 106.633454,
+        "relation": "over"
+      }
+    ],
+    "od_22|walking|walking-7": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7666784,
+        "lng": 106.6424357,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          45,
+          120,
+          150,
+          180,
+          210
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7559218,
+        "lng": 106.632546,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7565733,
+        "lng": 106.633454,
+        "relation": "over"
+      }
+    ],
+    "od_22|walking|walking-8": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7538833,
+        "lng": 106.6346384,
+        "exit": 4,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          120,
+          180,
+          225,
+          240,
+          300
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547692,
+        "lng": 106.6370345,
+        "relation": "over"
+      }
+    ],
+    "od_22|motorbike|motorbike-1": [
+      {
+        "kind": "bridge",
+        "lat": 10.7565733,
+        "lng": 106.633454,
+        "relation": "over"
+      }
+    ],
+    "od_22|motorbike|motorbike-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7541165,
+        "lng": 106.6342739,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          105,
+          150,
+          180
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547739,
+        "lng": 106.6377266,
+        "relation": "over"
+      }
+    ],
+    "od_22|motorbike|motorbike-3": [
+      {
+        "kind": "bridge",
+        "lat": 10.7565733,
+        "lng": 106.633454,
+        "relation": "over"
+      }
+    ],
+    "od_22|motorbike|motorbike-4": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7540635,
+        "lng": 106.6341842,
+        "exit": 4,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          105,
+          165,
+          180,
+          210,
+          255
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547739,
+        "lng": 106.6377266,
+        "relation": "over"
+      }
+    ],
+    "od_22|motorbike|motorbike-5": [
+      {
+        "kind": "roundabout",
+        "lat": 10.766881,
+        "lng": 106.6423108,
+        "exit": 1,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          90,
+          105,
+          150,
+          180
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7637914,
+        "lng": 106.6356987,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7582089,
+        "lng": 106.6335943,
+        "relation": "over"
+      }
+    ],
+    "od_22|motorbike|motorbike-6": [
+      {
+        "kind": "bridge",
+        "lat": 10.760278,
+        "lng": 106.6287291,
+        "relation": "over"
+      }
+    ],
+    "od_22|motorbike|motorbike-7": [
+      {
+        "kind": "bridge",
+        "lat": 10.7565733,
+        "lng": 106.633454,
+        "relation": "over"
+      }
+    ],
+    "od_22|motorbike|motorbike-8": [],
+    "od_23|walking|walking-1": [
+      {
+        "kind": "roundabout",
+        "lat": 10.790227,
+        "lng": 106.6525596,
+        "exit": 3,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          15,
+          135,
+          180,
+          300
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8027532,
+        "lng": 106.647549,
+        "lanes": 7,
+        "turn": "right",
+        "target": 6
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8019919,
+        "lng": 106.6474857,
+        "relation": "under"
+      }
+    ],
+    "od_23|walking|walking-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7902734,
+        "lng": 106.6524947,
+        "exit": 2,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          15,
+          120,
+          180,
+          285
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8027532,
+        "lng": 106.647549,
+        "lanes": 7,
+        "turn": "right",
+        "target": 6
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8019919,
+        "lng": 106.6474857,
+        "relation": "under"
+      }
+    ],
+    "od_23|walking|walking-3": [],
+    "od_23|walking|walking-4": [],
+    "od_23|walking|walking-5": [
+      {
+        "kind": "lane",
+        "lat": 10.8027532,
+        "lng": 106.647549,
+        "lanes": 7,
+        "turn": "right",
+        "target": 6
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7763312,
+        "lng": 106.663641,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.791736,
+        "lng": 106.6617747,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8014094,
+        "lng": 106.6550873,
+        "relation": "under"
+      }
+    ],
+    "od_23|walking|walking-6": [
+      {
+        "kind": "roundabout",
+        "lat": 10.790227,
+        "lng": 106.6525596,
+        "exit": 3,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          15,
+          135,
+          180,
+          300
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8027532,
+        "lng": 106.647549,
+        "lanes": 7,
+        "turn": "right",
+        "target": 6
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8019919,
+        "lng": 106.6474857,
+        "relation": "under"
+      }
+    ],
+    "od_23|walking|walking-7": [
+      {
+        "kind": "roundabout",
+        "lat": 10.790227,
+        "lng": 106.6525596,
+        "exit": 3,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          15,
+          135,
+          180,
+          300
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8027532,
+        "lng": 106.647549,
+        "lanes": 7,
+        "turn": "right",
+        "target": 6
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8019919,
+        "lng": 106.6474857,
+        "relation": "under"
+      }
+    ],
+    "od_23|walking|walking-8": [
+      {
+        "kind": "roundabout",
+        "lat": 10.790227,
+        "lng": 106.6525596,
+        "exit": 3,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          15,
+          135,
+          180,
+          300
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8027532,
+        "lng": 106.647549,
+        "lanes": 7,
+        "turn": "right",
+        "target": 6
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8019919,
+        "lng": 106.6474857,
+        "relation": "under"
+      }
+    ],
+    "od_23|motorbike|motorbike-1": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7901576,
+        "lng": 106.6524216,
+        "exit": 1,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          15,
+          120,
+          180,
+          285
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8027532,
+        "lng": 106.647549,
+        "lanes": 7,
+        "turn": "right",
+        "target": 6
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8019919,
+        "lng": 106.6474857,
+        "relation": "under"
+      }
+    ],
+    "od_23|motorbike|motorbike-2": [
+      {
+        "kind": "lane",
+        "lat": 10.8027532,
+        "lng": 106.647549,
+        "lanes": 7,
+        "turn": "right",
+        "target": 6
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8019919,
+        "lng": 106.6474857,
+        "relation": "under"
+      }
+    ],
+    "od_23|motorbike|motorbike-3": [
+      {
+        "kind": "lane",
+        "lat": 10.8027532,
+        "lng": 106.647549,
+        "lanes": 7,
+        "turn": "right",
+        "target": 6
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8019919,
+        "lng": 106.6474857,
+        "relation": "under"
+      }
+    ],
+    "od_23|motorbike|motorbike-4": [
+      {
+        "kind": "lane",
+        "lat": 10.8027532,
+        "lng": 106.647549,
+        "lanes": 7,
+        "turn": "right",
+        "target": 6
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8019919,
+        "lng": 106.6474857,
+        "relation": "under"
+      }
+    ],
+    "od_23|motorbike|motorbike-5": [
+      {
+        "kind": "lane",
+        "lat": 10.8045691,
+        "lng": 106.6477045,
+        "lanes": 7,
+        "turn": "right",
+        "target": 6
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8019919,
+        "lng": 106.6474857,
+        "relation": "under"
+      }
+    ],
+    "od_23|motorbike|motorbike-6": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8004745,
+        "lng": 106.6609301,
+        "exit": 1,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          30,
+          60,
+          90,
+          135,
+          165
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8081636,
+        "lng": 106.6480085,
+        "lanes": 7,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8008557,
+        "lng": 106.6617715,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8002588,
+        "lng": 106.6608786,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      },
+      {
+        "kind": "lane",
+        "lat": 10.7740656,
+        "lng": 106.6645247,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.791736,
+        "lng": 106.6617747,
+        "relation": "over"
+      }
+    ],
+    "od_23|motorbike|motorbike-7": [],
+    "od_23|motorbike|motorbike-8": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8002992,
+        "lng": 106.6609282,
+        "exit": 1,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          75,
+          120,
+          150,
+          180
+        ]
+      },
+      {
+        "kind": "roundabout",
+        "lat": 10.7986986,
+        "lng": 106.6623441,
+        "exit": 1,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          75,
+          180,
+          270
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8027532,
+        "lng": 106.647549,
+        "lanes": 7,
+        "turn": "right",
+        "target": 6
+      },
+      {
+        "kind": "lane",
+        "lat": 10.773391,
+        "lng": 106.6647936,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7880122,
+        "lng": 106.6704484,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8019919,
+        "lng": 106.6474857,
+        "relation": "under"
+      }
+    ],
+    "od_26|walking|walking-1": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7538833,
+        "lng": 106.6346384,
+        "exit": 1,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          30,
+          60,
+          120,
+          165,
+          180
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547393,
+        "lng": 106.63587,
+        "relation": "over"
+      }
+    ],
+    "od_26|walking|walking-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7537447,
+        "lng": 106.6345536,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          45,
+          60,
+          120,
+          180,
+          195
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.754436,
+        "lng": 106.6359999,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7546422,
+        "lng": 106.6380395,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7541259,
+        "lng": 106.6429041,
+        "relation": "under"
+      }
+    ],
+    "od_26|walking|walking-3": [
+      {
+        "kind": "bridge",
+        "lat": 10.7564287,
+        "lng": 106.6331945,
+        "relation": "over"
+      }
+    ],
+    "od_26|walking|walking-4": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7540818,
+        "lng": 106.6342631,
+        "exit": 4,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          180,
+          195,
+          240,
+          255,
+          285
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547393,
+        "lng": 106.63587,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547739,
+        "lng": 106.6377266,
+        "relation": "over"
+      }
+    ],
+    "od_26|walking|walking-5": [
+      {
+        "kind": "lane",
+        "lat": 10.754323,
+        "lng": 106.6429203,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7529108,
+        "lng": 106.6378014,
+        "relation": "over"
+      }
+    ],
+    "od_26|walking|walking-6": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7541165,
+        "lng": 106.6342739,
+        "exit": 4,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          180,
+          195,
+          240,
+          255,
+          285
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547393,
+        "lng": 106.63587,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547739,
+        "lng": 106.6377266,
+        "relation": "over"
+      }
+    ],
+    "od_26|walking|walking-7": [
+      {
+        "kind": "lane",
+        "lat": 10.7543514,
+        "lng": 106.6425828,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7529108,
+        "lng": 106.6378014,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7545295,
+        "lng": 106.6429406,
+        "relation": "under"
+      }
+    ],
+    "od_26|walking|walking-8": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7540818,
+        "lng": 106.6342631,
+        "exit": 4,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          180,
+          195,
+          240,
+          255,
+          285
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7547393,
+        "lng": 106.63587,
+        "relation": "over"
+      }
+    ],
+    "od_26|motorbike|motorbike-1": [
+      {
+        "kind": "bridge",
+        "lat": 10.7564287,
+        "lng": 106.6331945,
+        "relation": "over"
+      }
+    ],
+    "od_26|motorbike|motorbike-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7537481,
+        "lng": 106.6345901,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          30,
+          60,
+          120,
+          165,
+          180
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.754436,
+        "lng": 106.6359999,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7546422,
+        "lng": 106.6380395,
+        "relation": "over"
+      }
+    ],
+    "od_26|motorbike|motorbike-3": [
+      {
+        "kind": "bridge",
+        "lat": 10.7564287,
+        "lng": 106.6331945,
+        "relation": "over"
+      }
+    ],
+    "od_26|motorbike|motorbike-4": [
+      {
+        "kind": "bridge",
+        "lat": 10.754436,
+        "lng": 106.6359999,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7546422,
+        "lng": 106.6380395,
+        "relation": "over"
+      }
+    ],
+    "od_26|motorbike|motorbike-5": [
+      {
+        "kind": "bridge",
+        "lat": 10.7564287,
+        "lng": 106.6331945,
+        "relation": "over"
+      }
+    ],
+    "od_26|motorbike|motorbike-6": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7539837,
+        "lng": 106.6345915,
+        "exit": 5,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          30,
+          60,
+          120,
+          165,
+          180
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7564287,
+        "lng": 106.6331945,
+        "relation": "over"
+      }
+    ],
+    "od_26|motorbike|motorbike-7": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7666879,
+        "lng": 106.6423146,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          30,
+          45,
+          90,
+          105,
+          195
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.760278,
+        "lng": 106.6287291,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7649244,
+        "lng": 106.6356518,
+        "relation": "over"
+      }
+    ],
+    "od_26|motorbike|motorbike-8": [],
+    "od_28|walking|walking-1": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8002577,
+        "lng": 106.6610035,
+        "exit": 3,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          30,
+          45,
+          180,
+          240
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8001295,
+        "lng": 106.6607459,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8002847,
+        "lng": 106.6665994,
+        "relation": "under"
+      }
+    ],
+    "od_28|walking|walking-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8002577,
+        "lng": 106.6610035,
+        "exit": 3,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          30,
+          45,
+          180,
+          240
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8001295,
+        "lng": 106.6607459,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8003995,
+        "lng": 106.6653485,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8006653,
+        "lng": 106.6669406,
+        "lanes": 5,
+        "turn": "right",
+        "target": 4
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8004051,
+        "lng": 106.6665821,
+        "relation": "under"
+      }
+    ],
+    "od_28|walking|walking-3": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7987671,
+        "lng": 106.6623509,
+        "exit": 2,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          15,
+          105,
+          180
+        ]
+      }
+    ],
+    "od_28|walking|walking-4": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8005566,
+        "lng": 106.6609723,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          120,
+          150,
+          180,
+          225
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8024931,
+        "lng": 106.6634671,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      }
+    ],
+    "od_28|walking|walking-5": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7902673,
+        "lng": 106.6524081,
+        "exit": 4,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          105,
+          135,
+          180,
+          300
+        ]
+      }
+    ],
+    "od_28|walking|walking-6": [
+      {
+        "kind": "lane",
+        "lat": 10.8002584,
+        "lng": 106.6668744,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7931795,
+        "lng": 106.6594927,
+        "relation": "over"
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8001935,
+        "lng": 106.6665905,
+        "relation": "over"
+      }
+    ],
+    "od_28|walking|walking-7": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8005566,
+        "lng": 106.6609723,
+        "exit": 2,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          120,
+          150,
+          180,
+          225
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8010667,
+        "lng": 106.6620567,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8003995,
+        "lng": 106.6653485,
+        "lanes": 4,
+        "turn": "left",
+        "target": 0
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8002584,
+        "lng": 106.6668744,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8003888,
+        "lng": 106.6665807,
+        "relation": "over"
+      }
+    ],
+    "od_28|walking|walking-8": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8002577,
+        "lng": 106.6610035,
+        "exit": 3,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          30,
+          45,
+          180,
+          240
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8001295,
+        "lng": 106.6607459,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8002847,
+        "lng": 106.6665994,
+        "relation": "under"
+      }
+    ],
+    "od_28|motorbike|motorbike-1": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8002577,
+        "lng": 106.6610035,
+        "exit": 3,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          15,
+          30,
+          45,
+          180,
+          240
+        ]
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8001295,
+        "lng": 106.6607459,
+        "lanes": 8,
+        "turn": "right",
+        "target": 7
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8002847,
+        "lng": 106.6665994,
+        "relation": "under"
+      }
+    ],
+    "od_28|motorbike|motorbike-2": [
+      {
+        "kind": "roundabout",
+        "lat": 10.7986678,
+        "lng": 106.6623766,
+        "exit": 1,
+        "arms": 4,
+        "arm_deg": [
+          0,
+          15,
+          105,
+          180
+        ]
+      }
+    ],
+    "od_28|motorbike|motorbike-3": [
+      {
+        "kind": "roundabout",
+        "lat": 10.8002992,
+        "lng": 106.6609282,
+        "exit": 1,
+        "arms": 6,
+        "arm_deg": [
+          0,
+          60,
+          75,
+          120,
+          150,
+          180
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8002847,
+        "lng": 106.6665994,
+        "relation": "under"
+      }
+    ],
+    "od_28|motorbike|motorbike-4": [
+      {
+        "kind": "roundabout",
+        "lat": 10.790148,
+        "lng": 106.6524877,
+        "exit": 2,
+        "arms": 5,
+        "arm_deg": [
+          0,
+          105,
+          135,
+          180,
+          300
+        ]
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.7931795,
+        "lng": 106.6594927,
+        "relation": "over"
+      }
+    ],
+    "od_28|motorbike|motorbike-5": [
+      {
+        "kind": "bridge",
+        "lat": 10.7880273,
+        "lng": 106.6704048,
+        "relation": "over"
+      }
+    ],
+    "od_28|motorbike|motorbike-6": [
+      {
+        "kind": "bridge",
+        "lat": 10.7916511,
+        "lng": 106.6623259,
+        "relation": "over"
+      }
+    ],
+    "od_28|motorbike|motorbike-7": [
+      {
+        "kind": "bridge",
+        "lat": 10.7908136,
+        "lng": 106.6656862,
+        "relation": "over"
+      }
+    ],
+    "od_28|motorbike|motorbike-8": [
+      {
+        "kind": "lane",
+        "lat": 10.8087225,
+        "lng": 106.648048,
+        "lanes": 7,
+        "turn": "right",
+        "target": 6
+      },
+      {
+        "kind": "lane",
+        "lat": 10.8059046,
+        "lng": 106.6643717,
+        "lanes": 4,
+        "turn": "right",
+        "target": 3
+      },
+      {
+        "kind": "bridge",
+        "lat": 10.8019919,
+        "lng": 106.6474857,
+        "relation": "under"
+      }
+    ]
+  }
+}
