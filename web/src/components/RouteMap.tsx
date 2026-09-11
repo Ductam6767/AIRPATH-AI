@@ -227,7 +227,7 @@ function cueMapIcon(
   emphasized: boolean,
   variant: 'diagram' | 'bridge-icon',
 ): L.DivIcon {
-  const size = variant === 'diagram' ? (emphasized ? 72 : 58) : 26
+  const size = variant === 'diagram' ? (emphasized ? 92 : 80) : 28
   const scale =
     (1 / FOLLOW_MAP_SCALE) * (emphasized && variant === 'diagram' ? 1.1 : 1)
   const inner =

@@ -9,6 +9,14 @@ export const TURN_SIGNAL_HOLD_AFTER_M = 5
 /** Still “active” in the last metres before the corner. */
 export const TURN_SIGNAL_CLOSE_M = 40
 
+/**
+ * Second confirmation at the real corner (not an alley the rider passes first).
+ * Xi-nhan already means “slow down, a turn is coming”; this pale-blue LED
+ * means “turn here”.
+ */
+export const TURN_CONFIRM_M = 6
+export const TURN_CONFIRM_HOLD_AFTER_M = 1.5
+
 export function armedTurnDirection(
   turn: TurnDirection | null | undefined,
   distanceToNextM: number,
@@ -28,6 +36,26 @@ export function armedTurnDirection(
     return null
   }
   return turn
+}
+
+/** Pale-blue LED: this exact junction, 6 m out — skip the hẻm before it. */
+export function isCornerConfirm(
+  turn: TurnDirection | null | undefined,
+  distanceToNextM: number,
+  lastTurn: TurnDirection | null | undefined = null,
+  distancePastLastTurnM: number | undefined = Number.POSITIVE_INFINITY,
+): boolean {
+  if (
+    (lastTurn === 'left' || lastTurn === 'right') &&
+    Number.isFinite(distancePastLastTurnM) &&
+    distancePastLastTurnM >= 0 &&
+    distancePastLastTurnM <= TURN_CONFIRM_HOLD_AFTER_M
+  ) {
+    return true
+  }
+  if (turn !== 'left' && turn !== 'right') return false
+  if (!Number.isFinite(distanceToNextM)) return false
+  return distanceToNextM <= TURN_CONFIRM_M && distanceToNextM >= 0
 }
 
 export function assistPayloadTurn(

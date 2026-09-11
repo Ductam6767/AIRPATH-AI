@@ -17,7 +17,8 @@ describe('guidance diagrams', () => {
     expect(svg).toContain('>1</text>')
     expect(svg).toContain('>2</text>')
     expect(svg).toContain('>3</text>')
-    expect(svg).toContain('#0f766e')
+    expect(svg).toContain('#ea580c')
+    expect(svg).toContain('stroke-width="11"')
   })
 
   it('highlights the inner lane for a left turn', () => {
@@ -29,8 +30,8 @@ describe('guidance diagrams', () => {
       turn: 'left',
       target: 0,
     })
-    expect(svg).toContain('#99f6e4')
-    expect(svg).toContain('#0f766e')
+    expect(svg).toContain('#fdba74')
+    expect(svg).toContain('#ea580c')
   })
 
   it('draws a small bridge glyph for over and under', () => {
@@ -46,8 +47,8 @@ describe('guidance diagrams', () => {
       lng: 106.66,
       relation: 'under',
     })
-    expect(over).toContain('Q14 -2 26 10')
-    expect(under).toContain('Q14 -2 26 10')
+    expect(over).toContain('Q16 -4 30 11')
+    expect(under).toContain('Q16 -4 30 11')
     expect(over).not.toEqual(under)
   })
 })

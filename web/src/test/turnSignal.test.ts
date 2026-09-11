@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   armedTurnDirection,
   assistPayloadTurn,
+  isCornerConfirm,
   signalState,
   TURN_SIGNAL_ARM_M,
 } from '../maneuver/turnSignal'
@@ -54,5 +55,15 @@ describe('turn signal arming', () => {
         distanceToNextM: 25,
       }),
     ).toBe('active')
+  })
+
+  it('flashes the pale-blue confirm LED from 6 m, not while only the blinker is on', () => {
+    expect(isCornerConfirm('right', 20)).toBe(false)
+    expect(isCornerConfirm('right', 6)).toBe(true)
+    expect(isCornerConfirm('left', 5)).toBe(true)
+    expect(isCornerConfirm('right', 0)).toBe(true)
+    expect(isCornerConfirm('straight', 4)).toBe(false)
+    expect(isCornerConfirm('right', 200, 'left', 1)).toBe(true)
+    expect(isCornerConfirm('right', 200, 'left', 2)).toBe(false)
   })
 })

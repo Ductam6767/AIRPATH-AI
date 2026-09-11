@@ -19,6 +19,7 @@ function snapshot(next: Maneuver | null, distanceToNextM = 80): AssistSnapshot {
     payload: null,
     lastTurn: null,
     distancePastLastTurnM: Number.POSITIVE_INFINITY,
+    cornerConfirm: false,
   }
 }
 
@@ -88,5 +89,23 @@ describe('NavigationInstruction blinker', () => {
     expect(screen.getByLabelText('Junction diagram')).toBeInTheDocument()
     expect(screen.getByText(/Roundabout · take exit 2/)).toBeInTheDocument()
     expect(screen.getByText('in 50 m')).toBeInTheDocument()
+  })
+
+  it('flashes the pale-blue confirm LED only in the last 6 m', () => {
+    const { rerender } = render(
+      <NavigationInstruction
+        route={mockRoutesWithAlts.alternatives[0]!}
+        snapshot={{ ...snapshot(leftTurn, 20), cornerConfirm: false }}
+      />,
+    )
+    expect(screen.queryByTestId('confirm-led')).not.toBeInTheDocument()
+    rerender(
+      <NavigationInstruction
+        route={mockRoutesWithAlts.alternatives[0]!}
+        snapshot={{ ...snapshot(leftTurn, 5), cornerConfirm: true }}
+      />,
+    )
+    expect(screen.getByTestId('confirm-led')).toBeInTheDocument()
+    expect(screen.getByText(/This junction — turn now/)).toBeInTheDocument()
   })
 })

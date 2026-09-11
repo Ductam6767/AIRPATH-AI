@@ -13,6 +13,7 @@ import {
   type PlacedCue,
 } from '../maneuver/guidanceCues'
 import { BlinkerArrow } from './BlinkerArrow'
+import { ConfirmLed } from './ConfirmLed'
 import { GuidanceDiagram } from './GuidanceDiagram'
 
 interface NavigationInstructionProps {
@@ -77,6 +78,7 @@ export function NavigationInstruction({
     <article className="nav-card" aria-live="polite">
       <div className="nav-card__primary">
         <BlinkerArrow turn={blinker} size="lg" />
+        <ConfirmLed on={snapshot.cornerConfirm} size="lg" />
         <div className="nav-card__copy">
           <p className="nav-card__turn">
             {hudCue ? cueTitle(hudCue, t) : maneuverTitle(snapshot, t)}
@@ -88,6 +90,9 @@ export function NavigationInstruction({
                 ? t.inDistance(snapshot.distanceToNextM)
                 : t.turnArrive}
           </p>
+          {snapshot.cornerConfirm ? (
+            <p className="nav-card__confirm">{t.turnConfirm}</p>
+          ) : null}
         </div>
       </div>
       {hudCue ? (

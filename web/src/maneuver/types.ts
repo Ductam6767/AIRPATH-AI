@@ -21,4 +21,6 @@ export interface AssistPayload {
   maneuver_index: number
   instruction: string
   ts: number
+  /** Pale-blue LED: this is the turn, not an alley before it. */
+  corner_confirm?: boolean
 }

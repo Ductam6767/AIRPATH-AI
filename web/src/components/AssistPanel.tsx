@@ -10,6 +10,7 @@ import {
 } from '../ble/bleTransport'
 import { armedTurnDirection } from '../maneuver/turnSignal'
 import { BlinkerArrow } from './BlinkerArrow'
+import { ConfirmLed } from './ConfirmLed'
 
 interface AssistPanelProps {
   snapshot: AssistSnapshot
@@ -86,6 +87,7 @@ export function AssistPanel({
                   )}
                   size="md"
                 />
+                <ConfirmLed on={snapshot.cornerConfirm} size="md" />
                 {turnLabel(snapshot.next, t)}
               </strong>
             </div>

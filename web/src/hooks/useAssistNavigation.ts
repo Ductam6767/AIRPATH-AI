@@ -10,7 +10,7 @@ import { speedStepsAhead, suggestedSpeedKmh } from '../maneuver/speedProfile'
 import type { AssistPayload, Maneuver } from '../maneuver/types'
 import type { RouteRecord } from '../types'
 import { sendAssistPayload } from '../ble/bleTransport'
-import { assistPayloadTurn } from '../maneuver/turnSignal'
+import { assistPayloadTurn, isCornerConfirm } from '../maneuver/turnSignal'
 
 export type AssistMode = 'off' | 'demo' | 'live'
 
@@ -26,6 +26,7 @@ export interface AssistSnapshot {
   speedTargetKmh: number
   speedSteps: number[]
   payload: AssistPayload | null
+  cornerConfirm: boolean
 }
 
 const DEMO_SPEED_MPS = 4.2 // ~15 km/h walk/demo
@@ -47,6 +48,7 @@ function buildSnapshot(
     speedTargetKmh: 0,
     speedSteps: [],
     payload: null,
+    cornerConfirm: false,
   }
   if (!route || mode === 'off') return inactive
 
@@ -66,6 +68,12 @@ function buildSnapshot(
   const speedTargetKmh = next ? suggestedSpeedKmh(distTo) : 20
   const speedSteps = next ? speedStepsAhead(distTo) : []
   const turn = next?.turn ?? 'straight'
+  const cornerConfirm = isCornerConfirm(
+    turn,
+    distTo,
+    lastTurn?.turn,
+    distancePastLastTurnM,
+  )
   const payload: AssistPayload = {
     turn: assistPayloadTurn(turn, distTo, lastTurn?.turn, distancePastLastTurnM),
     distance_m: Math.round(distTo),
@@ -73,6 +81,7 @@ function buildSnapshot(
     maneuver_index: next?.index ?? 0,
     instruction: next?.instruction ?? 'Continue',
     ts: Date.now(),
+    corner_confirm: cornerConfirm,
   }
 
   return {
@@ -87,6 +96,7 @@ function buildSnapshot(
     speedTargetKmh,
     speedSteps,
     payload,
+    cornerConfirm,
   }
 }
 

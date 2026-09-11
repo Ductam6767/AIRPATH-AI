@@ -63,6 +63,9 @@ export const STRINGS = {
     turnSignalLeft: 'Left signal',
     turnSignalRight: 'Right signal',
     turnSignalProto: 'Turn-signal assistance prototype',
+    turnConfirm: 'This junction — turn now',
+    turnConfirmHint:
+      'Pale-blue flash: this is the turn. Ignore an alley that appeared while the signal was already on.',
     kmLeft: 'km remaining',
     minLeft: 'min remaining',
     selectedRoute: 'Selected route',
@@ -279,6 +282,9 @@ export const STRINGS = {
     turnSignalLeft: 'Xi-nhan trái',
     turnSignalRight: 'Xi-nhan phải',
     turnSignalProto: 'Nguyên mẫu hỗ trợ xi-nhan',
+    turnConfirm: 'Đúng ngã rẽ này — rẽ ngay',
+    turnConfirmHint:
+      'Đèn xanh dương nhạt: rẽ ở đây. Bỏ qua hẻm hiện ra khi xi-nhan đã bật.',
     kmLeft: 'km còn lại',
     minLeft: 'phút còn lại',
     selectedRoute: 'Tuyến đã chọn',

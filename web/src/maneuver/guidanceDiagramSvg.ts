@@ -1,5 +1,11 @@
 import type { GuidanceCue } from './guidanceCues'
 
+const TAKEN = '#ea580c'
+const TAKEN_DARK = '#9a3412'
+const ROAD = '#94a3b8'
+const ROAD_FILL = '#e2e8f0'
+const INK = '#0f172a'
+
 function polar(cx: number, cy: number, r: number, deg: number): [number, number] {
   const rad = (deg * Math.PI) / 180
   return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)]
@@ -7,6 +13,22 @@ function polar(cx: number, cy: number, r: number, deg: number): [number, number]
 
 function svgAngle(armDeg: number): number {
   return 90 + armDeg
+}
+
+function dualStroke(d: string, outer: number, inner: number): string {
+  return `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${outer}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${TAKEN}" stroke-width="${inner}" stroke-linecap="round" stroke-linejoin="round"/>`
+}
+
+function arrowHead(tip: [number, number], deg: number, size = 9): string {
+  const rad = (deg * Math.PI) / 180
+  const back = 11
+  const base: [number, number] = [
+    tip[0] - Math.cos(rad) * back,
+    tip[1] - Math.sin(rad) * back,
+  ]
+  const left = polar(base[0], base[1], size, deg - 90)
+  const right = polar(base[0], base[1], size, deg + 90)
+  return `<polygon points="${tip[0].toFixed(1)},${tip[1].toFixed(1)} ${left[0].toFixed(1)},${left[1].toFixed(1)} ${right[0].toFixed(1)},${right[1].toFixed(1)}" fill="${TAKEN}" stroke="${INK}" stroke-width="1.4" stroke-linejoin="round"/>`
 }
 
 function roundaboutSvg(cue: GuidanceCue, emphasized: boolean): string {
@@ -20,76 +42,83 @@ function roundaboutSvg(cue: GuidanceCue, emphasized: boolean): string {
   }
   const cx = 60
   const cy = 60
-  const ringR = 22
-  const roadR = 48
+  const ringR = 24
+  const roadR = 52
   const numbered = armDeg
-    .map((deg, index) => ({ deg, index }))
-    .filter((arm) => arm.deg % 360 !== 0)
-    .sort((a, b) => (a.deg % 360) - (b.deg % 360))
+    .map((deg) => deg)
+    .filter((deg) => deg % 360 !== 0)
+    .sort((a, b) => (a % 360) - (b % 360))
   const roads = armDeg
     .map((deg) => {
-      const a = polar(cx, cy, 8, svgAngle(deg))
+      const a = polar(cx, cy, 10, svgAngle(deg))
       const b = polar(cx, cy, roadR, svgAngle(deg))
-      return `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="#94a3b8" stroke-width="9" stroke-linecap="butt"/>`
+      return `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${INK}" stroke-width="13" stroke-linecap="butt"/><line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${ROAD_FILL}" stroke-width="9" stroke-linecap="butt"/>`
     })
     .join('')
-  const taken = numbered[exit - 1] ?? numbered[0]
-  const takenDeg = taken?.deg ?? 180
+  const takenDeg = numbered[exit - 1] ?? 180
   const start = polar(cx, cy, ringR, svgAngle(0))
   const endRing = polar(cx, cy, ringR, svgAngle(takenDeg))
-  const endRoad = polar(cx, cy, roadR - 2, svgAngle(takenDeg))
-  const entry = polar(cx, cy, roadR - 2, svgAngle(0))
+  const endRoad = polar(cx, cy, roadR - 1, svgAngle(takenDeg))
+  const entry = polar(cx, cy, roadR - 1, svgAngle(0))
   const large = takenDeg > 180 ? 1 : 0
-  const stroke = emphasized ? 5.5 : 4.2
   const path = [
     `M ${entry[0].toFixed(1)} ${entry[1].toFixed(1)}`,
     `L ${start[0].toFixed(1)} ${start[1].toFixed(1)}`,
     `A ${ringR} ${ringR} 0 ${large} 1 ${endRing[0].toFixed(1)} ${endRing[1].toFixed(1)}`,
     `L ${endRoad[0].toFixed(1)} ${endRoad[1].toFixed(1)}`,
   ].join(' ')
+  const outer = emphasized ? 11 : 9.5
+  const inner = emphasized ? 7 : 5.8
   const numbers = numbered
-    .map((arm, i) => {
+    .map((deg, i) => {
       const n = i + 1
-      const [x, y] = polar(cx, cy, 36, svgAngle(arm.deg))
+      const [x, y] = polar(cx, cy, 38, svgAngle(deg))
       const active = n === exit
-      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7.2" fill="${active ? '#0f766e' : '#fff'}" stroke="${active ? '#134e4a' : '#0f172a'}" stroke-width="1.4"/><text x="${x.toFixed(1)}" y="${(y + 3.4).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="800" fill="${active ? '#fff' : '#0f172a'}">${n}</text>`
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9.2" fill="${active ? TAKEN : '#fff'}" stroke="${active ? TAKEN_DARK : INK}" stroke-width="2.2"/><text x="${x.toFixed(1)}" y="${(y + 4.2).toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="900" font-family="ui-sans-serif,system-ui,sans-serif" fill="${active ? '#fff' : INK}">${n}</text>`
     })
     .join('')
-  return `${roads}<circle cx="${cx}" cy="${cy}" r="${ringR + 7}" fill="#e2e8f0" stroke="#64748b" stroke-width="11"/><circle cx="${cx}" cy="${cy}" r="${ringR - 7}" fill="#fff"/><path d="${path}" fill="none" stroke="#0f766e" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round"/>${numbers}`
+  return `<rect x="2" y="2" width="116" height="116" rx="14" fill="#fff"/>${roads}<circle cx="${cx}" cy="${cy}" r="${ringR + 8}" fill="${ROAD_FILL}" stroke="${INK}" stroke-width="12"/><circle cx="${cx}" cy="${cy}" r="${ringR + 8}" fill="none" stroke="${ROAD}" stroke-width="8"/><circle cx="${cx}" cy="${cy}" r="${ringR - 8}" fill="#fff" stroke="${INK}" stroke-width="1.4"/>${dualStroke(path, outer, inner)}${arrowHead(endRoad, svgAngle(takenDeg))}${numbers}`
 }
 
 function laneSvg(cue: GuidanceCue, emphasized: boolean): string {
   const n = Math.max(3, Math.min(6, cue.lanes ?? 4))
   const turn = cue.turn === 'right' ? 'right' : 'left'
   const target = Math.min(n - 1, Math.max(0, cue.target ?? (turn === 'left' ? 0 : n - 1)))
-  const pad = 10
-  const top = 18
-  const bottom = 108
-  const width = (100 - pad * 2) / n
+  const pad = 8
+  const top = 14
+  const bottom = 106
+  const width = (104 - pad) / n
   const lanes = Array.from({ length: n }, (_, i) => {
     const x = pad + i * width
     const active = i === target
-    const fill = active ? '#99f6e4' : '#e2e8f0'
-    const stroke = active ? '#0f766e' : '#94a3b8'
-    const sw = active ? (emphasized ? 3.2 : 2.4) : 1.1
-    return `<rect x="${x.toFixed(1)}" y="${top}" width="${(width - 3).toFixed(1)}" height="${bottom - top}" rx="3" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`
+    const fill = active ? '#fdba74' : '#cbd5e1'
+    const stroke = active ? TAKEN_DARK : '#64748b'
+    const sw = active ? (emphasized ? 4 : 3.2) : 1.4
+    const labelY = bottom - 8
+    return `<rect x="${x.toFixed(1)}" y="${top}" width="${(width - 2.5).toFixed(1)}" height="${bottom - top}" rx="4" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>${active ? '' : `<text x="${(x + (width - 2.5) / 2).toFixed(1)}" y="${labelY}" text-anchor="middle" font-size="8" font-weight="800" fill="#475569">${i + 1}</text>`}`
   }).join('')
-  const tx = pad + target * width + (width - 3) / 2
-  const arrow =
-    turn === 'left'
-      ? `M ${tx.toFixed(1)} 96 L ${tx.toFixed(1)} 34 L ${(tx - 14).toFixed(1)} 34`
-      : `M ${tx.toFixed(1)} 96 L ${tx.toFixed(1)} 34 L ${(tx + 14).toFixed(1)} 34`
-  return `${lanes}<path d="${arrow}" fill="none" stroke="#0f766e" stroke-width="${emphasized ? 5 : 4}" stroke-linecap="round" stroke-linejoin="round"/><polygon points="${turn === 'left' ? `${tx - 20},34 ${tx - 10},28 ${tx - 10},40` : `${tx + 20},34 ${tx + 10},28 ${tx + 10},40`}" fill="#0f766e"/>`
+  const dashes = Array.from({ length: n - 1 }, (_, i) => {
+    const x = pad + (i + 1) * width - 1.2
+    return `<line x1="${x.toFixed(1)}" y1="${top + 6}" x2="${x.toFixed(1)}" y2="${bottom - 6}" stroke="#fff" stroke-width="1.6" stroke-dasharray="5 4"/>`
+  }).join('')
+  const tx = pad + target * width + (width - 2.5) / 2
+  const tipX = turn === 'left' ? tx - 22 : tx + 22
+  const shaft = `M ${tx.toFixed(1)} 98 L ${tx.toFixed(1)} 32 L ${tipX.toFixed(1)} 32`
+  const activeNum = `<circle cx="${tx.toFixed(1)}" cy="88" r="8.5" fill="${TAKEN}" stroke="${INK}" stroke-width="1.8"/><text x="${tx.toFixed(1)}" y="92.2" text-anchor="middle" font-size="11" font-weight="900" fill="#fff">${target + 1}</text>`
+  return `<rect x="2" y="2" width="116" height="116" rx="14" fill="#0f172a"/>${lanes}${dashes}${dualStroke(shaft, emphasized ? 10 : 8.5, emphasized ? 6.5 : 5.2)}${arrowHead([tipX, 32], turn === 'left' ? 180 : 0, 8)}${activeNum}`
 }
 
 function bridgeSvg(cue: GuidanceCue, emphasized: boolean): string {
   const over = cue.relation !== 'under'
-  const upper = over ? '#0f766e' : '#94a3b8'
-  const lower = over ? '#94a3b8' : '#0f766e'
-  const uw = over ? (emphasized ? 6 : 5) : 3
-  const lw = over ? 3 : emphasized ? 6 : 5
-  const icon = `<g transform="translate(48 18)" fill="none" stroke="#0f172a" stroke-width="1.8" stroke-linecap="round"><path d="M2 16 L2 10 Q14 -2 26 10 L26 16"/><path d="M2 16 L26 16"/><path d="M8 16 L8 12"/><path d="M20 16 L20 12"/></g>`
-  return `${icon}<line x1="14" y1="58" x2="106" y2="58" stroke="${upper}" stroke-width="${uw}" stroke-linecap="round"/><path d="M18 58 Q60 42 102 58" fill="none" stroke="${upper}" stroke-width="${over ? 2.4 : 1.6}" opacity="${over ? 1 : 0.55}"/><line x1="18" y1="88" x2="102" y2="88" stroke="${lower}" stroke-width="${lw}" stroke-linecap="round"/><path d="M34 88 L46 72 L74 72 L86 88" fill="none" stroke="${lower}" stroke-width="2" opacity="${over ? 0.45 : 1}"/>`
+  const upper = over ? TAKEN : ROAD
+  const lower = over ? ROAD : TAKEN
+  const uw = over ? (emphasized ? 8 : 6.5) : 3.2
+  const lw = over ? 3.2 : emphasized ? 8 : 6.5
+  const icon = `<g transform="translate(44 12)" fill="none" stroke="${INK}" stroke-width="2.2" stroke-linecap="round"><path d="M2 18 L2 11 Q16 -4 30 11 L30 18"/><path d="M2 18 L30 18" stroke-width="2.6"/><path d="M9 18 L9 13"/><path d="M23 18 L23 13"/></g>`
+  const upperLine = `M 12 58 L 108 58`
+  const arch = `M 16 58 Q 60 40 104 58`
+  const lowerLine = `M 16 90 L 104 90`
+  return `<rect x="2" y="2" width="116" height="116" rx="14" fill="#fff"/>${icon}<path d="${upperLine}" fill="none" stroke="${INK}" stroke-width="${uw + 3}" stroke-linecap="round"/><path d="${upperLine}" fill="none" stroke="${upper}" stroke-width="${uw}" stroke-linecap="round"/><path d="${arch}" fill="none" stroke="${upper}" stroke-width="${over ? 3 : 1.8}" opacity="${over ? 1 : 0.45}"/><path d="${lowerLine}" fill="none" stroke="${INK}" stroke-width="${lw + 3}" stroke-linecap="round"/><path d="${lowerLine}" fill="none" stroke="${lower}" stroke-width="${lw}" stroke-linecap="round"/>`
 }
 
 export function guidanceDiagramInner(cue: GuidanceCue, emphasized = false): string {
