@@ -8,6 +8,7 @@ import {
   subscribeBleTransport,
   type BleTransportState,
 } from '../ble/bleTransport'
+import { BlinkerArrow } from './BlinkerArrow'
 
 interface AssistPanelProps {
   snapshot: AssistSnapshot
@@ -72,9 +73,10 @@ export function AssistPanel({
       {assistMode !== 'off' ? (
         <>
           <div className="assist-metrics">
-            <div className="assist-metric">
+            <div className="assist-metric assist-metric--maneuver">
               <span className="assist-metric__label">{t.nextManeuver}</span>
               <strong className="assist-metric__value">
+                <BlinkerArrow turn={snapshot.next?.turn} size="md" />
                 {turnLabel(snapshot.next, t)}
               </strong>
             </div>

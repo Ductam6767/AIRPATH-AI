@@ -406,15 +406,15 @@ function AppInner() {
                   snapshot={assistSnapshot}
                 />
                 <TurnSignalStatus snapshot={assistSnapshot} />
+                <button type="button" className="end-nav-btn" onClick={endNavigation}>
+                  {t.endNav}
+                </button>
                 <AssistPanel
                   snapshot={assistSnapshot}
                   assistMode={assistMode}
                   onAssistModeChange={setAssistMode}
                   onReset={resetAssist}
                 />
-                <button type="button" className="secondary-btn" onClick={endNavigation}>
-                  {t.endNav}
-                </button>
                 <button
                   type="button"
                   className="linkish"

@@ -142,8 +142,8 @@ export const STRINGS = {
       'Select a route, then enable Demo play or GPS live to preview maneuver sync for your ESP32 prototype.',
     assistDisclaimer:
       'Assistant output is a pilot demo — not medical advice, not certified navigation. Driver/rider remains responsible.',
-    turnLeft: '↰ Left',
-    turnRight: '↱ Right',
+    turnLeft: 'Left',
+    turnRight: 'Right',
     turnArrive: '◎ Arrive',
     turnContinue: '↑ Continue',
     trialsTitle: 'N-run experiment log',
@@ -352,8 +352,8 @@ export const STRINGS = {
       'Chọn tuyến, bật Chạy demo hoặc GPS thật để xem đồng bộ maneuver cho ESP32.',
     assistDisclaimer:
       'Đầu ra trợ lý là demo pilot — không phải tư vấn y tế, không thay thế dẫn đường chứng nhận. Người điều khiển chịu trách nhiệm.',
-    turnLeft: '↰ Trái',
-    turnRight: '↱ Phải',
+    turnLeft: 'Trái',
+    turnRight: 'Phải',
     turnArrive: '◎ Đến nơi',
     turnContinue: '↑ Đi tiếp',
     trialsTitle: 'Nhật ký thí nghiệm N lượt',

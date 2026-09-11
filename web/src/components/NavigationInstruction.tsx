@@ -6,6 +6,7 @@ import {
   formatMinutes,
   routeCardTitle,
 } from '../utils/labels'
+import { BlinkerArrow } from './BlinkerArrow'
 
 interface NavigationInstructionProps {
   route: RouteRecord
@@ -38,12 +39,19 @@ export function NavigationInstruction({
     route.travel_time_minutes * (1 - progress),
   )
 
+  const turn = snapshot.next?.turn
+
   return (
     <article className="nav-card" aria-live="polite">
-      <p className="nav-card__turn">{maneuverTitle(snapshot, t)}</p>
-      <p className="nav-card__distance">
-        {snapshot.next ? t.inDistance(snapshot.distanceToNextM) : t.turnArrive}
-      </p>
+      <div className="nav-card__primary">
+        <BlinkerArrow turn={turn} size="lg" />
+        <div className="nav-card__copy">
+          <p className="nav-card__turn">{maneuverTitle(snapshot, t)}</p>
+          <p className="nav-card__distance">
+            {snapshot.next ? t.inDistance(snapshot.distanceToNextM) : t.turnArrive}
+          </p>
+        </div>
+      </div>
       <p className="nav-card__meta">
         {formatMinutes(remainingMin)} {t.minLeft}
         <span aria-hidden="true"> · </span>

@@ -349,7 +349,7 @@ describe('labels', () => {
     expect(reductionBadgeText(-9.7)).toBe('+10% higher predicted exposure')
     expect(exposureCompareHeadline(28, false)).toEqual({
       value: '↓ 28%',
-      caption: 'lower estimated exposure',
+      caption: 'lower predicted exposure',
       tone: 'eco',
     })
     expect(exposureCompareHeadline(0, true).value).toBe('0%')

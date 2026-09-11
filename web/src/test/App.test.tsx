@@ -264,6 +264,10 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('Health-first')).toBeInTheDocument()
     expect(screen.getAllByText(/28% lower predicted exposure/i).length).toBeGreaterThan(0)
+    expect(screen.getAllByText('+2 min').length).toBeGreaterThan(1)
+    expect(screen.getAllByText('↓ 28%').length).toBeGreaterThan(1)
+    expect(screen.getByText('vs fastest')).toBeInTheDocument()
+    expect(screen.getByText('lower predicted exposure')).toBeInTheDocument()
     expect(screen.getByText('Lower predicted exposure')).toBeInTheDocument()
     const why = screen.getByRole('region', { name: /Why this route/i })
     expect(within(why).getByText('↓ 28%')).toBeInTheDocument()
@@ -432,7 +436,10 @@ describe('AIRPATH frontend', () => {
     const user = await chooseDefaultTrip()
     await user.click(screen.getByRole('button', { name: 'Start navigation' }))
     expect(screen.getByText('Turn-signal assist')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'End navigation' })).toBeInTheDocument()
+    expect(screen.getByText('Next maneuver')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'End navigation' })).toHaveClass(
+      'end-nav-btn',
+    )
   })
 
   it('falls back to the bundled demo pack when the API is unavailable', async () => {

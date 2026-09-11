@@ -133,7 +133,9 @@ export function RouteCards({
                 <div className="route-card__stats">
                   <div className="route-stat">
                     <span className="route-stat__value">{extra}</span>
-                    <span className="route-stat__label">Extra time</span>
+                    <span className="route-stat__label">
+                      {route.is_fastest ? 'extra time' : 'vs fastest'}
+                    </span>
                   </div>
                   <div className={`route-stat route-stat--${exposureCompare.tone}`}>
                     <span className="route-stat__value">{exposureCompare.value}</span>

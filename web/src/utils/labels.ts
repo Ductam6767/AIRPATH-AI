@@ -169,23 +169,23 @@ export function exposureCompareHeadline(
   isFastest: boolean,
 ): { value: string; caption: string; tone: 'eco' | 'warn' | 'neutral' } {
   if (isFastest) {
-    return { value: '0%', caption: 'baseline exposure', tone: 'neutral' }
+    return { value: '0%', caption: 'predicted exposure', tone: 'neutral' }
   }
   if (isLowerPredictedExposure(percent)) {
     return {
       value: `↓ ${Math.round(percent)}%`,
-      caption: 'lower estimated exposure',
+      caption: 'lower predicted exposure',
       tone: 'eco',
     }
   }
   if (percent < -0.5) {
     return {
       value: `↑ ${Math.round(Math.abs(percent))}%`,
-      caption: 'higher estimated exposure',
+      caption: 'higher predicted exposure',
       tone: 'warn',
     }
   }
-  return { value: '0%', caption: 'similar estimated exposure', tone: 'neutral' }
+  return { value: '0%', caption: 'similar predicted exposure', tone: 'neutral' }
 }
 
 export function hasLowerPredictedExposureAlternative(

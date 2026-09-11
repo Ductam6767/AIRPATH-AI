@@ -125,9 +125,11 @@ function FollowProgress({
     map.invalidateSize({ animate: false })
     sized.current = true
     return () => {
-      const el = map.getContainer()
-      el.style.transform = ''
-      el.style.transformOrigin = ''
+      const world = map.getContainer().closest('.map-rotate-world')
+      if (world instanceof HTMLElement) {
+        world.style.transform = ''
+        world.style.transformOrigin = ''
+      }
       headingRef.current = null
     }
   }, [map])
@@ -157,7 +159,7 @@ function FollowProgress({
       map.panBy([dx, dy], { animate: false, noMoveStart: true })
     }
 
-    const ahead = pointAlongRoute(geometry, distanceAlongM + 48)
+    const ahead = pointAlongRoute(geometry, distanceAlongM + 55)
     if (
       ahead &&
       (Math.abs(ahead[0] - progress[0]) > 1e-7 ||
@@ -167,15 +169,17 @@ function FollowProgress({
       headingRef.current =
         headingRef.current == null
           ? raw
-          : Math.abs(angleDiffDeg(headingRef.current, raw)) < 3
+          : Math.abs(angleDiffDeg(headingRef.current, raw)) < 2.5
             ? headingRef.current
-            : lerpHeadingDeg(headingRef.current, raw, 0.38)
+            : lerpHeadingDeg(headingRef.current, raw, 0.42)
     }
 
     const heading = headingRef.current ?? 0
-    const el = map.getContainer()
-    el.style.transformOrigin = `${originX}px ${originY}px`
-    el.style.transform = `rotate(${-heading}deg) scale(1.42)`
+    const world = map.getContainer().closest('.map-rotate-world')
+    if (world instanceof HTMLElement) {
+      world.style.transformOrigin = `${originX}px ${originY}px`
+      world.style.transform = `rotate(${-heading}deg) scale(1.58)`
+    }
   }, [map, progress, geometry, distanceAlongM])
 
   return null
@@ -242,14 +246,20 @@ export function RouteMap({
   })
 
   return (
-    <div className="map-shell" role="region" aria-label="Route map">
-      <MapContainer
-        center={[10.78, 106.66]}
-        zoom={12}
-        className="route-map"
-        scrollWheelZoom
-        zoomControl
-      >
+    <div
+      className={`map-shell${followActive ? ' map-shell--follow' : ''}`}
+      role="region"
+      aria-label="Route map"
+    >
+      <div className="map-rotate-clip">
+        <div className="map-rotate-world">
+          <MapContainer
+            center={[10.78, 106.66]}
+            zoom={12}
+            className="route-map"
+            scrollWheelZoom
+            zoomControl
+          >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -328,7 +338,9 @@ export function RouteMap({
             <Popup>Demo / GPS progress</Popup>
           </Marker>
         ) : null}
-      </MapContainer>
+          </MapContainer>
+        </div>
+      </div>
       <div className={`map-legend${followActive ? ' map-legend--hidden' : ''}`}>
         <span>
           <i className="swatch swatch--fastest" /> Fastest
