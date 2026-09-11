@@ -17,6 +17,8 @@ function snapshot(next: Maneuver | null, distanceToNextM = 80): AssistSnapshot {
     speedTargetKmh: 18,
     speedSteps: [18, 12],
     payload: null,
+    lastTurn: null,
+    distancePastLastTurnM: Number.POSITIVE_INFINITY,
   }
 }
 

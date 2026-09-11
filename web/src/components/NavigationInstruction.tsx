@@ -43,6 +43,8 @@ export function NavigationInstruction({
   const blinker = armedTurnDirection(
     snapshot.next?.turn,
     snapshot.distanceToNextM,
+    snapshot.lastTurn?.turn,
+    snapshot.distancePastLastTurnM,
   )
 
   return (

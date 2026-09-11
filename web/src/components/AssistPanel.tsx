@@ -81,6 +81,8 @@ export function AssistPanel({
                   turn={armedTurnDirection(
                     snapshot.next?.turn,
                     snapshot.distanceToNextM,
+                    snapshot.lastTurn?.turn,
+                    snapshot.distancePastLastTurnM,
                   )}
                   size="md"
                 />

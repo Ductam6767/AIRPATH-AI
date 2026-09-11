@@ -12,6 +12,7 @@ import {
   classifyTurn,
   extractManeuvers,
   distanceToManeuver,
+  lastPassedTurn,
 } from '../maneuver/extractManeuvers'
 import { suggestedSpeedKmh } from '../maneuver/speedProfile'
 
@@ -95,6 +96,48 @@ describe('extractManeuvers', () => {
     const m = extractManeuvers(geom)
     expect(m.length).toBeGreaterThanOrEqual(1)
     expect(m[m.length - 1]?.turn).toBe('arrive')
+  })
+
+  it('keeps successive opposite turns on a short hẻm zigzag', () => {
+    const start: [number, number] = [10.77, 106.66]
+    const mPerLat = 111_320
+    const mPerLon = 111_320 * Math.cos((start[0] * Math.PI) / 180)
+    const geom: [number, number][] = [start]
+    const push = (northM: number, eastM: number, n: number) => {
+      const origin = geom[geom.length - 1]!
+      for (let i = 1; i <= n; i += 1) {
+        geom.push([
+          origin[0] + (northM * i) / n / mPerLat,
+          origin[1] + (eastM * i) / n / mPerLon,
+        ])
+      }
+    }
+    push(22, 0, 6)
+    push(0, -16, 5)
+    push(22, 0, 6)
+    const turns = extractManeuvers(geom).filter((m) => m.turn !== 'arrive')
+    expect(turns.map((m) => m.turn)).toEqual(['left', 'right'])
+    expect(turns[1]!.distanceFromStartM - turns[0]!.distanceFromStartM).toBeGreaterThan(
+      12,
+    )
+  })
+
+  it('tracks the last passed left/right for the 5 m signal hold', () => {
+    const geom: [number, number][] = []
+    for (let i = 0; i <= 8; i += 1) {
+      geom.push([10.77 + i * 0.00012, 106.66])
+    }
+    const lastNorth = geom[geom.length - 1]!
+    for (let i = 1; i <= 8; i += 1) {
+      geom.push([lastNorth[0], lastNorth[1] - i * 0.00012])
+    }
+    const maneuvers = extractManeuvers(geom)
+    const left = maneuvers.find((m) => m.turn === 'left')
+    expect(left).toBeTruthy()
+    expect(lastPassedTurn(maneuvers, left!.distanceFromStartM - 2)?.turn).not.toBe(
+      'left',
+    )
+    expect(lastPassedTurn(maneuvers, left!.distanceFromStartM + 3)?.turn).toBe('left')
   })
 })
 

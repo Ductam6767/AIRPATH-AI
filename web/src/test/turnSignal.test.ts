@@ -21,6 +21,14 @@ describe('turn signal arming', () => {
     expect(assistPayloadTurn('arrive', 10)).toBe('straight')
   })
 
+  it('keeps the signal on for 5 m after the corner, then turns it off', () => {
+    expect(armedTurnDirection('right', 40, 'left', 2)).toBe('left')
+    expect(armedTurnDirection('right', 200, 'left', 5)).toBe('left')
+    expect(armedTurnDirection('right', 200, 'left', 5.1)).toBeNull()
+    expect(assistPayloadTurn('right', 200, 'left', 3)).toBe('left')
+    expect(assistPayloadTurn('right', 200, 'left', 6)).toBe('straight')
+  })
+
   it('marks the UI ready, off, armed, then active', () => {
     expect(
       signalState({ active: false, next: null, distanceToNextM: 0 }),

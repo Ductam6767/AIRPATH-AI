@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   distanceToManeuver,
   extractManeuvers,
+  lastPassedTurn,
   nextManeuver,
 } from '../maneuver/extractManeuvers'
 import { cumulativeDistances, distanceM } from '../maneuver/geo'
@@ -19,7 +20,9 @@ export interface AssistSnapshot {
   distanceAlongM: number
   routeLengthM: number
   next: Maneuver | null
+  lastTurn: Maneuver | null
   distanceToNextM: number
+  distancePastLastTurnM: number
   speedTargetKmh: number
   speedSteps: number[]
   payload: AssistPayload | null
@@ -38,7 +41,9 @@ function buildSnapshot(
     distanceAlongM: 0,
     routeLengthM: 0,
     next: null,
+    lastTurn: null,
     distanceToNextM: 0,
+    distancePastLastTurnM: Number.POSITIVE_INFINITY,
     speedTargetKmh: 0,
     speedSteps: [],
     payload: null,
@@ -53,12 +58,16 @@ function buildSnapshot(
   const routeLengthM = cum[cum.length - 1] ?? 0
   const clamped = Math.min(Math.max(0, distanceAlongM), routeLengthM)
   const next = nextManeuver(maneuvers, clamped)
+  const lastTurn = lastPassedTurn(maneuvers, clamped)
   const distTo = next ? distanceToManeuver(next, clamped) : 0
+  const distancePastLastTurnM = lastTurn
+    ? clamped - lastTurn.distanceFromStartM
+    : Number.POSITIVE_INFINITY
   const speedTargetKmh = next ? suggestedSpeedKmh(distTo) : 20
   const speedSteps = next ? speedStepsAhead(distTo) : []
   const turn = next?.turn ?? 'straight'
   const payload: AssistPayload = {
-    turn: assistPayloadTurn(turn, distTo),
+    turn: assistPayloadTurn(turn, distTo, lastTurn?.turn, distancePastLastTurnM),
     distance_m: Math.round(distTo),
     speed_target_kmh: speedTargetKmh,
     maneuver_index: next?.index ?? 0,
@@ -72,7 +81,9 @@ function buildSnapshot(
     distanceAlongM: clamped,
     routeLengthM,
     next,
+    lastTurn,
     distanceToNextM: distTo,
+    distancePastLastTurnM,
     speedTargetKmh,
     speedSteps,
     payload,
