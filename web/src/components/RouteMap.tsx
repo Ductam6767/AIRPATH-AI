@@ -265,10 +265,11 @@ function GuidanceOverlays({
         if (!showDiagram && !showBridge) return null
         const emphasized = isCueEmphasized(cue.kind, remaining)
         const variant = showDiagram ? 'diagram' : 'bridge-icon'
+        const pos = pointAlongRoute(geometry, cue.atM) ?? [cue.lat, cue.lng]
         return (
           <Marker
             key={`${cue.id}-${variant}-${headingKey}-${emphasized ? 'on' : 'off'}`}
-            position={[cue.lat, cue.lng]}
+            position={pos}
             icon={cueMapIcon(cue, heading, emphasized, variant)}
             interactive={false}
             zIndexOffset={showDiagram ? 700 : 500}
