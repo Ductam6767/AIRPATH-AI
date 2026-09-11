@@ -1,13 +1,31 @@
 import { describe, expect, it } from 'vitest'
 import {
   destinationLabel,
+  extraDistanceMeters,
+  findScenarioId,
+  formatSignedDistanceKm,
+  formatSignedMinutes,
   hasLowerPredictedExposureAlternative,
+  isGenericPlaceLabel,
   isLowerPredictedExposure,
   originLabel,
+  pickRecommendedRoute,
   reductionBadgeText,
+  exposureCompareHeadline,
+  matchDemoPair,
+  reverseRouteGeometry,
   routeCardTitle,
   routeKindLabel,
+  scenarioDestKey,
   scenarioNumber,
+  scenarioOriginKey,
+  uniqueDestinations,
+  uniquePlaces,
+  originsForDestination,
+  placesCompatibleWith,
+  soleCompatiblePlace,
+  tripsKeepingFrom,
+  tripsKeepingTo,
 } from '../utils/labels'
 import type { RouteRecord, Scenario } from '../types'
 
@@ -47,6 +65,242 @@ describe('labels', () => {
     expect(destinationLabel(scenario)).toBe('Market Hall')
   })
 
+  it('lists origins and destinations independently as places', () => {
+    const first: Scenario = {
+      ...base,
+      scenario_id: 'od_01',
+      origin: { label: 'od_01 origin', latitude: 10.79, longitude: 106.66 },
+      destination: { label: 'od_01 destination', latitude: 10.8, longitude: 106.68 },
+    }
+    const second: Scenario = {
+      ...base,
+      scenario_id: 'od_05',
+      origin: { label: 'Park Gate', latitude: 10.75, longitude: 106.63 },
+      destination: { label: 'Market Hall', latitude: 10.78, longitude: 106.68 },
+    }
+    const places = uniquePlaces([first, second])
+    const labels = places.map((place) => place.label)
+    expect(labels).toEqual(
+      expect.arrayContaining(['Park Gate', 'Market Hall']),
+    )
+    expect(labels).not.toEqual(
+      expect.arrayContaining(['Origin 01', 'Destination 01']),
+    )
+    expect(places).toHaveLength(2)
+  })
+
+  it('drops duplicate street labels from the place list', () => {
+    const first: Scenario = {
+      ...base,
+      scenario_id: 'od_01',
+      origin: { label: 'Main Street · Ward A', latitude: 10.79, longitude: 106.66 },
+      destination: { label: 'Side Street · Ward B', latitude: 10.8, longitude: 106.68 },
+    }
+    const second: Scenario = {
+      ...base,
+      scenario_id: 'od_02',
+      origin: { label: 'Main Street · Ward A', latitude: 10.791, longitude: 106.661 },
+      destination: { label: 'Other Street · Ward C', latitude: 10.81, longitude: 106.69 },
+    }
+    const places = uniquePlaces([first, second])
+    expect(places.filter((place) => place.label === 'Main Street · Ward A')).toHaveLength(1)
+    expect(places).toHaveLength(3)
+  })
+
+  it('recognizes generic placeholder labels', () => {
+    expect(isGenericPlaceLabel('od_03 origin')).toBe(true)
+    expect(isGenericPlaceLabel('Origin 03')).toBe(true)
+    expect(isGenericPlaceLabel('Hẻm Cao Thắng · Hòa Hưng')).toBe(false)
+  })
+
+  it('lists destinations independently of the selected origin', () => {
+    const first: Scenario = {
+      ...base,
+      scenario_id: 'od_01',
+      origin: { label: 'Origin A', latitude: 10.79, longitude: 106.66 },
+      destination: { label: 'Dest A', latitude: 10.8, longitude: 106.68 },
+    }
+    const second: Scenario = {
+      ...base,
+      scenario_id: 'od_05',
+      origin: { label: 'Park Gate', latitude: 10.75, longitude: 106.63 },
+      destination: { label: 'Market Hall', latitude: 10.78, longitude: 106.68 },
+    }
+    expect(uniqueDestinations([first, second]).map((place) => place.label)).toEqual(
+      expect.arrayContaining(['Dest A', 'Market Hall']),
+    )
+    expect(originsForDestination([first, second], scenarioDestKey(second))[0]?.label).toBe(
+      'Park Gate',
+    )
+    expect(tripsKeepingFrom([first, second], scenarioOriginKey(first))).toEqual([
+      { toKey: scenarioDestKey(first), toLabel: 'Dest A' },
+    ])
+    expect(tripsKeepingTo([first, second], scenarioDestKey(second))).toEqual([
+      { fromKey: scenarioOriginKey(second), fromLabel: 'Park Gate' },
+    ])
+    expect(
+      placesCompatibleWith([first, second], scenarioOriginKey(first), 'to').map(
+        (place) => place.label,
+      ),
+    ).toEqual(['Dest A'])
+    expect(
+      placesCompatibleWith([first, second], scenarioDestKey(second), 'from').map(
+        (place) => place.label,
+      ),
+    ).toEqual(['Park Gate'])
+    expect(
+      placesCompatibleWith([first, second], '', 'to').map((place) => place.label),
+    ).toEqual(
+      expect.arrayContaining(['Origin A', 'Dest A', 'Park Gate', 'Market Hall']),
+    )
+    expect(
+      soleCompatiblePlace([first, second], scenarioOriginKey(first), 'to')?.label,
+    ).toBe('Dest A')
+    expect(soleCompatiblePlace([first, second], '', 'to')).toBeNull()
+    const hub: Scenario = {
+      ...base,
+      scenario_id: 'od_09',
+      origin: first.origin,
+      destination: second.destination,
+    }
+    expect(
+      soleCompatiblePlace([first, hub], scenarioOriginKey(first), 'to'),
+    ).toBeNull()
+  })
+
+  it('looks up a precomputed pair without inferring destination from origin', () => {
+    const first: Scenario = {
+      ...base,
+      scenario_id: 'od_01',
+      origin: { label: 'Origin A', latitude: 10.79, longitude: 106.66 },
+      destination: { label: 'Dest A', latitude: 10.8, longitude: 106.68 },
+    }
+    const second: Scenario = {
+      ...base,
+      scenario_id: 'od_05',
+      origin: { label: 'Park Gate', latitude: 10.75, longitude: 106.63 },
+      destination: { label: 'Market Hall', latitude: 10.78, longitude: 106.68 },
+    }
+    const scenarios = [first, second]
+    expect(
+      findScenarioId(
+        scenarios,
+        scenarioOriginKey(first),
+        scenarioDestKey(first),
+      ),
+    ).toBe('od_01')
+    expect(
+      findScenarioId(
+        scenarios,
+        scenarioOriginKey(first),
+        scenarioDestKey(second),
+      ),
+    ).toBeNull()
+    expect(
+      findScenarioId(
+        scenarios,
+        scenarioDestKey(first),
+        scenarioOriginKey(first),
+      ),
+    ).toBe('od_01')
+  })
+
+  it('matches a precomputed pair in either direction without swapping in a different trip', () => {
+    const first: Scenario = {
+      ...base,
+      scenario_id: 'od_01',
+      origin: { label: 'Origin A', latitude: 10.79, longitude: 106.66 },
+      destination: { label: 'Dest A', latitude: 10.8, longitude: 106.68 },
+    }
+    const second: Scenario = {
+      ...base,
+      scenario_id: 'od_05',
+      origin: { label: 'Park Gate', latitude: 10.75, longitude: 106.63 },
+      destination: { label: 'Market Hall', latitude: 10.78, longitude: 106.68 },
+    }
+    const scenarios = [first, second]
+    expect(
+      matchDemoPair(
+        scenarios,
+        scenarioOriginKey(first),
+        scenarioDestKey(first),
+      ),
+    ).toEqual({ scenario: first, reversed: false })
+    expect(
+      matchDemoPair(
+        scenarios,
+        scenarioDestKey(first),
+        scenarioOriginKey(first),
+      ),
+    ).toEqual({ scenario: first, reversed: true })
+    expect(
+      matchDemoPair(
+        scenarios,
+        scenarioOriginKey(first),
+        scenarioDestKey(second),
+      ),
+    ).toBeNull()
+  })
+
+  it('reverses a stored polyline so swapped From/To still starts at From', () => {
+    const route: RouteRecord = {
+      route_id: 'w-1',
+      route_type: 'fastest',
+      rank: 0,
+      is_fastest: true,
+      is_feasible: true,
+      travel_time_minutes: 20,
+      additional_time_vs_fastest_minutes: 0,
+      predicted_exposure_index: 100,
+      predicted_exposure_reduction_percent: 0,
+      distance_m: 1000,
+      geometry: [
+        [10.79, 106.66],
+        [10.8, 106.68],
+      ],
+    }
+    expect(reverseRouteGeometry(route).geometry).toEqual([
+      [10.8, 106.68],
+      [10.79, 106.66],
+    ])
+    expect(route.geometry[0]).toEqual([10.79, 106.66])
+  })
+
+  it('formats extra time and distance against the fastest route', () => {
+    const fastest: RouteRecord = {
+      route_id: 'w-1',
+      route_type: 'fastest',
+      rank: 0,
+      is_fastest: true,
+      is_feasible: true,
+      travel_time_minutes: 69.6,
+      additional_time_vs_fastest_minutes: 0,
+      predicted_exposure_index: 1000,
+      predicted_exposure_reduction_percent: 0,
+      distance_m: 5800,
+      geometry: [],
+    }
+    const selected: RouteRecord = {
+      ...fastest,
+      route_id: 'w-2',
+      is_fastest: false,
+      travel_time_minutes: 73.9,
+      additional_time_vs_fastest_minutes: 4.3,
+      distance_m: 6200,
+      predicted_exposure_reduction_percent: 53,
+    }
+    expect(formatSignedMinutes(selected.additional_time_vs_fastest_minutes)).toBe(
+      '+4.3 min',
+    )
+    expect(formatSignedMinutes(0)).toBe('+0 min')
+    expect(formatSignedDistanceKm(extraDistanceMeters(selected, fastest))).toBe(
+      '+0.4 km',
+    )
+    expect(formatSignedDistanceKm(extraDistanceMeters(fastest, fastest))).toBe(
+      '+0 km',
+    )
+  })
+
   it('names route cards without medical language', () => {
     const fastest: RouteRecord = {
       route_id: 'w-1',
@@ -63,7 +317,10 @@ describe('labels', () => {
     }
     const alt: RouteRecord = { ...fastest, route_id: 'w-2', route_type: 'AIRPATH alternative', rank: 1, is_fastest: false }
     expect(routeCardTitle(fastest)).toBe('Fastest')
-    expect(routeCardTitle(alt)).toBe('AIRPATH alternative 1')
+    expect(routeCardTitle(alt)).toBe('Balanced')
+    expect(
+      routeCardTitle({ ...alt, predicted_exposure_reduction_percent: 28 }),
+    ).toBe('Health-first')
   })
 
   it('uses Lower predicted exposure only when exposure is actually lower', () => {
@@ -90,6 +347,12 @@ describe('labels', () => {
     expect(routeKindLabel(higher)).toBe('Feasible alternative')
     expect(reductionBadgeText(28)).toBe('28% lower predicted exposure')
     expect(reductionBadgeText(-9.7)).toBe('+10% higher predicted exposure')
+    expect(exposureCompareHeadline(28, false)).toEqual({
+      value: '↓ 28%',
+      caption: 'lower predicted exposure',
+      tone: 'eco',
+    })
+    expect(exposureCompareHeadline(0, true).value).toBe('0%')
   })
 
   it('detects whether any feasible alternative has lower predicted exposure', () => {
@@ -113,5 +376,31 @@ describe('labels', () => {
       ]),
     ).toBe(false)
     expect(hasLowerPredictedExposureAlternative([])).toBe(false)
+  })
+
+  it('recommends the lower-exposure alternative when one exists', () => {
+    const fastest: RouteRecord = {
+      route_id: 'w-1',
+      route_type: 'fastest',
+      rank: 0,
+      is_fastest: true,
+      is_feasible: true,
+      travel_time_minutes: 20,
+      additional_time_vs_fastest_minutes: 0,
+      predicted_exposure_index: 1000,
+      predicted_exposure_reduction_percent: 0,
+      distance_m: 1000,
+      geometry: [],
+    }
+    const health: RouteRecord = {
+      ...fastest,
+      route_id: 'w-2',
+      is_fastest: false,
+      route_type: 'AIRPATH alternative',
+      predicted_exposure_index: 720,
+      predicted_exposure_reduction_percent: 28,
+    }
+    expect(pickRecommendedRoute(fastest, [health]).route_id).toBe('w-2')
+    expect(pickRecommendedRoute(fastest, []).route_id).toBe('w-1')
   })
 })

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   distanceToManeuver,
   extractManeuvers,
+  lastPassedTurn,
   nextManeuver,
 } from '../maneuver/extractManeuvers'
 import { cumulativeDistances, distanceM } from '../maneuver/geo'
@@ -9,6 +10,7 @@ import { speedStepsAhead, suggestedSpeedKmh } from '../maneuver/speedProfile'
 import type { AssistPayload, Maneuver } from '../maneuver/types'
 import type { RouteRecord } from '../types'
 import { sendAssistPayload } from '../ble/bleTransport'
+import { assistPayloadTurn, isCornerConfirm } from '../maneuver/turnSignal'
 
 export type AssistMode = 'off' | 'demo' | 'live'
 
@@ -18,10 +20,13 @@ export interface AssistSnapshot {
   distanceAlongM: number
   routeLengthM: number
   next: Maneuver | null
+  lastTurn: Maneuver | null
   distanceToNextM: number
+  distancePastLastTurnM: number
   speedTargetKmh: number
   speedSteps: number[]
   payload: AssistPayload | null
+  cornerConfirm: boolean
 }
 
 const DEMO_SPEED_MPS = 4.2 // ~15 km/h walk/demo
@@ -37,10 +42,13 @@ function buildSnapshot(
     distanceAlongM: 0,
     routeLengthM: 0,
     next: null,
+    lastTurn: null,
     distanceToNextM: 0,
+    distancePastLastTurnM: Number.POSITIVE_INFINITY,
     speedTargetKmh: 0,
     speedSteps: [],
     payload: null,
+    cornerConfirm: false,
   }
   if (!route || mode === 'off') return inactive
 
@@ -52,17 +60,28 @@ function buildSnapshot(
   const routeLengthM = cum[cum.length - 1] ?? 0
   const clamped = Math.min(Math.max(0, distanceAlongM), routeLengthM)
   const next = nextManeuver(maneuvers, clamped)
+  const lastTurn = lastPassedTurn(maneuvers, clamped)
   const distTo = next ? distanceToManeuver(next, clamped) : 0
+  const distancePastLastTurnM = lastTurn
+    ? clamped - lastTurn.distanceFromStartM
+    : Number.POSITIVE_INFINITY
   const speedTargetKmh = next ? suggestedSpeedKmh(distTo) : 20
   const speedSteps = next ? speedStepsAhead(distTo) : []
   const turn = next?.turn ?? 'straight'
+  const cornerConfirm = isCornerConfirm(
+    turn,
+    distTo,
+    lastTurn?.turn,
+    distancePastLastTurnM,
+  )
   const payload: AssistPayload = {
-    turn: turn === 'arrive' ? 'straight' : turn,
+    turn: assistPayloadTurn(turn, distTo, lastTurn?.turn, distancePastLastTurnM),
     distance_m: Math.round(distTo),
     speed_target_kmh: speedTargetKmh,
     maneuver_index: next?.index ?? 0,
     instruction: next?.instruction ?? 'Continue',
     ts: Date.now(),
+    corner_confirm: cornerConfirm,
   }
 
   return {
@@ -71,10 +90,13 @@ function buildSnapshot(
     distanceAlongM: clamped,
     routeLengthM,
     next,
+    lastTurn,
     distanceToNextM: distTo,
+    distancePastLastTurnM,
     speedTargetKmh,
     speedSteps,
     payload,
+    cornerConfirm,
   }
 }
 

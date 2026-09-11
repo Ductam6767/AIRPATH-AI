@@ -6,7 +6,7 @@ import type {
   TimeWindow,
   TravelMode,
 } from './types'
-import { API_BASE, IS_MOBILE_BUILD } from './constants'
+import { API_BASE } from './constants'
 import { localFetchRoutes, localFetchScenarios } from './offline/localDemo'
 
 export type DemoDataSource = 'api' | 'bundled'
@@ -74,7 +74,11 @@ async function fetchLiveScenarios(signal?: AbortSignal): Promise<ScenariosRespon
 
 async function fetchLiveRoutes(
   params: {
-    scenarioId: string
+    scenarioId?: string
+    fromLatitude?: number
+    fromLongitude?: number
+    toLatitude?: number
+    toLongitude?: number
     mode: TravelMode
     deltaMinutes: number
     timeWindow?: TimeWindow | string
@@ -82,11 +86,23 @@ async function fetchLiveRoutes(
   signal?: AbortSignal,
 ): Promise<RoutesResponse> {
   const query = new URLSearchParams({
-    scenario_id: params.scenarioId,
     mode: params.mode,
     delta_minutes: String(params.deltaMinutes),
     time_window: params.timeWindow ?? 'morning_peak',
   })
+  if (
+    params.fromLatitude != null &&
+    params.fromLongitude != null &&
+    params.toLatitude != null &&
+    params.toLongitude != null
+  ) {
+    query.set('from_latitude', String(params.fromLatitude))
+    query.set('from_longitude', String(params.fromLongitude))
+    query.set('to_latitude', String(params.toLatitude))
+    query.set('to_longitude', String(params.toLongitude))
+  } else if (params.scenarioId) {
+    query.set('scenario_id', params.scenarioId)
+  }
   const response = await fetch(`${API_BASE}/demo/routes?${query.toString()}`, {
     signal: withTimeout(signal, 8000),
   })
@@ -118,7 +134,12 @@ export async function fetchScenarios(
     return live
   } catch (err) {
     if (signal?.aborted) throw err
-    if (!IS_MOBILE_BUILD) {
+    try {
+      const bundled = await localFetchScenarios()
+      preferBundled = true
+      lastDataSource = 'bundled'
+      return bundled
+    } catch {
       throw err instanceof DemoApiError
         ? err
         : new DemoApiError(
@@ -127,31 +148,23 @@ export async function fetchScenarios(
             'api_unavailable',
           )
     }
-    try {
-      const bundled = await localFetchScenarios()
-      preferBundled = true
-      lastDataSource = 'bundled'
-      return bundled
-    } catch {
-      throw new DemoApiError(
-        'Cannot reach the AIRPATH demo API. Start the FastAPI backend on port 8000.',
-        0,
-        'api_unavailable',
-      )
-    }
   }
 }
 
 export async function fetchRoutes(
   params: {
-    scenarioId: string
+    scenarioId?: string
+    fromLatitude?: number
+    fromLongitude?: number
+    toLatitude?: number
+    toLongitude?: number
     mode: TravelMode
     deltaMinutes: number
     timeWindow?: TimeWindow | string
   },
   signal?: AbortSignal,
 ): Promise<RoutesResponse> {
-  if (preferBundled && IS_MOBILE_BUILD) {
+  if (preferBundled) {
     try {
       const bundled = await localFetchRoutes(params)
       lastDataSource = 'bundled'
@@ -170,7 +183,12 @@ export async function fetchRoutes(
     return live
   } catch (err) {
     if (signal?.aborted) throw err
-    if (!IS_MOBILE_BUILD) {
+    try {
+      const bundled = await localFetchRoutes(params)
+      preferBundled = true
+      lastDataSource = 'bundled'
+      return bundled
+    } catch {
       throw err instanceof DemoApiError
         ? err
         : new DemoApiError(
@@ -178,18 +196,6 @@ export async function fetchRoutes(
             0,
             'api_unavailable',
           )
-    }
-    try {
-      const bundled = await localFetchRoutes(params)
-      preferBundled = true
-      lastDataSource = 'bundled'
-      return bundled
-    } catch {
-      throw new DemoApiError(
-        'Cannot reach the AIRPATH demo API. Start the FastAPI backend on port 8000.',
-        0,
-        'api_unavailable',
-      )
     }
   }
 }

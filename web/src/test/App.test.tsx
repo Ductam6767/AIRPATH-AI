@@ -49,6 +49,24 @@ function jsonResponse(data: unknown, status = 200): Response {
   })
 }
 
+async function choosePlace(
+  user: ReturnType<typeof userEvent.setup>,
+  field: 'From' | 'To',
+  optionName: string,
+) {
+  await user.selectOptions(screen.getByLabelText(field), optionName)
+}
+
+async function chooseDefaultTrip() {
+  const user = userEvent.setup()
+  await screen.findByLabelText('From')
+  await choosePlace(user, 'From', 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+  await choosePlace(user, 'To', 'Nguyễn Văn Đậu · Đức Nhuận')
+  await user.click(screen.getByRole('button', { name: 'Compare routes' }))
+  await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+  return user
+}
+
 function stubApi(options?: {
   routes?: typeof mockRoutesWithAlts
   scenariosFail?: boolean
@@ -80,41 +98,230 @@ describe('AIRPATH frontend', () => {
     vi.restoreAllMocks()
   })
 
+  it('does not auto-select a trip or load routes', async () => {
+    stubApi()
+    render(<App />)
+    expect(await screen.findByText('AIRPATH-AI')).toBeInTheDocument()
+    const from = screen.getByLabelText('From')
+    const to = screen.getByLabelText('To')
+    expect(from).toHaveDisplayValue('Choose origin')
+    expect(to).toHaveDisplayValue('Choose destination')
+    expect(within(from).getByRole('option', { name: 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa' })).toBeInTheDocument()
+    expect(within(from).getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeDisabled()
+  })
+
+  it('lets destination be chosen first and infers the only stored origin', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    const to = await screen.findByLabelText('To')
+    expect(to).not.toBeDisabled()
+    expect(within(to).getByRole('option', { name: 'Nguyễn Văn Đậu · Đức Nhuận' })).toBeInTheDocument()
+    expect(within(to).getByRole('option', { name: 'Market Hall' })).toBeInTheDocument()
+    expect(within(to).getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
+    await user.selectOptions(to, 'Nguyễn Văn Đậu · Đức Nhuận')
+    expect(screen.getByLabelText('From')).toHaveDisplayValue('Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    expect(to).toHaveDisplayValue('Nguyễn Văn Đậu · Đức Nhuận')
+    expect(
+      within(to).queryByRole('option', { name: 'Market Hall' }),
+    ).not.toBeInTheDocument()
+    expect(
+      within(screen.getByLabelText('From')).getByRole('option', { name: 'Park Gate' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
+    expect(
+      await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).toBeInTheDocument()
+  })
+
+  it('fills the only precomputed To after From is chosen and waits for Compare', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    const from = await screen.findByLabelText('From')
+    const to = screen.getByLabelText('To')
+    await user.selectOptions(from, 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    expect(from).toHaveDisplayValue('Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    expect(to).toHaveDisplayValue('Nguyễn Văn Đậu · Đức Nhuận')
+    expect(within(to).getByRole('option', { name: 'Nguyễn Văn Đậu · Đức Nhuận' })).toBeInTheDocument()
+    expect(
+      within(to).queryByRole('option', { name: 'Market Hall' }),
+    ).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Compare routes' })).toBeEnabled()
+    expect(
+      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.getByText(/one stored destination in the demo pack/i),
+    ).toBeInTheDocument()
+  })
+
+  it('changes From to another stored trip and infers that trip To without drawing yet', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    await screen.findByLabelText('From')
+    await user.selectOptions(screen.getByLabelText('From'), 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    expect(screen.getByLabelText('To')).toHaveDisplayValue('Nguyễn Văn Đậu · Đức Nhuận')
+    await user.selectOptions(screen.getByLabelText('From'), 'Park Gate')
+    expect(screen.getByLabelText('From')).toHaveDisplayValue('Park Gate')
+    expect(screen.getByLabelText('To')).toHaveDisplayValue('Market Hall')
+    expect(
+      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('swaps From and To without replacing them with another trip', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    await screen.findByLabelText('From')
+    await choosePlace(user, 'From', 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    await choosePlace(user, 'To', 'Nguyễn Văn Đậu · Đức Nhuận')
+    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
+    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    await user.click(screen.getByRole('button', { name: 'Swap origin and destination' }))
+    expect(screen.getByLabelText('From')).toHaveDisplayValue('Nguyễn Văn Đậu · Đức Nhuận')
+    expect(screen.getByLabelText('To')).toHaveDisplayValue('Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
+    expect(
+      await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).toBeInTheDocument()
+  })
+
+  it('draws the route after Compare is clicked with both ends chosen', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    const from = await screen.findByLabelText('From')
+    const to = screen.getByLabelText('To')
+    await user.selectOptions(from, 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    expect(
+      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).not.toBeInTheDocument()
+    await user.selectOptions(to, 'Nguyễn Văn Đậu · Đức Nhuận')
+    expect(from).toHaveDisplayValue('Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    expect(to).toHaveDisplayValue('Nguyễn Văn Đậu · Đức Nhuận')
+    expect(
+      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
+    expect(
+      await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).toBeInTheDocument()
+  })
+
+  it('omits unmatched To options instead of showing an unmatched-pair error', async () => {
+    const user = userEvent.setup()
+    stubApi()
+    render(<App />)
+    await screen.findByLabelText('From')
+    await user.selectOptions(screen.getByLabelText('From'), 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa')
+    expect(screen.getByLabelText('To')).toHaveDisplayValue('Nguyễn Văn Đậu · Đức Nhuận')
+    expect(
+      within(screen.getByLabelText('To')).queryByRole('option', {
+        name: 'Market Hall',
+      }),
+    ).not.toBeInTheDocument()
+    await user.selectOptions(screen.getByLabelText('From'), 'Park Gate')
+    expect(screen.getByLabelText('From')).toHaveDisplayValue('Park Gate')
+    expect(screen.getByLabelText('To')).toHaveDisplayValue('Market Hall')
+    expect(screen.queryByText(/No demo route between these two places/i)).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Compare routes' }))
+    expect(
+      await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).toBeInTheDocument()
+  })
+
   it('renders API route comparison from backend response', async () => {
     stubApi()
     render(<App />)
 
     expect(await screen.findByText('AIRPATH-AI')).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', {
-        name: 'Compare routes by travel time and predicted PM2.5 exposure.',
-      }),
-    ).toBeInTheDocument()
+    expect(screen.getByText('Health-aware navigation')).toBeInTheDocument()
     expect(
       screen.getByRole('button', { name: 'Compare routes' }),
     ).toBeInTheDocument()
     expect(
-      await screen.findByRole('button', { name: /Fastest, 40 minutes/i }),
+      within(screen.getByLabelText('From')).getByRole('option', { name: 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa' }),
     ).toBeInTheDocument()
-    expect(screen.getByText(/AIRPATH alternative 1/i)).toBeInTheDocument()
-    expect(screen.getByText(/28% lower predicted exposure/i)).toBeInTheDocument()
+    expect(
+      within(screen.getByLabelText('To')).getByRole('option', { name: 'Park Gate' }),
+    ).toBeInTheDocument()
+    await chooseDefaultTrip()
+    expect(
+      screen.getByRole('button', { name: /Fastest, 40 minutes/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Health-first')).toBeInTheDocument()
+    expect(screen.getAllByText(/28% lower predicted exposure/i).length).toBeGreaterThan(0)
+    expect(screen.getAllByText('+2 min').length).toBeGreaterThan(1)
+    expect(screen.getAllByText('↓ 28%').length).toBeGreaterThan(1)
+    expect(screen.getByText('vs fastest')).toBeInTheDocument()
+    expect(screen.getByText('lower predicted exposure')).toBeInTheDocument()
     expect(screen.getByText('Lower predicted exposure')).toBeInTheDocument()
+    const why = screen.getByRole('region', { name: /Why this route/i })
+    expect(within(why).getByText('↓ 28%')).toBeInTheDocument()
+    expect(within(why).getByText('42 min')).toBeInTheDocument()
+    expect(within(why).getByText('+2 min')).toBeInTheDocument()
+    expect(within(why).getByText('3.5 km')).toBeInTheDocument()
+    expect(within(why).getByText('+0.2 km')).toBeInTheDocument()
+    expect(within(why).getByText('START')).toBeInTheDocument()
+    expect(
+      screen.queryByText(/AIRPATH estimates that this route provides lower PM2.5 exposure/i),
+    ).not.toBeInTheDocument()
     expect(
       screen.getByText(
-        /AIRPATH compares feasible route alternatives rather than guaranteeing a cleaner route/i,
+        /beat Fastest on the demo increment \(OSM road class/i,
       ),
     ).toBeInTheDocument()
     expect(
       screen.getByText(/time-weighted proxy from hourly data, not a medical risk score/i),
     ).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Origin 01' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Park Gate' })).toBeInTheDocument()
+  })
+
+  it('does not claim Fastest is also cleanest when a lower-exposure alternative exists', async () => {
+    stubApi()
+    render(<App />)
+    const user = await chooseDefaultTrip()
+    const why = screen.getByRole('region', { name: /Why this route/i })
+    expect(within(why).getByText('↓ 28%')).toBeInTheDocument()
+    expect(within(why).getByText('+2 min')).toBeInTheDocument()
+    expect(within(why).getByText('+0.2 km')).toBeInTheDocument()
+    expect(
+      screen.queryByText(
+        /this route provides lower PM2.5 exposure while remaining within the applicable travel-time constraint/i,
+      ),
+    ).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /Fastest, 40 minutes/i }))
+    expect(within(why).getByText('0%')).toBeInTheDocument()
+    expect(within(why).getByText('+0 min')).toBeInTheDocument()
+    expect(within(why).getByText('+0 km')).toBeInTheDocument()
+    expect(
+      screen.queryByText(
+        /This is the hurry option: shortest time. Another feasible route has lower predicted exposure/i,
+      ),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByText(/also the lowest predicted time-weighted PM2.5/i),
+    ).not.toBeInTheDocument()
+    expect(screen.queryByText(/Also lowest estimated exposure/i)).not.toBeInTheDocument()
+    expect(screen.getByText(/Two formulas, same map/i)).toBeInTheDocument()
   })
 
   it('updates delta slider to absolute minute values', async () => {
     stubApi()
     render(<App />)
-    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    await chooseDefaultTrip()
 
     const slider = screen.getByLabelText(/Maximum additional time/i)
     fireEvent.change(slider, { target: { value: '4' } })
@@ -125,30 +332,29 @@ describe('AIRPATH frontend', () => {
   })
 
   it('selects a route from a card and updates selection state', async () => {
-    const user = userEvent.setup()
     stubApi()
     render(<App />)
-    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
-    expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-1')
-
-    const altCard = screen.getByRole('button', {
-      name: /AIRPATH alternative 1/i,
-    })
-    await user.click(altCard)
+    const user = await chooseDefaultTrip()
     expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-2')
+
+    const fastestCard = screen.getByRole('button', {
+      name: /Fastest, 40 minutes/i,
+    })
+    await user.click(fastestCard)
+    expect(screen.getByTestId('selected-route')).toHaveTextContent('walking-1')
   })
 
   it('shows empty-alternatives message without empty cards', async () => {
     stubApi({ routes: mockRoutesEmptyAlts })
     render(<App />)
-    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    await chooseDefaultTrip()
     const slider = screen.getByLabelText(/Maximum additional time/i)
     fireEvent.change(slider, { target: { value: '0' } })
 
     await waitFor(() => {
       expect(
         screen.getByText(
-          'No lower-exposure alternative was found within your time limit.',
+          'No other feasible route was found within your time limit.',
         ),
       ).toBeInTheDocument()
     })
@@ -157,7 +363,7 @@ describe('AIRPATH frontend', () => {
         'Fastest route is also the lowest-exposure feasible option.',
       ),
     ).toBeInTheDocument()
-    expect(screen.queryByText(/AIRPATH alternative/i)).not.toBeInTheDocument()
+    expect(screen.getByText(/Two formulas, same map/i)).toBeInTheDocument()
     const list = screen.getByRole('list')
     expect(within(list).getAllByRole('listitem')).toHaveLength(1)
   })
@@ -165,6 +371,7 @@ describe('AIRPATH frontend', () => {
   it('labels higher-exposure alternatives as feasible, not lower', async () => {
     stubApi({ routes: mockRoutesHigherExposure })
     render(<App />)
+    await chooseDefaultTrip()
     expect(await screen.findByText(/\+10% higher predicted exposure/i)).toBeInTheDocument()
     expect(screen.getByText('Feasible alternative')).toBeInTheDocument()
     expect(screen.queryByText('Lower predicted exposure')).not.toBeInTheDocument()
@@ -175,8 +382,12 @@ describe('AIRPATH frontend', () => {
     ).toBeInTheDocument()
     expect(
       screen.getByText(
-        'No lower-exposure alternative was found within your time limit.',
+        'The other cards are feasible detours within your time limit. They are not lower-exposure than the fastest route on this proxy.',
       ),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Also lowest estimated exposure')).toBeInTheDocument()
+    expect(
+      screen.getByText(/Two formulas, same map/i),
     ).toBeInTheDocument()
     expect(
       screen.queryByText(/guaranteeing a cleaner route/i),
@@ -184,23 +395,60 @@ describe('AIRPATH frontend', () => {
   })
 
   it('explains in methodology that AIRPATH compares rather than guaranteeing a cleaner route', async () => {
-    const user = userEvent.setup()
     stubApi()
     render(<App />)
-    await screen.findByRole('button', { name: /Fastest, 40 minutes/i })
+    const user = await chooseDefaultTrip()
     await user.click(screen.getByRole('button', { name: 'How AIRPATH works' }))
     expect(
       await screen.findByText(
         /AIRPATH compares those feasible alternatives rather than guaranteeing a cleaner route/i,
       ),
     ).toBeInTheDocument()
+    expect(
+      screen.getByText(/16 precomputed origin–destination trips/i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/not filtered on exposure reduction or map aesthetics/i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/not live A-to-B city search/i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/You cannot freely pair any two places/i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/pairing limit is demo packaging/i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/Two PM formulas — do not mix them/i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/E = Σ \(PM × minutes\)/i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/illustrative, not calibrated to HCMC traffic counts/i),
+    ).toBeInTheDocument()
   })
 
-  it('shows an API error when scenarios fail on the web build', async () => {
+  it('starts navigation without leaving the real route data', async () => {
+    stubApi()
+    render(<App />)
+    const user = await chooseDefaultTrip()
+    await user.click(screen.getByRole('button', { name: 'Start navigation' }))
+    expect(screen.getByText('Turn-signal assist')).toBeInTheDocument()
+    expect(screen.getByText('Next maneuver')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'End navigation' })).toHaveClass(
+      'end-nav-btn',
+    )
+  })
+
+  it('falls back to the bundled demo pack when the API is unavailable', async () => {
     stubApi({ scenariosFail: true })
     render(<App />)
+    expect(await screen.findByText(/bundled demo pack/i)).toBeInTheDocument()
     expect(
-      await screen.findByText(/demo API is unavailable/i),
+      within(screen.getByLabelText('From')).getByRole('option', { name: 'Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa' }),
     ).toBeInTheDocument()
+    expect(screen.queryByText(/demo API is unavailable/i)).not.toBeInTheDocument()
   })
 })

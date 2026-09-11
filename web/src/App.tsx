@@ -5,19 +5,25 @@ import {
   fetchScenarios,
   getDemoDataSource,
 } from './api'
+import { AIAnalysis } from './components/AIAnalysis'
 import { AssistPanel } from './components/AssistPanel'
+import { BottomSheet } from './components/BottomSheet'
 import { Gap1Research } from './components/Gap1Research'
 import { MethodologyDrawer } from './components/MethodologyDrawer'
 import {
   mobilityToApiMode,
   type MobilityChoice,
 } from './components/ModeToggle'
+import { NavigationInstruction } from './components/NavigationInstruction'
 import { OnboardingCard, shouldShowOnboarding } from './components/OnboardingCard'
-import { RouteCards } from './components/RouteCards'
+import { RouteCards, RouteCardsNotes } from './components/RouteCards'
 import { RouteMap } from './components/RouteMap'
-import { Sidebar } from './components/Sidebar'
+import { SearchBar } from './components/SearchBar'
 import { StatusBanner } from './components/StatusBanner'
+import { TopBar } from './components/TopBar'
 import { TrialLogPanel } from './components/TrialLogPanel'
+import { TurnSignalStatus } from './components/TurnSignalStatus'
+import { WhyThisRoute } from './components/WhyThisRoute'
 import { isNativeApp } from './capacitor/init'
 import { DELTA_MINUTES, IS_MOBILE_BUILD } from './constants'
 import { LanguageProvider, useI18n } from './i18n/LanguageContext'
@@ -26,6 +32,11 @@ import {
   useAssistNavigation,
 } from './hooks/useAssistNavigation'
 import { pointAlongRoute } from './maneuver/geo'
+import {
+  cuesForRoute,
+  pickHudCue,
+  placeCues,
+} from './maneuver/guidanceCues'
 import type {
   Gap1Exhibit,
   RouteRecord,
@@ -35,12 +46,17 @@ import type {
   TravelMode,
 } from './types'
 import {
-  destinationsForOrigin,
-  findScenarioId,
   friendlyApiError,
-  scenarioDestKey,
-  scenarioOriginKey,
+  lookupPlace,
+  matchDemoPair,
+  parsePlaceKey,
+  pickRecommendedRoute,
+  safeGeometry,
+  scenarioForRequestedEnds,
+  soleCompatiblePlace,
 } from './utils/labels'
+
+type AppFlow = 'plan' | 'compare' | 'navigate' | 'gap1'
 
 function AppInner() {
   const { t } = useI18n()
@@ -63,10 +79,12 @@ function AppInner() {
   const [methodologyOpen, setMethodologyOpen] = useState(false)
   const [nativeShell, setNativeShell] = useState(false)
   const [dataSource, setDataSource] = useState<'api' | 'bundled'>('api')
-  const [view, setView] = useState<'demo' | 'gap1'>('demo')
+  const [flow, setFlow] = useState<AppFlow>('plan')
   const [gap1Exhibit, setGap1Exhibit] = useState<Gap1Exhibit | null>(null)
   const [gap1Loading, setGap1Loading] = useState(false)
   const [gap1Error, setGap1Error] = useState<string | null>(null)
+  const [labOpen, setLabOpen] = useState(false)
+  const [hasCompared, setHasCompared] = useState(false)
   const [onboardOpen, setOnboardOpen] = useState(
     () =>
       IS_MOBILE_BUILD &&
@@ -78,14 +96,30 @@ function AppInner() {
     void isNativeApp().then(setNativeShell)
   }, [])
 
-  const selectedScenario = useMemo(() => {
-    const id = findScenarioId(scenarios, originKey, destinationKey)
-    return scenarios.find((s) => s.scenario_id === id) ?? null
-  }, [scenarios, originKey, destinationKey])
+  const selectedScenario = useMemo(
+    () => scenarioForRequestedEnds(scenarios, originKey, destinationKey),
+    [scenarios, originKey, destinationKey],
+  )
+  const fromPlace = useMemo(
+    () => lookupPlace(scenarios, originKey),
+    [scenarios, originKey],
+  )
+  const toPlace = useMemo(
+    () => lookupPlace(scenarios, destinationKey),
+    [scenarios, destinationKey],
+  )
 
   const displayedRoutes: RouteRecord[] = useMemo(() => {
     if (!routesPayload) return []
     return [routesPayload.fastest_route, ...routesPayload.alternatives]
+  }, [routesPayload])
+
+  const recommended = useMemo(() => {
+    if (!routesPayload) return null
+    return pickRecommendedRoute(
+      routesPayload.fastest_route,
+      routesPayload.alternatives,
+    )
   }, [routesPayload])
 
   const selectedRoute = useMemo(
@@ -103,6 +137,23 @@ function AppInner() {
     return pointAlongRoute(selectedRoute.geometry, assistSnapshot.distanceAlongM)
   }, [assistMode, selectedRoute, assistSnapshot.distanceAlongM])
 
+  const placedCues = useMemo(() => {
+    if (!selectedRoute || !routesPayload) return []
+    return placeCues(
+      cuesForRoute(
+        routesPayload.scenario_id,
+        String(routesPayload.mode),
+        selectedRoute.route_id,
+      ),
+      selectedRoute.geometry,
+    )
+  }, [selectedRoute, routesPayload])
+
+  const hudCue = useMemo(
+    () => pickHudCue(placedCues, assistSnapshot.distanceAlongM),
+    [placedCues, assistSnapshot.distanceAlongM],
+  )
+
   useEffect(() => {
     const controller = new AbortController()
     ;(async () => {
@@ -113,11 +164,6 @@ function AppInner() {
         const list = payload.scenarios ?? []
         setScenarios(list)
         setDataSource(getDemoDataSource())
-        const opening = list.find((scenario) => scenario.opening_example) ?? list[0]
-        if (opening) {
-          setOriginKey(scenarioOriginKey(opening))
-          setDestinationKey(scenarioDestKey(opening))
-        }
       } catch (err) {
         if (controller.signal.aborted) return
         setError(friendlyApiError(err))
@@ -131,27 +177,41 @@ function AppInner() {
   }, [])
 
   const loadRoutes = useCallback(async () => {
-    const scenarioId = findScenarioId(scenarios, originKey, destinationKey)
-    if (!scenarioId) {
-      setError('That origin and destination combination is not in the demo dataset.')
+    const from = parsePlaceKey(originKey)
+    const to = parsePlaceKey(destinationKey)
+    if (!from || !to || !selectedScenario) {
       setRoutesPayload(null)
+      setSelectedRouteId(null)
       return
     }
     setLoadingRoutes(true)
     setError(null)
     try {
       const payload = await fetchRoutes({
-        scenarioId,
+        scenarioId: selectedScenario.scenario_id,
+        fromLatitude: from.latitude,
+        fromLongitude: from.longitude,
+        toLatitude: to.latitude,
+        toLongitude: to.longitude,
         mode: apiMode,
         deltaMinutes,
         timeWindow,
       })
       setRoutesPayload(payload)
       setDataSource(getDemoDataSource())
-      setSelectedRouteId(payload.fastest_route.route_id)
+      const next = pickRecommendedRoute(payload.fastest_route, payload.alternatives)
+      setSelectedRouteId(next.route_id)
       setAssistMode('off')
       resetAssist()
+      setFlow((current) => (current === 'navigate' ? current : 'compare'))
     } catch (err) {
+      const code =
+        err && typeof err === 'object' && 'code' in err ? String(err.code) : ''
+      if (code === 'unknown_endpoint_pair' || code === 'unknown_scenario_id') {
+        setRoutesPayload(null)
+        setSelectedRouteId(null)
+        return
+      }
       setError(friendlyApiError(err))
       setRoutesPayload(null)
       setSelectedRouteId(null)
@@ -159,9 +219,9 @@ function AppInner() {
       setLoadingRoutes(false)
     }
   }, [
-    scenarios,
     originKey,
     destinationKey,
+    selectedScenario,
     apiMode,
     deltaMinutes,
     timeWindow,
@@ -169,25 +229,95 @@ function AppInner() {
   ])
 
   useEffect(() => {
-    if (!selectedScenario || initialLoading) return
+    if (initialLoading || !hasCompared) return
+    if (!selectedScenario) {
+      setRoutesPayload(null)
+      setSelectedRouteId(null)
+      return
+    }
     void loadRoutes()
   }, [
+    hasCompared,
     selectedScenario?.scenario_id,
+    originKey,
+    destinationKey,
     apiMode,
     deltaMinutes,
     timeWindow,
     initialLoading,
   ]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (flow !== 'compare') return
+    const targetId = routesPayload ? 'route-comparison' : 'compare-feedback'
+    window.requestAnimationFrame(() => {
+      const node = document.getElementById(targetId)
+      if (node && typeof node.scrollIntoView === 'function') {
+        node.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    })
+  }, [flow, routesPayload, error])
+
   const handleOriginChange = (key: string) => {
     setOriginKey(key)
-    const destinations = destinationsForOrigin(scenarios, key)
-    const nextDest = destinations[0]
-    setDestinationKey(nextDest?.key ?? '')
+    if (key) {
+      const soleTo = soleCompatiblePlace(scenarios, key, 'to')
+      if (soleTo) {
+        setDestinationKey(soleTo.key)
+      } else if (
+        destinationKey &&
+        (key === destinationKey || !matchDemoPair(scenarios, key, destinationKey))
+      ) {
+        setDestinationKey('')
+      }
+    }
+    setHasCompared(false)
+    setRoutesPayload(null)
+    setSelectedRouteId(null)
+    setError(null)
+    setFlow('plan')
+  }
+
+  const handleDestinationChange = (key: string) => {
+    setDestinationKey(key)
+    if (key) {
+      const soleFrom = soleCompatiblePlace(scenarios, key, 'from')
+      if (soleFrom) {
+        setOriginKey(soleFrom.key)
+      } else if (
+        originKey &&
+        (key === originKey || !matchDemoPair(scenarios, originKey, key))
+      ) {
+        setOriginKey('')
+      }
+    }
+    setHasCompared(false)
+    setRoutesPayload(null)
+    setSelectedRouteId(null)
+    setError(null)
+    setFlow('plan')
+  }
+
+  const handleSwapEnds = () => {
+    setOriginKey(destinationKey)
+    setDestinationKey(originKey)
+    setHasCompared(false)
+    setRoutesPayload(null)
+    setSelectedRouteId(null)
+    setError(null)
+    setFlow('plan')
+  }
+
+  const handleCompare = () => {
+    if (!selectedScenario) return
+    setError(null)
+    setHasCompared(true)
+    setFlow('compare')
+    void loadRoutes()
   }
 
   const openGap1 = useCallback(async () => {
-    setView('gap1')
+    setFlow('gap1')
     if (gap1Exhibit || gap1Loading) return
     setGap1Loading(true)
     setGap1Error(null)
@@ -201,104 +331,198 @@ function AppInner() {
     }
   }, [gap1Exhibit, gap1Loading])
 
+  const startNavigation = () => {
+    if (!selectedRoute) return
+    setFlow('navigate')
+    setAssistMode('demo')
+  }
+
+  const endNavigation = () => {
+    setFlow('compare')
+    setAssistMode('off')
+    resetAssist()
+  }
+
+  const sheetVariant =
+    flow === 'navigate' ? 'nav' : flow === 'compare' ? 'expanded' : 'peek'
+  const navigating = flow === 'navigate'
+
   return (
-    <div className={nativeShell ? 'app-shell app-shell--native' : 'app-shell'}>
+    <div
+      className={[
+        'app-shell',
+        nativeShell ? 'app-shell--native' : '',
+        navigating ? 'app-shell--nav' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
       <a className="skip-link" href="#route-results">
         {t.skipToRoutes}
       </a>
-      <Sidebar
-        scenarios={scenarios}
-        originKey={originKey}
-        destinationKey={destinationKey}
-        mode={mode}
-        mobility={mobility}
-        timeWindow={timeWindow}
-        deltaMinutes={deltaMinutes}
-        loadingRoutes={loadingRoutes}
-        onOriginChange={handleOriginChange}
-        onDestinationChange={setDestinationKey}
-        onModeChange={setMode}
-        onMobilityChange={setMobility}
-        onTimeWindowChange={setTimeWindow}
-        onDeltaChange={(value) =>
-          setDeltaMinutes(value as (typeof DELTA_MINUTES)[number])
-        }
-        onFindRoutes={() => {
-          void loadRoutes()
-        }}
-        onOpenMethodology={() => setMethodologyOpen(true)}
-        onOpenGap1={IS_MOBILE_BUILD ? undefined : () => void openGap1()}
-      />
 
-      <main className="main-panel" id="route-results">
-        {!IS_MOBILE_BUILD && view === 'gap1' ? (
-          <>
-            {gap1Loading ? (
-              <StatusBanner tone="loading">{t.gap1Loading}</StatusBanner>
-            ) : null}
-            {gap1Error ? <StatusBanner tone="error">{gap1Error}</StatusBanner> : null}
-            {gap1Exhibit ? (
-              <Gap1Research
-                exhibit={gap1Exhibit}
-                onBack={() => {
-                  setView('demo')
-                  setGap1Error(null)
-                }}
-              />
-            ) : !gap1Loading && !gap1Error ? (
-              <StatusBanner tone="info">{t.gap1Empty}</StatusBanner>
-            ) : null}
-          </>
-        ) : (
-          <>
+      {flow === 'gap1' ? (
+        <main className="research-panel">
+          <TopBar onOpenMore={() => setMethodologyOpen(true)} />
+          {gap1Loading ? (
+            <StatusBanner tone="loading">{t.gap1Loading}</StatusBanner>
+          ) : null}
+          {gap1Error ? <StatusBanner tone="error">{gap1Error}</StatusBanner> : null}
+          {gap1Exhibit ? (
+            <Gap1Research
+              exhibit={gap1Exhibit}
+              onBack={() => {
+                setFlow('compare')
+                setGap1Error(null)
+              }}
+            />
+          ) : !gap1Loading && !gap1Error ? (
+            <StatusBanner tone="info">{t.gap1Empty}</StatusBanner>
+          ) : null}
+        </main>
+      ) : (
+        <>
+          {navigating ? null : (
+            <TopBar
+              onOpenMore={() => {
+                setMethodologyOpen(true)
+              }}
+            />
+          )}
+
+          <main className="map-stage" id="route-results">
             {initialLoading ? (
               <StatusBanner tone="loading">{t.loadingScenarios}</StatusBanner>
             ) : null}
-
             {error ? <StatusBanner tone="error">{error}</StatusBanner> : null}
-
-            {IS_MOBILE_BUILD && !initialLoading && !error && dataSource === 'bundled' ? (
+            {!initialLoading && !error && dataSource === 'bundled' ? (
               <StatusBanner tone="info">{t.bundledNote}</StatusBanner>
             ) : null}
-
             {!initialLoading && !error && loadingRoutes ? (
               <StatusBanner tone="loading">{t.loadingRoutes}</StatusBanner>
             ) : null}
 
             <RouteMap
-              scenario={selectedScenario}
+              fromPlace={fromPlace}
+              toPlace={toPlace}
               routes={displayedRoutes}
               selectedRouteId={selectedRouteId}
               onSelectRoute={setSelectedRouteId}
-              progressLatLng={IS_MOBILE_BUILD ? progressLatLng : null}
+              progressLatLng={progressLatLng}
+              followActive={navigating}
+              followGeometry={
+                selectedRoute ? safeGeometry(selectedRoute.geometry) : []
+              }
+              distanceAlongM={assistSnapshot.distanceAlongM}
+              guidanceCues={navigating ? placedCues : []}
             />
+          </main>
 
-            {routesPayload ? (
+          <BottomSheet
+            variant={sheetVariant}
+            title={navigating ? t.assistTitle : t.chooseRoute}
+          >
+            {navigating && selectedRoute ? (
               <>
-                <RouteCards
-                  fastest={routesPayload.fastest_route}
-                  alternatives={routesPayload.alternatives}
-                  selectedRouteId={selectedRouteId}
-                  onSelectRoute={setSelectedRouteId}
+                <NavigationInstruction
+                  route={selectedRoute}
+                  snapshot={assistSnapshot}
+                  hudCue={hudCue}
                 />
-                {IS_MOBILE_BUILD ? (
+                <TurnSignalStatus snapshot={assistSnapshot} />
+                <button type="button" className="end-nav-btn" onClick={endNavigation}>
+                  {t.endNav}
+                </button>
+                <AssistPanel
+                  snapshot={assistSnapshot}
+                  assistMode={assistMode}
+                  onAssistModeChange={setAssistMode}
+                  onReset={resetAssist}
+                />
+                <button
+                  type="button"
+                  className="linkish"
+                  onClick={() => setLabOpen((open) => !open)}
+                >
+                  {t.labTitle}
+                </button>
+                {labOpen ? <TrialLogPanel /> : null}
+              </>
+            ) : (
+              <>
+                <p className="muted small">{t.heroSub}</p>
+                <SearchBar
+                  scenarios={scenarios}
+                  originKey={originKey}
+                  destinationKey={destinationKey}
+                  mode={mode}
+                  mobility={mobility}
+                  timeWindow={timeWindow}
+                  deltaMinutes={deltaMinutes}
+                  loadingRoutes={loadingRoutes}
+                  compact={false}
+                  onOriginChange={handleOriginChange}
+                  onDestinationChange={handleDestinationChange}
+                  onSwapEnds={handleSwapEnds}
+                  onModeChange={setMode}
+                  onMobilityChange={setMobility}
+                  onTimeWindowChange={setTimeWindow}
+                  onDeltaChange={(value) =>
+                    setDeltaMinutes(value as (typeof DELTA_MINUTES)[number])
+                  }
+                  onFindRoutes={handleCompare}
+                />
+
+                <div id="compare-feedback">
+                  {error ? <StatusBanner tone="error">{error}</StatusBanner> : null}
+                </div>
+
+                {routesPayload ? (
                   <>
-                    <AssistPanel
-                      snapshot={assistSnapshot}
-                      assistMode={assistMode}
-                      onAssistModeChange={setAssistMode}
-                      onReset={resetAssist}
+                    <RouteCards
+                      fastest={routesPayload.fastest_route}
+                      alternatives={routesPayload.alternatives}
+                      selectedRouteId={selectedRouteId}
+                      recommendedRouteId={recommended?.route_id ?? null}
+                      onSelectRoute={setSelectedRouteId}
+                      compact={flow !== 'compare'}
                     />
-                    <TrialLogPanel />
+                    {selectedRoute ? (
+                      <WhyThisRoute
+                        route={selectedRoute}
+                        fastestRoute={routesPayload.fastest_route}
+                        onStart={startNavigation}
+                      />
+                    ) : null}
+                    <RouteCardsNotes alternatives={routesPayload.alternatives} />
+                    <button
+                      type="button"
+                      className="linkish"
+                      onClick={() => setMethodologyOpen(true)}
+                    >
+                      {t.howItWorks}
+                    </button>
+                    <AIAnalysis
+                      onOpenMethodology={() => setMethodologyOpen(true)}
+                      onOpenGap1={IS_MOBILE_BUILD ? undefined : () => void openGap1()}
+                    />
+                    <button
+                      type="button"
+                      className="linkish"
+                      onClick={() => setLabOpen((open) => !open)}
+                    >
+                      {t.labTitle}
+                    </button>
+                    {labOpen ? <TrialLogPanel /> : null}
                   </>
+                ) : !initialLoading && !loadingRoutes && !error ? (
+                  <StatusBanner tone="info">{t.choosePair}</StatusBanner>
                 ) : null}
               </>
-            ) : !initialLoading && !loadingRoutes && !error ? (
-              <StatusBanner tone="info">{t.choosePair}</StatusBanner>
-            ) : null}
-          </>
-        )}
-      </main>
+            )}
+          </BottomSheet>
+        </>
+      )}
 
       <MethodologyDrawer
         open={methodologyOpen}

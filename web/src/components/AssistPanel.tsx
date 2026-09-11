@@ -8,6 +8,9 @@ import {
   subscribeBleTransport,
   type BleTransportState,
 } from '../ble/bleTransport'
+import { armedTurnDirection } from '../maneuver/turnSignal'
+import { BlinkerArrow } from './BlinkerArrow'
+import { ConfirmLed } from './ConfirmLed'
 
 interface AssistPanelProps {
   snapshot: AssistSnapshot
@@ -72,9 +75,19 @@ export function AssistPanel({
       {assistMode !== 'off' ? (
         <>
           <div className="assist-metrics">
-            <div className="assist-metric">
+            <div className="assist-metric assist-metric--maneuver">
               <span className="assist-metric__label">{t.nextManeuver}</span>
               <strong className="assist-metric__value">
+                <BlinkerArrow
+                  turn={armedTurnDirection(
+                    snapshot.next?.turn,
+                    snapshot.distanceToNextM,
+                    snapshot.lastTurn?.turn,
+                    snapshot.distancePastLastTurnM,
+                  )}
+                  size="md"
+                />
+                <ConfirmLed on={snapshot.cornerConfirm} size="md" />
                 {turnLabel(snapshot.next, t)}
               </strong>
             </div>

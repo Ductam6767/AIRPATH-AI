@@ -1,0 +1,326 @@
+{
+  "source": "Nominatim reverse geocode (OSM), zoom=17, language vi",
+  "note": "Demo UI labels only. Not used by the frozen research engine.",
+  "endpoints": [
+    {
+      "scenario_id": "od_26",
+      "kind": "origin",
+      "latitude": 10.749940910728707,
+      "longitude": 106.63058143958231,
+      "road": "Lô SL Cư xá Phú Lâm A",
+      "suburb": "Phường Phú Lâm",
+      "display_name": "Lô SL Cư xá Phú Lâm A, Khu phố 16, Phường Phú Lâm, Thành phố Hồ Chí Minh, 71910, Việt Nam",
+      "label": "Lô SL Cư xá Phú Lâm A · Phú Lâm"
+    },
+    {
+      "scenario_id": "od_26",
+      "kind": "destination",
+      "latitude": 10.76189362005488,
+      "longitude": 106.64769292246834,
+      "road": "Đường số 6",
+      "suburb": "Phường Bình Thới",
+      "display_name": "Đường số 6, Khu phố 12, Phường Bình Thới, Thành phố Hồ Chí Minh, 72415, Việt Nam",
+      "label": "Đường số 6 · Bình Thới"
+    },
+    {
+      "scenario_id": "od_22",
+      "kind": "origin",
+      "latitude": 10.768373149137515,
+      "longitude": 106.64866934081056,
+      "road": "Đường Số 100 Bình Thới",
+      "suburb": "Phường Hòa Bình",
+      "display_name": "Đường Số 100 Bình Thới, Khu phố 20, Phường Hòa Bình, Thành phố Hồ Chí Minh, 72415, Việt Nam",
+      "label": "Đường Số 100 Bình Thới · Hòa Bình"
+    },
+    {
+      "scenario_id": "od_22",
+      "kind": "destination",
+      "latitude": 10.752829740555551,
+      "longitude": 106.63195436635417,
+      "road": "Đặng Nguyên Cẩn",
+      "suburb": "Phường Phú Lâm",
+      "display_name": "Đặng Nguyên Cẩn, Khu phố 11, Phường Phú Lâm, Thành phố Hồ Chí Minh, 72015, Việt Nam",
+      "label": "Đặng Nguyên Cẩn · Phú Lâm"
+    },
+    {
+      "scenario_id": "od_28",
+      "kind": "origin",
+      "latitude": 10.790060825724904,
+      "longitude": 106.64884728294992,
+      "road": "Hẻm 173/19 Võ Thành Trang",
+      "suburb": "Phường Bảy Hiền",
+      "display_name": "Hẻm 173/19 Võ Thành Trang, Phường Bảy Hiền, Thành phố Hồ Chí Minh, 72117, Việt Nam",
+      "label": "Hẻm Võ Thành Trang · Bảy Hiền"
+    },
+    {
+      "scenario_id": "od_28",
+      "kind": "destination",
+      "latitude": 10.800218360033266,
+      "longitude": 106.67220923018309,
+      "road": "Hoàng Văn Thụ",
+      "suburb": "Phường Đức Nhuận",
+      "display_name": "Hoàng Văn Thụ, Phường Đức Nhuận, Thành phố Hồ Chí Minh, 72215, Việt Nam",
+      "label": "Hoàng Văn Thụ · Đức Nhuận"
+    },
+    {
+      "scenario_id": "od_01",
+      "kind": "origin",
+      "latitude": 10.79920439306918,
+      "longitude": 106.66115000810552,
+      "road": "Hẻm 378 Nguyễn Trọng Tuyển",
+      "suburb": "Phường Tân Sơn Hòa",
+      "display_name": "Hẻm 378 Nguyễn Trọng Tuyển, Phường Tân Sơn Hòa, Thành phố Hồ Chí Minh, 72106, Việt Nam",
+      "label": "Hẻm Nguyễn Trọng Tuyển · Tân Sơn Hòa"
+    },
+    {
+      "scenario_id": "od_01",
+      "kind": "destination",
+      "latitude": 10.805572971047097,
+      "longitude": 106.68707545410574,
+      "road": "Nguyễn Văn Đậu",
+      "suburb": "Phường Đức Nhuận",
+      "display_name": "Nguyễn Văn Đậu, Phường Đức Nhuận, Thành phố Hồ Chí Minh, 72317, Việt Nam",
+      "label": "Nguyễn Văn Đậu · Đức Nhuận"
+    },
+    {
+      "scenario_id": "od_23",
+      "kind": "origin",
+      "latitude": 10.803075074305696,
+      "longitude": 106.64675559927,
+      "road": "Hẻm 127 Hoàng Hoa Thám",
+      "suburb": "Phường Tân Bình",
+      "display_name": "Hẻm 127 Hoàng Hoa Thám, Khu phố 10, Phường Tân Bình, Thành phố Hồ Chí Minh, 72110, Việt Nam",
+      "label": "Hẻm Hoàng Hoa Thám · Tân Bình"
+    },
+    {
+      "scenario_id": "od_23",
+      "kind": "destination",
+      "latitude": 10.775472637154722,
+      "longitude": 106.66149459345698,
+      "road": "Đường D8",
+      "suburb": "Phường Diên Hồng",
+      "display_name": "Đường D8, Khu phố 12, Phường Diên Hồng, Thành phố Hồ Chí Minh, 72117, Việt Nam",
+      "label": "Đường D8 · Diên Hồng"
+    },
+    {
+      "scenario_id": "od_12",
+      "kind": "origin",
+      "latitude": 10.777587693333428,
+      "longitude": 106.66634819963508,
+      "road": "Hẻm 297 Tô Hiến Thành",
+      "suburb": "Phường Hòa Hưng",
+      "display_name": "Hẻm 297 Tô Hiến Thành, Khu phố 20, Phường Hòa Hưng, Thành phố Hồ Chí Minh, 72117, Việt Nam",
+      "label": "Hẻm Tô Hiến Thành · Hòa Hưng"
+    },
+    {
+      "scenario_id": "od_12",
+      "kind": "destination",
+      "latitude": 10.811534241698942,
+      "longitude": 106.6744742795683,
+      "road": "Đặng Văn Sâm",
+      "suburb": "Phường Đức Nhuận",
+      "display_name": "Đặng Văn Sâm, Phường Đức Nhuận, Thành phố Hồ Chí Minh, 71409, Việt Nam",
+      "label": "Đặng Văn Sâm · Đức Nhuận"
+    },
+    {
+      "scenario_id": "od_11",
+      "kind": "origin",
+      "latitude": 10.813094204700738,
+      "longitude": 106.66550535728128,
+      "road": "Trường Sơn",
+      "suburb": "Phường Tân Sơn Hòa",
+      "display_name": "Trường Sơn, Phường Tân Sơn Hòa, Thành phố Hồ Chí Minh, 72100, Việt Nam",
+      "label": "Trường Sơn · Tân Sơn Hòa"
+    },
+    {
+      "scenario_id": "od_11",
+      "kind": "destination",
+      "latitude": 10.799864951291744,
+      "longitude": 106.62542977979922,
+      "road": "Đường Số 6",
+      "suburb": "Phường Tân Sơn Nhì",
+      "display_name": "Đường Số 6, Khu phố 24, Phường Tân Sơn Nhì, Thành phố Hồ Chí Minh, 72011, Việt Nam",
+      "label": "Đường Số 6 · Tân Sơn Nhì"
+    },
+    {
+      "scenario_id": "od_05",
+      "kind": "origin",
+      "latitude": 10.775500302968537,
+      "longitude": 106.67417471011515,
+      "road": "Hẻm 392/20/44 Cao Thắng",
+      "suburb": "Phường Hòa Hưng",
+      "display_name": "Hẻm 392/20/44 Cao Thắng, Khu phố 26, Phường Hòa Hưng, Thành phố Hồ Chí Minh, 72406, Việt Nam",
+      "label": "Hẻm Cao Thắng · Hòa Hưng"
+    },
+    {
+      "scenario_id": "od_05",
+      "kind": "destination",
+      "latitude": 10.751489340242742,
+      "longitude": 106.62861919680236,
+      "road": "Khu phố 11",
+      "suburb": "Phường Phú Lâm",
+      "display_name": "Khu phố 11, Phường Phú Lâm, Thành phố Hồ Chí Minh, 73118, Việt Nam",
+      "label": "Khu phố 11 · Phú Lâm"
+    },
+    {
+      "scenario_id": "od_03",
+      "kind": "origin",
+      "latitude": 10.765486385651338,
+      "longitude": 106.6542878896305,
+      "road": "Hẻm 7 Tôn Thất Hiệp",
+      "suburb": "Phường Phú Thọ",
+      "display_name": "Hẻm 7 Tôn Thất Hiệp, Khu phố 7, Phường Phú Thọ, Thành phố Hồ Chí Minh, 72415, Việt Nam",
+      "label": "Hẻm Tôn Thất Hiệp · Phú Thọ"
+    },
+    {
+      "scenario_id": "od_03",
+      "kind": "destination",
+      "latitude": 10.776300874791875,
+      "longitude": 106.63613550048358,
+      "road": "Trịnh Đình Trọng",
+      "suburb": "Phường Tân Phú",
+      "display_name": "Trịnh Đình Trọng, Khu phố 18, Phường Tân Phú, Thành phố Hồ Chí Minh, 72031, Việt Nam",
+      "label": "Trịnh Đình Trọng · Tân Phú"
+    },
+    {
+      "scenario_id": "od_16",
+      "kind": "origin",
+      "latitude": 10.78037874654082,
+      "longitude": 106.62732957500644,
+      "road": "Quách Đình Bảo",
+      "suburb": "Phường Phú Thạnh",
+      "display_name": "Quách Đình Bảo, Khu phố 10, Phường Phú Thạnh, Thành phố Hồ Chí Minh, 72031, Việt Nam",
+      "label": "Quách Đình Bảo · Phú Thạnh"
+    },
+    {
+      "scenario_id": "od_16",
+      "kind": "destination",
+      "latitude": 10.80368144843654,
+      "longitude": 106.6223438621628,
+      "road": "Tân Thắng",
+      "suburb": "Phường Tân Sơn Nhì",
+      "display_name": "Tân Thắng, Khu phố 7, Phường Tân Sơn Nhì, Thành phố Hồ Chí Minh, 72008, Việt Nam",
+      "label": "Tân Thắng · Tân Sơn Nhì"
+    },
+    {
+      "scenario_id": "od_07",
+      "kind": "origin",
+      "latitude": 10.790954730672,
+      "longitude": 106.6578912360163,
+      "road": "Hẻm 1036 Cách Mạng Tháng 8",
+      "suburb": "Phường Tân Sơn Nhất",
+      "display_name": "Hẻm 1036 Cách Mạng Tháng 8, Khu phố 18, Phường Tân Sơn Nhất, Thành phố Hồ Chí Minh, 72117, Việt Nam",
+      "label": "Hẻm Cách Mạng Tháng 8 · Tân Sơn Nhất"
+    },
+    {
+      "scenario_id": "od_07",
+      "kind": "destination",
+      "latitude": 10.802218892212034,
+      "longitude": 106.63387899927775,
+      "road": "Hẻm 78 Tân Sơn Nhì",
+      "suburb": "Phường Tân Sơn Nhì",
+      "display_name": "Hẻm 78 Tân Sơn Nhì, Khu phố 31, Phường Tân Sơn Nhì, Thành phố Hồ Chí Minh, 72011, Việt Nam",
+      "label": "Hẻm Tân Sơn Nhì · Tân Sơn Nhì"
+    },
+    {
+      "scenario_id": "od_02",
+      "kind": "origin",
+      "latitude": 10.799537520759737,
+      "longitude": 106.63665376437883,
+      "road": "Đường Nguyễn Văn Săng",
+      "suburb": "Phường Tân Sơn Nhì",
+      "display_name": "Đường Nguyễn Văn Săng, Khu phố 44, Phường Tân Sơn Nhì, Thành phố Hồ Chí Minh, 72000, Việt Nam",
+      "label": "Đường Nguyễn Văn Săng · Tân Sơn Nhì"
+    },
+    {
+      "scenario_id": "od_02",
+      "kind": "destination",
+      "latitude": 10.776087579733089,
+      "longitude": 106.621525638113,
+      "road": "Bình Long",
+      "suburb": "Phường Bình Trị Đông",
+      "display_name": "Bình Long, Khu phố 6, Phường Bình Trị Đông, Thành phố Hồ Chí Minh, 72031, Việt Nam",
+      "label": "Bình Long · Bình Trị Đông"
+    },
+    {
+      "scenario_id": "od_10",
+      "kind": "origin",
+      "latitude": 10.784690698500322,
+      "longitude": 106.65192191922864,
+      "road": "Hẻm 54 Duy Tân",
+      "suburb": "Phường Tân Hòa",
+      "display_name": "Hẻm 54 Duy Tân, Phường Tân Hòa, Thành phố Hồ Chí Minh, 72117, Việt Nam",
+      "label": "Hẻm Duy Tân · Tân Hòa"
+    },
+    {
+      "scenario_id": "od_10",
+      "kind": "destination",
+      "latitude": 10.78543215431568,
+      "longitude": 106.6194194347684,
+      "road": "Lê Lư",
+      "suburb": "Phường Phú Thọ Hòa",
+      "display_name": "Lê Lư, Khu phố 48, Phường Phú Thọ Hòa, Thành phố Hồ Chí Minh, 72031, Việt Nam",
+      "label": "Lê Lư · Phú Thọ Hòa"
+    },
+    {
+      "scenario_id": "od_04",
+      "kind": "origin",
+      "latitude": 10.792322768162512,
+      "longitude": 106.63114890112082,
+      "road": "Phan Đình Phùng",
+      "suburb": "Phường Phú Thọ Hòa",
+      "display_name": "Phan Đình Phùng, Khu phố 24, Phường Phú Thọ Hòa, Thành phố Hồ Chí Minh, 72000, Việt Nam",
+      "label": "Phan Đình Phùng · Phú Thọ Hòa"
+    },
+    {
+      "scenario_id": "od_04",
+      "kind": "destination",
+      "latitude": 10.756012195020205,
+      "longitude": 106.61787070547072,
+      "road": "Đường số 8E",
+      "suburb": "Phường An Lạc",
+      "display_name": "Đường số 8E, Khu phố 5, Phường An Lạc, Thành phố Hồ Chí Minh, 73118, Việt Nam",
+      "label": "Đường số 8E · An Lạc"
+    },
+    {
+      "scenario_id": "od_13",
+      "kind": "origin",
+      "latitude": 10.78271871988162,
+      "longitude": 106.65433428429004,
+      "road": "Lý Thường Kiệt",
+      "suburb": "Phường Tân Hòa",
+      "display_name": "Lý Thường Kiệt, Khu phố 1, Phường Tân Hòa, Thành phố Hồ Chí Minh, 72117, Việt Nam",
+      "label": "Lý Thường Kiệt · Tân Hòa"
+    },
+    {
+      "scenario_id": "od_13",
+      "kind": "destination",
+      "latitude": 10.803405401766309,
+      "longitude": 106.698196608817,
+      "road": "Lê Quang Định",
+      "suburb": "Phường Bình Thạnh",
+      "display_name": "Lê Quang Định, Khu phố 1, Phường Bình Thạnh, Thành phố Hồ Chí Minh, 72317, Việt Nam",
+      "label": "Lê Quang Định · Bình Thạnh"
+    },
+    {
+      "scenario_id": "od_08",
+      "kind": "origin",
+      "latitude": 10.799565164990703,
+      "longitude": 106.68903344672287,
+      "road": "Đường Hoa Cau",
+      "suburb": "Phường Cầu Kiệu",
+      "display_name": "Đường Hoa Cau, Khu phố 11, Phường Cầu Kiệu, Thành phố Hồ Chí Minh, 72212, Việt Nam",
+      "label": "Đường Hoa Cau · Cầu Kiệu"
+    },
+    {
+      "scenario_id": "od_08",
+      "kind": "destination",
+      "latitude": 10.774781425489092,
+      "longitude": 106.64443701246266,
+      "road": "Hẻm 104 Trịnh Đình Trọng",
+      "suburb": "Phường Hòa Bình",
+      "display_name": "Hẻm 104 Trịnh Đình Trọng, Khu phố 3, Phường Hòa Bình, Thành phố Hồ Chí Minh, 72117, Việt Nam",
+      "label": "Hẻm Trịnh Đình Trọng · Hòa Bình"
+    }
+  ]
+}

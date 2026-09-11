@@ -15,6 +15,10 @@ from pydantic import BaseModel, ConfigDict, Field
 REPO_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 DEFAULT_DEMO_DIR: Final[Path] = REPO_ROOT / "data" / "processed" / "web_demo"
 SUPPORTED_MODES: Final[frozenset[str]] = frozenset({"walking", "motorbike"})
+SUPPORTED_TIME_WINDOWS: Final[frozenset[str]] = frozenset(
+    {"morning_peak", "midday", "evening_peak"}
+)
+DEFAULT_TIME_WINDOW: Final[str] = "morning_peak"
 LOCAL_DEV_ORIGINS: Final[tuple[str, ...]] = (
     "http://localhost:5173",
     "http://127.0.0.1:5173",
@@ -32,6 +36,41 @@ def parse_allowed_origins(raw: str | None) -> list[str]:
             continue
         origins.append(origin)
     return origins
+
+
+def coord_key(lat: float, lon: float) -> str:
+    """Stable 6-decimal key used by the demo UI for From/To places."""
+    return f"{float(lat):.6f},{float(lon):.6f}"
+
+
+def match_demo_pair(
+    scenarios: Sequence[dict[str, Any]],
+    from_lat: float,
+    from_lon: float,
+    to_lat: float,
+    to_lon: float,
+) -> tuple[dict[str, Any] | None, bool]:
+    """Match a frozen OD in either direction. Does not create new routes."""
+    from_key = coord_key(from_lat, from_lon)
+    to_key = coord_key(to_lat, to_lon)
+    if from_key == to_key:
+        return None, False
+    for scenario in scenarios:
+        origin = scenario.get("origin") or {}
+        dest = scenario.get("destination") or {}
+        origin_key = coord_key(origin["latitude"], origin["longitude"])
+        dest_key = coord_key(dest["latitude"], dest["longitude"])
+        if origin_key == from_key and dest_key == to_key:
+            return scenario, False
+        if origin_key == to_key and dest_key == from_key:
+            return scenario, True
+    return None, False
+
+
+def reversed_geometry(geometry: Any) -> list[list[float]]:
+    if not isinstance(geometry, list):
+        return []
+    return list(reversed(geometry))
 
 
 class Coordinate(BaseModel):
@@ -53,6 +92,10 @@ class Scenario(BaseModel):
     supported_delta_minutes: list[float]
     demo_distance_rank: int
     selection_method: str
+    supported_time_windows: list[str] = Field(
+        default_factory=lambda: ["morning_peak", "midday", "evening_peak"]
+    )
+    opening_example: bool | None = None
 
 
 class ScenariosResponse(BaseModel):
@@ -77,6 +120,8 @@ class RouteRecord(BaseModel):
     geometry: list[list[float]]
     available_feasible_alternatives: int | None = None
     fewer_than_requested_alternatives: bool | None = None
+    is_also_lowest_exposure: bool | None = None
+    tradeoff_slot: str | None = None
     research_warning: str | None = None
 
 
@@ -86,6 +131,7 @@ class RoutesResponse(BaseModel):
     scenario_id: str
     mode: str
     delta_minutes: float
+    time_window: str = "morning_peak"
     fastest_route: RouteRecord
     alternatives: list[RouteRecord]
     metadata: dict[str, Any] = Field(default_factory=dict)
@@ -119,12 +165,13 @@ def load_demo_pack(demo_dir: str | None = None) -> dict[str, Any]:
     if not isinstance(routes, list) or not routes:
         raise ValueError("routes.json must contain a non-empty routes list.")
     by_scenario = {str(item["scenario_id"]): item for item in scenarios}
-    index: dict[tuple[str, str, float], list[dict[str, Any]]] = {}
+    index: dict[tuple[str, str, float, str], list[dict[str, Any]]] = {}
     for route in routes:
         key = (
             str(route["scenario_id"]),
             str(route["mode"]),
             float(route["delta_minutes"]),
+            str(route.get("time_window", DEFAULT_TIME_WINDOW)),
         )
         index.setdefault(key, []).append(route)
     for key, group in index.items():
@@ -150,8 +197,10 @@ def create_app(
     app = FastAPI(
         title="AIRPATH-AI Demo API",
         description=(
-            "Thin read-only API over the frozen Model-C web demo pack. "
-            "Does not retrain models, run IDW, or optimize routes."
+            "Thin read-only API over the web demo pack. "
+            "Does not retrain models, run IDW, or optimize routes. "
+            "Route PM in this pack is station-IDW background times a simulated "
+            "OSM road-class increment — not roadside measurements."
         ),
         version="0.1.0",
     )
@@ -195,29 +244,87 @@ def create_app(
 
     @app.get("/demo/routes", response_model=RoutesResponse)
     def demo_routes(
-        scenario_id: str = Query(..., min_length=1, description="Demo OD scenario id"),
         mode: str = Query(..., min_length=1, description="walking or motorbike"),
         delta_minutes: float = Query(
             ...,
             description="Maximum extra minutes vs fastest route",
         ),
+        scenario_id: str | None = Query(
+            default=None,
+            description="Demo OD scenario id (optional when From/To coordinates are sent)",
+        ),
+        from_latitude: float | None = Query(default=None),
+        from_longitude: float | None = Query(default=None),
+        to_latitude: float | None = Query(default=None),
+        to_longitude: float | None = Query(default=None),
+        time_window: str = Query(
+            default=DEFAULT_TIME_WINDOW,
+            description="Demo congestion window: morning_peak, midday, or evening_peak",
+        ),
     ) -> RoutesResponse:
         pack = load_demo_pack(resolved_dir)
         scenario_by_id: dict[str, Any] = pack["scenario_by_id"]
         metadata: dict[str, Any] = dict(pack["metadata"])
+        scenarios = pack["scenarios"]
 
-        if scenario_id not in scenario_by_id:
+        end_values = (from_latitude, from_longitude, to_latitude, to_longitude)
+        has_ends = all(value is not None for value in end_values)
+        has_partial_ends = any(value is not None for value in end_values) and not has_ends
+        if has_partial_ends:
             raise HTTPException(
-                status_code=404,
+                status_code=422,
                 detail={
-                    "error": "unknown_scenario_id",
-                    "message": f"Unknown scenario_id '{scenario_id}'.",
-                    "available_scenario_ids": sorted(scenario_by_id),
+                    "error": "malformed_query",
+                    "message": (
+                        "from_latitude, from_longitude, to_latitude, and "
+                        "to_longitude must be sent together."
+                    ),
+                },
+            )
+
+        reversed_ends = False
+        scenario: dict[str, Any] | None = None
+        if has_ends:
+            scenario, reversed_ends = match_demo_pair(
+                scenarios,
+                float(from_latitude),
+                float(from_longitude),
+                float(to_latitude),
+                float(to_longitude),
+            )
+            if scenario is None:
+                raise HTTPException(
+                    status_code=404,
+                    detail={
+                        "error": "unknown_endpoint_pair",
+                        "message": (
+                            "That From/To combination is not a precomputed demo pair "
+                            "(in either direction)."
+                        ),
+                    },
+                )
+            scenario_id = str(scenario["scenario_id"])
+        elif scenario_id:
+            scenario = scenario_by_id.get(scenario_id)
+            if scenario is None:
+                raise HTTPException(
+                    status_code=404,
+                    detail={
+                        "error": "unknown_scenario_id",
+                        "message": f"Unknown scenario_id '{scenario_id}'.",
+                        "available_scenario_ids": sorted(scenario_by_id),
+                    },
+                )
+        else:
+            raise HTTPException(
+                status_code=422,
+                detail={
+                    "error": "malformed_query",
+                    "message": "Provide scenario_id or From/To coordinates.",
                 },
             )
 
         mode_normalized = mode.strip().lower()
-        scenario = scenario_by_id[scenario_id]
         supported_modes = {str(m).lower() for m in scenario.get("supported_modes", [])}
         if mode_normalized not in SUPPORTED_MODES or mode_normalized not in supported_modes:
             raise HTTPException(
@@ -229,6 +336,29 @@ def create_app(
                         f"Use one of: {sorted(supported_modes)}."
                     ),
                     "supported_modes": sorted(supported_modes),
+                },
+            )
+
+        window_normalized = time_window.strip().lower()
+        supported_windows = {
+            str(item).lower()
+            for item in scenario.get(
+                "supported_time_windows", list(SUPPORTED_TIME_WINDOWS)
+            )
+        }
+        if (
+            window_normalized not in SUPPORTED_TIME_WINDOWS
+            or window_normalized not in supported_windows
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "error": "unsupported_time_window",
+                    "message": (
+                        f"Unsupported time_window '{time_window}'. "
+                        f"Use one of: {sorted(supported_windows)}."
+                    ),
+                    "supported_time_windows": sorted(supported_windows),
                 },
             )
 
@@ -261,8 +391,13 @@ def create_app(
                 },
             )
 
-        key = (scenario_id, mode_normalized, float(matched_delta))
-        routes_index: dict[tuple[str, str, float], list[dict[str, Any]]] = pack[
+        key = (
+            str(scenario_id),
+            mode_normalized,
+            float(matched_delta),
+            window_normalized,
+        )
+        routes_index: dict[tuple[str, str, float, str], list[dict[str, Any]]] = pack[
             "routes_index"
         ]
         group = routes_index.get(key)
@@ -272,9 +407,9 @@ def create_app(
                 detail={
                     "error": "route_request_outside_demo_dataset",
                     "message": (
-                        "No frozen demo routes for "
+                        "No demo routes for "
                         f"scenario_id={scenario_id}, mode={mode_normalized}, "
-                        f"delta_minutes={matched_delta}."
+                        f"delta_minutes={matched_delta}, time_window={window_normalized}."
                     ),
                 },
             )
@@ -291,6 +426,9 @@ def create_app(
         ]
 
         def to_public_route(row: dict[str, Any]) -> RouteRecord:
+            geometry = row["geometry"]
+            if reversed_ends:
+                geometry = reversed_geometry(geometry)
             return RouteRecord(
                 route_id=str(row["route_id"]),
                 route_type=str(row["route_type"]),
@@ -306,7 +444,7 @@ def create_app(
                     row["predicted_exposure_reduction_percent"]
                 ),
                 distance_m=float(row["distance_m"]),
-                geometry=row["geometry"],
+                geometry=geometry,
                 available_feasible_alternatives=(
                     int(row["available_feasible_alternatives"])
                     if row.get("available_feasible_alternatives") is not None
@@ -315,6 +453,16 @@ def create_app(
                 fewer_than_requested_alternatives=(
                     bool(row["fewer_than_requested_alternatives"])
                     if row.get("fewer_than_requested_alternatives") is not None
+                    else None
+                ),
+                is_also_lowest_exposure=(
+                    bool(row["is_also_lowest_exposure"])
+                    if row.get("is_also_lowest_exposure") is not None
+                    else None
+                ),
+                tradeoff_slot=(
+                    str(row["tradeoff_slot"])
+                    if row.get("tradeoff_slot") not in (None, "", "none", "None")
                     else None
                 ),
                 research_warning=row.get("research_warning"),
@@ -336,6 +484,9 @@ def create_app(
                 "fewer_than_requested_alternatives"
             ),
             "alternative_count": len(alternatives_raw),
+            "requested_ends_reversed": reversed_ends,
+            "time_window": window_normalized,
+            "spatial_model": metadata.get("spatial_model"),
             "empty_alternatives_message": (
                 None
                 if alternatives_raw
@@ -346,9 +497,10 @@ def create_app(
             ),
         }
         return RoutesResponse(
-            scenario_id=scenario_id,
+            scenario_id=str(scenario_id),
             mode=mode_normalized,
             delta_minutes=float(matched_delta),
+            time_window=window_normalized,
             fastest_route=to_public_route(fastest_raw),
             alternatives=[to_public_route(row) for row in alternatives_raw],
             metadata=response_metadata,

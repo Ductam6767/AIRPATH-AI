@@ -41,7 +41,7 @@ def test_scenario_selection_is_distance_stratified() -> None:
 
     od = pd.read_csv(OD_PATH)
     selected = select_demo_scenarios(od)
-    assert len(selected) == 8
+    assert len(selected) == 16
     distances = selected["straight_line_distance_km"].tolist()
     assert distances == sorted(distances)
     assert selected["scenario_id"].is_unique
@@ -51,7 +51,7 @@ def test_build_demo_pack_uses_model_c_and_geometry() -> None:
     pack = build_demo_pack()
     metadata = pack["metadata"]
     assert metadata["forecaster"] == "C_xgboost_current_pm"
-    assert metadata["spatial_model"] == "idw_p1"
+    assert metadata["spatial_model"] == "idw_p1_plus_simulated_onroad_traffic_increment"
     assert metadata["departure_time"] == DEMO_DEPARTURE_TIME
     assert metadata["scientific_logic_modified"] is False
     routes = pack["routes"]
@@ -70,9 +70,9 @@ def test_write_demo_pack_roundtrip(tmp_path: Path) -> None:
     scenarios = json.loads(paths["scenarios"].read_text(encoding="utf-8"))
     routes = json.loads(paths["routes"].read_text(encoding="utf-8"))
     metadata = json.loads(paths["metadata"].read_text(encoding="utf-8"))
-    assert len(scenarios["scenarios"]) == 8
+    assert len(scenarios["scenarios"]) == 16
     assert len(routes["routes"]) == len(pack["routes"])
-    assert metadata["pack_name"] == "airpath_web_demo_v1"
+    assert metadata["pack_name"] == "airpath_web_demo_v3"
 
 
 def test_health(client: TestClient) -> None:
@@ -81,7 +81,7 @@ def test_health(client: TestClient) -> None:
     payload = response.json()
     assert payload["status"] == "ok"
     assert payload["service"] == "airpath-demo-api"
-    assert payload["demo_pack"] == "airpath_web_demo_v1"
+    assert payload["demo_pack"] == "airpath_web_demo_v3"
 
 
 def test_demo_scenarios(client: TestClient) -> None:
@@ -89,7 +89,7 @@ def test_demo_scenarios(client: TestClient) -> None:
     assert response.status_code == 200
     payload = response.json()
     assert "scenarios" in payload
-    assert len(payload["scenarios"]) == 8
+    assert len(payload["scenarios"]) == 16
     first = payload["scenarios"][0]
     assert {"scenario_id", "origin", "destination", "supported_modes", "supported_delta_minutes"} <= set(
         first
@@ -111,6 +111,7 @@ def test_valid_route_request(client: TestClient) -> None:
         "scenario_id",
         "mode",
         "delta_minutes",
+        "time_window",
         "fastest_route",
         "alternatives",
         "metadata",
@@ -138,7 +139,65 @@ def test_valid_route_request(client: TestClient) -> None:
         assert alt["rank"] >= 1
 
 
-def test_invalid_scenario(client: TestClient) -> None:
+def test_routes_by_from_to_keeps_requested_direction(client: TestClient) -> None:
+    scenario = client.get("/demo/scenarios").json()["scenarios"][0]
+    origin = scenario["origin"]
+    dest = scenario["destination"]
+    stored = client.get(
+        "/demo/routes",
+        params={
+            "from_latitude": origin["latitude"],
+            "from_longitude": origin["longitude"],
+            "to_latitude": dest["latitude"],
+            "to_longitude": dest["longitude"],
+            "mode": "walking",
+            "delta_minutes": 5,
+        },
+    )
+    assert stored.status_code == 200
+    stored_payload = stored.json()
+    assert stored_payload["scenario_id"] == scenario["scenario_id"]
+    assert stored_payload["metadata"]["requested_ends_reversed"] is False
+    first_stored = stored_payload["fastest_route"]["geometry"][0]
+
+    reversed_resp = client.get(
+        "/demo/routes",
+        params={
+            "from_latitude": dest["latitude"],
+            "from_longitude": dest["longitude"],
+            "to_latitude": origin["latitude"],
+            "to_longitude": origin["longitude"],
+            "mode": "walking",
+            "delta_minutes": 5,
+        },
+    )
+    assert reversed_resp.status_code == 200
+    reversed_payload = reversed_resp.json()
+    assert reversed_payload["scenario_id"] == scenario["scenario_id"]
+    assert reversed_payload["metadata"]["requested_ends_reversed"] is True
+    first_reversed = reversed_payload["fastest_route"]["geometry"][0]
+    last_stored = stored_payload["fastest_route"]["geometry"][-1]
+    assert first_reversed == last_stored
+    assert first_reversed != first_stored
+
+
+def test_unknown_from_to_pair_does_not_substitute_another_trip(client: TestClient) -> None:
+    scenarios = client.get("/demo/scenarios").json()["scenarios"]
+    origin = scenarios[0]["origin"]
+    dest = scenarios[1]["destination"]
+    response = client.get(
+        "/demo/routes",
+        params={
+            "from_latitude": origin["latitude"],
+            "from_longitude": origin["longitude"],
+            "to_latitude": dest["latitude"],
+            "to_longitude": dest["longitude"],
+            "mode": "walking",
+            "delta_minutes": 5,
+        },
+    )
+    assert response.status_code == 404
+    assert response.json()["detail"]["error"] == "unknown_endpoint_pair"
     response = client.get(
         "/demo/routes",
         params={"scenario_id": "od_missing", "mode": "walking", "delta_minutes": 5},
@@ -252,6 +311,8 @@ def test_response_schema_stability(client: TestClient) -> None:
         "available_feasible_alternatives",
         "fewer_than_requested_alternatives",
         "research_warning",
+        "is_also_lowest_exposure",
+        "tradeoff_slot",
     }
     assert route_keys <= set(payload["fastest_route"])
     # Internal model artifacts must not leak.
@@ -313,3 +374,27 @@ def test_cors_allows_configured_origin() -> None:
         assert root.status_code == 200
         assert root.json()["health"] == "/health"
     load_demo_pack.cache_clear()
+
+
+def test_od05_evening_peak_matches_figure_two_tradeoff(client: TestClient) -> None:
+    """Fig. 2 numbers: same frozen ETAs, OSM-increment E not freeze IDW."""
+    response = client.get(
+        "/demo/routes",
+        params={
+            "scenario_id": "od_05",
+            "mode": "motorbike",
+            "delta_minutes": 5,
+            "time_window": "evening_peak",
+        },
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    fastest = payload["fastest_route"]
+    alts = payload["alternatives"]
+    assert fastest["travel_time_minutes"] == pytest.approx(15.47, abs=0.05)
+    assert fastest["predicted_exposure_index"] == pytest.approx(738.7, abs=1.0)
+    assert len(alts) == 3
+    assert alts[0]["travel_time_minutes"] == pytest.approx(16.43, abs=0.05)
+    assert alts[0]["predicted_exposure_reduction_percent"] == pytest.approx(30.5, abs=0.5)
+    assert alts[1]["predicted_exposure_reduction_percent"] == pytest.approx(27.9, abs=0.5)
+    assert alts[2]["predicted_exposure_reduction_percent"] == pytest.approx(26.6, abs=0.5)

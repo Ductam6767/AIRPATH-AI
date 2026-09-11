@@ -1,0 +1,9611 @@
+{
+  "missing_way_ids": [],
+  "purpose": "Demo-only traffic-class attributes for simulated on-road PM. Not a Chinese mobile-monitoring dataset.",
+  "source": "OpenStreetMap contributors, ODbL 1.0, queried via Overpass API",
+  "way_count": 2895,
+  "ways": {
+    "1000955967": {
+      "highway": "service"
+    },
+    "1000955969": {
+      "highway": "residential"
+    },
+    "1005189971": {
+      "highway": "service"
+    },
+    "1005842754": {
+      "highway": "primary"
+    },
+    "1011374485": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1011374486": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "1015316031": {
+      "highway": "residential"
+    },
+    "1018258115": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1018258116": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1018721333": {
+      "highway": "residential"
+    },
+    "1019003586": {
+      "highway": "service"
+    },
+    "1019637995": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1019637996": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1019637997": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1020222109": {
+      "highway": "service"
+    },
+    "1022174517": {
+      "highway": "service"
+    },
+    "1024706305": {
+      "highway": "service"
+    },
+    "1025094553": {
+      "highway": "service"
+    },
+    "1025100935": {
+      "highway": "service"
+    },
+    "1032823052": {
+      "highway": "service"
+    },
+    "1034068186": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1038509196": {
+      "highway": "service"
+    },
+    "1039058436": {
+      "highway": "residential"
+    },
+    "1039238694": {
+      "highway": "residential"
+    },
+    "1039285890": {
+      "highway": "service"
+    },
+    "1039290572": {
+      "highway": "residential"
+    },
+    "1040140942": {
+      "highway": "service"
+    },
+    "1040143967": {
+      "highway": "residential"
+    },
+    "1040164655": {
+      "highway": "service"
+    },
+    "1040169593": {
+      "highway": "residential"
+    },
+    "1040169778": {
+      "highway": "service"
+    },
+    "1040173214": {
+      "highway": "service"
+    },
+    "1040430105": {
+      "highway": "service"
+    },
+    "1040441044": {
+      "highway": "service"
+    },
+    "1040735078": {
+      "highway": "service"
+    },
+    "1041031922": {
+      "highway": "residential"
+    },
+    "1041321463": {
+      "highway": "service"
+    },
+    "1041321468": {
+      "highway": "residential"
+    },
+    "1041321470": {
+      "highway": "residential"
+    },
+    "1042851074": {
+      "highway": "primary_link"
+    },
+    "1043314873": {
+      "highway": "residential"
+    },
+    "1046044310": {
+      "highway": "service"
+    },
+    "1046044311": {
+      "highway": "service"
+    },
+    "1046128088": {
+      "highway": "residential"
+    },
+    "1054136118": {
+      "highway": "service"
+    },
+    "1055428842": {
+      "highway": "service"
+    },
+    "1055428843": {
+      "highway": "service"
+    },
+    "1060413719": {
+      "highway": "service"
+    },
+    "1060413720": {
+      "highway": "service"
+    },
+    "1060413721": {
+      "highway": "service"
+    },
+    "1060454419": {
+      "highway": "service"
+    },
+    "1065755917": {
+      "highway": "residential"
+    },
+    "1065840905": {
+      "highway": "service"
+    },
+    "1066054013": {
+      "highway": "service"
+    },
+    "1067491441": {
+      "highway": "service"
+    },
+    "1067491442": {
+      "highway": "residential"
+    },
+    "1068306671": {
+      "highway": "service"
+    },
+    "1070135602": {
+      "highway": "service"
+    },
+    "1070135603": {
+      "highway": "service"
+    },
+    "1070135604": {
+      "highway": "service"
+    },
+    "1070135605": {
+      "highway": "service"
+    },
+    "1070237599": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "1071474372": {
+      "highway": "residential"
+    },
+    "1071474373": {
+      "highway": "service"
+    },
+    "1071907089": {
+      "highway": "service"
+    },
+    "1077610913": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1077879101": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1079096738": {
+      "highway": "service"
+    },
+    "1080063076": {
+      "highway": "footway"
+    },
+    "1080063078": {
+      "highway": "service"
+    },
+    "1080063079": {
+      "highway": "footway"
+    },
+    "1080063080": {
+      "highway": "footway"
+    },
+    "1080252485": {
+      "highway": "service"
+    },
+    "1080252486": {
+      "highway": "service"
+    },
+    "1080775234": {
+      "highway": "service"
+    },
+    "1083086851": {
+      "highway": "residential"
+    },
+    "1083124161": {
+      "highway": "residential"
+    },
+    "1083709159": {
+      "highway": "service"
+    },
+    "1083709160": {
+      "highway": "residential"
+    },
+    "1083723039": {
+      "highway": "service"
+    },
+    "1093503779": {
+      "highway": "service"
+    },
+    "1093505479": {
+      "highway": "service"
+    },
+    "1094755428": {
+      "highway": "secondary",
+      "lanes": "4"
+    },
+    "1095064865": {
+      "highway": "service"
+    },
+    "1097215585": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1097215586": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "1097215589": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1097215590": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "1097864388": {
+      "highway": "service"
+    },
+    "1101042450": {
+      "highway": "service"
+    },
+    "1101403050": {
+      "highway": "service"
+    },
+    "1103454005": {
+      "highway": "primary_link"
+    },
+    "1110076955": {
+      "highway": "residential"
+    },
+    "1111246546": {
+      "highway": "residential"
+    },
+    "1111246547": {
+      "highway": "service"
+    },
+    "1113543244": {
+      "highway": "tertiary"
+    },
+    "1115188211": {
+      "highway": "residential"
+    },
+    "1115188212": {
+      "highway": "service"
+    },
+    "1115188214": {
+      "highway": "service"
+    },
+    "1120532070": {
+      "highway": "residential"
+    },
+    "1120532071": {
+      "highway": "residential"
+    },
+    "1120532072": {
+      "highway": "residential"
+    },
+    "1120532073": {
+      "highway": "residential"
+    },
+    "1121658743": {
+      "highway": "residential"
+    },
+    "1122198839": {
+      "highway": "service"
+    },
+    "1122247549": {
+      "highway": "service"
+    },
+    "1123802182": {
+      "highway": "service"
+    },
+    "1125556338": {
+      "highway": "service"
+    },
+    "1131078079": {
+      "highway": "service"
+    },
+    "1131108108": {
+      "highway": "residential"
+    },
+    "1138659751": {
+      "highway": "service"
+    },
+    "1148786802": {
+      "highway": "service"
+    },
+    "1150116402": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "1152236287": {
+      "highway": "service"
+    },
+    "1153984819": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "1154416921": {
+      "highway": "service"
+    },
+    "1154975441": {
+      "highway": "residential"
+    },
+    "1154975442": {
+      "highway": "residential"
+    },
+    "1155984227": {
+      "highway": "primary"
+    },
+    "1158093921": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1158093922": {
+      "highway": "tertiary"
+    },
+    "1161260094": {
+      "highway": "residential"
+    },
+    "1161260095": {
+      "highway": "residential"
+    },
+    "1161279410": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "1163556205": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1176186457": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1178033814": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "1178033815": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1178034721": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1178057415": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1178057416": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1178202753": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1178203230": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "1178263866": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "1178263867": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "1178266307": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1179944913": {
+      "highway": "residential"
+    },
+    "1179955734": {
+      "highway": "residential"
+    },
+    "1179966753": {
+      "highway": "primary"
+    },
+    "1179967017": {
+      "highway": "primary"
+    },
+    "1179967423": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1179967424": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1179967425": {
+      "highway": "residential"
+    },
+    "1179967816": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1179967817": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1179968085": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1179972723": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1179973255": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1180125900": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "1181522533": {
+      "highway": "service"
+    },
+    "1181522535": {
+      "highway": "service"
+    },
+    "1181522538": {
+      "highway": "service"
+    },
+    "1184435617": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1184437261": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1184437860": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1184438046": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1184438047": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "1184438483": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1184438484": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "1185183963": {
+      "highway": "service"
+    },
+    "1185184265": {
+      "highway": "residential"
+    },
+    "1185184386": {
+      "highway": "primary"
+    },
+    "1185219190": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1185226279": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185237105": {
+      "highway": "residential"
+    },
+    "1185237106": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185238988": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185240162": {
+      "highway": "residential"
+    },
+    "1185419173": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185419664": {
+      "highway": "residential"
+    },
+    "1185419763": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185420036": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185420037": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185420038": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185420039": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185420260": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185420369": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185420427": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185421796": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185422227": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185422676": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185441803": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1185441804": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1185441805": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1185472834": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1185472835": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1185472836": {
+      "highway": "residential"
+    },
+    "1185473653": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185474197": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1185474640": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1185631429": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1185631430": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1185908634": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185908635": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1185911369": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "118696126": {
+      "highway": "tertiary"
+    },
+    "1187069110": {
+      "highway": "service"
+    },
+    "118894313": {
+      "highway": "residential"
+    },
+    "1190140732": {
+      "highway": "service"
+    },
+    "1190958231": {
+      "highway": "service"
+    },
+    "1190958232": {
+      "highway": "service"
+    },
+    "1190958233": {
+      "highway": "service"
+    },
+    "1191964689": {
+      "highway": "service"
+    },
+    "1193672266": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "1195541004": {
+      "highway": "service"
+    },
+    "1197853014": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1197853015": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1197853016": {
+      "highway": "primary_link"
+    },
+    "1197853017": {
+      "highway": "primary_link"
+    },
+    "1198846393": {
+      "highway": "secondary"
+    },
+    "1198875564": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1198876681": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1198882054": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1198882680": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1198882846": {
+      "highway": "secondary",
+      "lanes": "4"
+    },
+    "1198892564": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1198893130": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1198893454": {
+      "highway": "secondary"
+    },
+    "1198895810": {
+      "highway": "secondary"
+    },
+    "1198897024": {
+      "highway": "secondary"
+    },
+    "1198898397": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1198898794": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1198898795": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1198898797": {
+      "highway": "tertiary"
+    },
+    "1198899265": {
+      "highway": "tertiary"
+    },
+    "1198900436": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1199406475": {
+      "highway": "service"
+    },
+    "1201388335": {
+      "highway": "service"
+    },
+    "120276779": {
+      "highway": "residential"
+    },
+    "120276786": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "120279224": {
+      "highway": "tertiary"
+    },
+    "1208697787": {
+      "highway": "residential"
+    },
+    "1209671824": {
+      "highway": "service"
+    },
+    "1209671825": {
+      "highway": "residential"
+    },
+    "1209974481": {
+      "highway": "service"
+    },
+    "1209974484": {
+      "highway": "service"
+    },
+    "1210071501": {
+      "highway": "service"
+    },
+    "1210071512": {
+      "highway": "residential"
+    },
+    "1210894657": {
+      "highway": "service"
+    },
+    "1210894658": {
+      "highway": "residential"
+    },
+    "1210936293": {
+      "highway": "service"
+    },
+    "1211224500": {
+      "highway": "service"
+    },
+    "1212429890": {
+      "highway": "residential"
+    },
+    "1212653287": {
+      "highway": "primary_link"
+    },
+    "1213260817": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1213514617": {
+      "highway": "residential"
+    },
+    "1213527451": {
+      "highway": "tertiary_link"
+    },
+    "1214262873": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1214262874": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1214273247": {
+      "highway": "service"
+    },
+    "1214342806": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1214363450": {
+      "highway": "residential"
+    },
+    "1214450557": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1214700141": {
+      "highway": "service"
+    },
+    "1214778165": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1214971324": {
+      "highway": "residential"
+    },
+    "1214976899": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1214976900": {
+      "highway": "primary"
+    },
+    "1214999168": {
+      "highway": "secondary"
+    },
+    "1214999171": {
+      "highway": "residential"
+    },
+    "1215204973": {
+      "highway": "residential"
+    },
+    "1216754681": {
+      "highway": "secondary",
+      "lanes": "4"
+    },
+    "1217500460": {
+      "highway": "footway"
+    },
+    "1218205838": {
+      "highway": "service"
+    },
+    "1218440318": {
+      "highway": "service"
+    },
+    "1218924284": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "1219270969": {
+      "highway": "footway"
+    },
+    "1219270970": {
+      "highway": "footway"
+    },
+    "1219270971": {
+      "highway": "footway"
+    },
+    "1219270972": {
+      "highway": "footway"
+    },
+    "1219270973": {
+      "highway": "footway"
+    },
+    "1219334178": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1219341853": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1219343325": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1219441974": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1219441975": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1219441976": {
+      "highway": "residential"
+    },
+    "1219443849": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1219443850": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1219459269": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1219461671": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1219468509": {
+      "highway": "service"
+    },
+    "1220424280": {
+      "highway": "service"
+    },
+    "1220426408": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "1220494682": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "1220496373": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1220496374": {
+      "highway": "tertiary"
+    },
+    "1220497306": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1220970988": {
+      "highway": "primary"
+    },
+    "1220970989": {
+      "highway": "tertiary"
+    },
+    "1221221942": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1221433290": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1221671738": {
+      "highway": "service"
+    },
+    "1221934036": {
+      "highway": "service"
+    },
+    "1222522022": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "1223404177": {
+      "highway": "residential"
+    },
+    "1223668308": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1223668310": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1223668311": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1223992080": {
+      "highway": "service"
+    },
+    "1225035784": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "1225035786": {
+      "highway": "footway"
+    },
+    "1225035788": {
+      "highway": "tertiary"
+    },
+    "1225035789": {
+      "highway": "tertiary"
+    },
+    "1225035790": {
+      "highway": "tertiary"
+    },
+    "1225035791": {
+      "highway": "tertiary"
+    },
+    "1225035802": {
+      "highway": "footway"
+    },
+    "1225035809": {
+      "highway": "footway"
+    },
+    "1225035810": {
+      "highway": "footway"
+    },
+    "1225041332": {
+      "highway": "footway"
+    },
+    "1225163274": {
+      "highway": "tertiary"
+    },
+    "1225163275": {
+      "highway": "tertiary"
+    },
+    "1225193083": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "1225193084": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "1225193085": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "1225193089": {
+      "highway": "footway"
+    },
+    "1225193091": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "1225193093": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "1225193095": {
+      "highway": "footway"
+    },
+    "1225193098": {
+      "highway": "footway"
+    },
+    "1225349640": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "1225349641": {
+      "highway": "primary",
+      "lanes": "5"
+    },
+    "1225349642": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "1225349643": {
+      "highway": "primary",
+      "lanes": "5"
+    },
+    "1225349644": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "1225367993": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1225420041": {
+      "highway": "tertiary"
+    },
+    "1225572186": {
+      "highway": "residential"
+    },
+    "1225572187": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1225572188": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1225572848": {
+      "highway": "tertiary"
+    },
+    "1225582971": {
+      "highway": "footway"
+    },
+    "1225833451": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1225835610": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1225835611": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1225835613": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1225835614": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1225836469": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1225836608": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1225849429": {
+      "highway": "tertiary"
+    },
+    "1225849430": {
+      "highway": "tertiary"
+    },
+    "1228225748": {
+      "highway": "primary"
+    },
+    "1228225750": {
+      "highway": "footway"
+    },
+    "1228225751": {
+      "highway": "footway"
+    },
+    "1228225753": {
+      "highway": "footway"
+    },
+    "1228225754": {
+      "highway": "footway"
+    },
+    "1228225755": {
+      "highway": "footway"
+    },
+    "1228225761": {
+      "highway": "footway"
+    },
+    "1228225763": {
+      "highway": "footway"
+    },
+    "1228225765": {
+      "highway": "footway"
+    },
+    "1228225766": {
+      "highway": "footway"
+    },
+    "1228225768": {
+      "highway": "footway"
+    },
+    "1228403098": {
+      "highway": "tertiary"
+    },
+    "1228403099": {
+      "highway": "tertiary"
+    },
+    "1228664119": {
+      "highway": "service"
+    },
+    "1228664120": {
+      "highway": "service"
+    },
+    "1228772504": {
+      "highway": "service"
+    },
+    "1228804130": {
+      "highway": "service"
+    },
+    "1228851729": {
+      "highway": "service"
+    },
+    "1229000031": {
+      "highway": "service"
+    },
+    "1229267153": {
+      "highway": "footway"
+    },
+    "1229267155": {
+      "highway": "footway"
+    },
+    "1229267561": {
+      "highway": "footway"
+    },
+    "1229647042": {
+      "highway": "footway"
+    },
+    "1230057967": {
+      "highway": "secondary"
+    },
+    "1230363303": {
+      "highway": "service"
+    },
+    "1230637663": {
+      "highway": "residential"
+    },
+    "1230752731": {
+      "highway": "service"
+    },
+    "1230799987": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1230799988": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "1230799989": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "1230800752": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1230800753": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "1230839739": {
+      "highway": "footway"
+    },
+    "1230839743": {
+      "highway": "footway"
+    },
+    "1230839754": {
+      "highway": "footway"
+    },
+    "1230839755": {
+      "highway": "footway"
+    },
+    "1230853987": {
+      "highway": "footway"
+    },
+    "1230853988": {
+      "highway": "steps"
+    },
+    "1230853989": {
+      "highway": "steps"
+    },
+    "1230853994": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "1230853995": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1231977948": {
+      "highway": "secondary_link"
+    },
+    "1231977949": {
+      "highway": "secondary"
+    },
+    "1231977950": {
+      "highway": "secondary_link"
+    },
+    "1232138251": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1232138468": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "1232154297": {
+      "highway": "residential"
+    },
+    "1232179871": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "2"
+    },
+    "1232179872": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "2"
+    },
+    "1232611229": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1232611230": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1232611232": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1232611233": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1232872742": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "1232872743": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "1232872744": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1234026252": {
+      "highway": "primary_link"
+    },
+    "1234237276": {
+      "highway": "service"
+    },
+    "1234777161": {
+      "highway": "service"
+    },
+    "1236582074": {
+      "highway": "tertiary_link"
+    },
+    "1236776123": {
+      "highway": "service"
+    },
+    "1237950017": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1240679736": {
+      "highway": "service"
+    },
+    "1241878518": {
+      "highway": "service"
+    },
+    "1241878519": {
+      "highway": "service"
+    },
+    "1242463337": {
+      "highway": "tertiary",
+      "lanes": "3"
+    },
+    "1242682581": {
+      "highway": "tertiary",
+      "lanes": "3"
+    },
+    "1242683009": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1244273481": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "1245426983": {
+      "highway": "service"
+    },
+    "1245426984": {
+      "highway": "service"
+    },
+    "1246114521": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1246114522": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1246264825": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "125111722": {
+      "highway": "service"
+    },
+    "1252230707": {
+      "highway": "service"
+    },
+    "125246918": {
+      "highway": "residential"
+    },
+    "1253208808": {
+      "highway": "service"
+    },
+    "1253545649": {
+      "highway": "residential"
+    },
+    "1253545650": {
+      "highway": "residential"
+    },
+    "1255192198": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "125586367": {
+      "highway": "residential"
+    },
+    "125586372": {
+      "highway": "residential"
+    },
+    "125586377": {
+      "highway": "residential"
+    },
+    "125586381": {
+      "highway": "service"
+    },
+    "125586384": {
+      "highway": "residential"
+    },
+    "125630180": {
+      "highway": "service"
+    },
+    "125631430": {
+      "highway": "service"
+    },
+    "125631431": {
+      "highway": "tertiary"
+    },
+    "125706170": {
+      "highway": "service"
+    },
+    "1258296925": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1258296926": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "125836595": {
+      "highway": "service"
+    },
+    "125836596": {
+      "highway": "service"
+    },
+    "1258904786": {
+      "highway": "tertiary"
+    },
+    "1258956056": {
+      "highway": "residential"
+    },
+    "1258956057": {
+      "highway": "residential"
+    },
+    "1258956058": {
+      "highway": "residential"
+    },
+    "1262095917": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1262095918": {
+      "highway": "residential"
+    },
+    "1262095919": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1262096361": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1262113379": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1262113380": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1262113381": {
+      "highway": "residential"
+    },
+    "1262113383": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1262113384": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1262113385": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1262113386": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1262113388": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1262113389": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1262417129": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1262419222": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1262797012": {
+      "highway": "service"
+    },
+    "1263988854": {
+      "highway": "tertiary"
+    },
+    "1263995326": {
+      "highway": "tertiary"
+    },
+    "1263996178": {
+      "highway": "tertiary"
+    },
+    "1263996179": {
+      "highway": "tertiary"
+    },
+    "1263996180": {
+      "highway": "tertiary"
+    },
+    "1263996642": {
+      "highway": "tertiary"
+    },
+    "1263999998": {
+      "highway": "tertiary"
+    },
+    "1264017505": {
+      "highway": "tertiary"
+    },
+    "1264017506": {
+      "highway": "tertiary"
+    },
+    "1264017507": {
+      "highway": "tertiary"
+    },
+    "1264017508": {
+      "highway": "tertiary"
+    },
+    "1264019419": {
+      "highway": "tertiary"
+    },
+    "1264019420": {
+      "highway": "tertiary"
+    },
+    "1264055784": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1264062525": {
+      "highway": "primary"
+    },
+    "1264062526": {
+      "highway": "residential"
+    },
+    "1264062528": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1264063703": {
+      "highway": "residential"
+    },
+    "1264066989": {
+      "highway": "residential"
+    },
+    "1264066990": {
+      "highway": "residential"
+    },
+    "1264068642": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1264081505": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1264384037": {
+      "highway": "service"
+    },
+    "126467705": {
+      "highway": "residential"
+    },
+    "1265213597": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "1265213598": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "1265213604": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "1265213605": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "1265471315": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "4"
+    },
+    "1265471320": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "1265471321": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "1265525409": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "1265525411": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "1265525443": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "1265525445": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "1265700441": {
+      "highway": "residential"
+    },
+    "1265700889": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "1265700890": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "1265700910": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "1265700911": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "1265700916": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "4"
+    },
+    "1265700922": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "2"
+    },
+    "1265743178": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "4"
+    },
+    "1265743180": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "1265743181": {
+      "highway": "primary"
+    },
+    "1265743198": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "2"
+    },
+    "1265743205": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1265743206": {
+      "highway": "secondary",
+      "junction": "roundabout",
+      "lanes": "2"
+    },
+    "1265743207": {
+      "highway": "secondary",
+      "junction": "roundabout",
+      "lanes": "2"
+    },
+    "1265822532": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1265822544": {
+      "highway": "residential"
+    },
+    "1265822545": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "1265822550": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "1265952608": {
+      "highway": "residential"
+    },
+    "1265952609": {
+      "highway": "residential"
+    },
+    "1265981631": {
+      "highway": "service"
+    },
+    "1265981632": {
+      "highway": "service"
+    },
+    "1266119092": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1266119093": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1266119104": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1266119105": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1266119106": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1266119107": {
+      "highway": "secondary",
+      "junction": "roundabout",
+      "lanes": "2"
+    },
+    "1267006208": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1267006210": {
+      "highway": "secondary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "1267006217": {
+      "highway": "secondary",
+      "junction": "roundabout"
+    },
+    "1267006218": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1267006219": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "1267006220": {
+      "highway": "primary"
+    },
+    "1267048567": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1267048569": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1267097431": {
+      "highway": "residential"
+    },
+    "1267098413": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1267267456": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1267462149": {
+      "highway": "tertiary"
+    },
+    "1267462151": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1267462160": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1267462161": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1267462163": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "126759125": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "126759132": {
+      "highway": "residential"
+    },
+    "126759142": {
+      "highway": "service"
+    },
+    "126759144": {
+      "highway": "primary_link"
+    },
+    "1267653590": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1267694057": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1267694058": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1267694060": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1267694061": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1267828463": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1267828467": {
+      "highway": "secondary"
+    },
+    "1267828468": {
+      "highway": "secondary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "1267828469": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1267828470": {
+      "highway": "secondary",
+      "junction": "roundabout",
+      "lanes": "2"
+    },
+    "1267830031": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "1267830799": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1267837068": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "1267837888": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1267886067": {
+      "highway": "secondary",
+      "junction": "roundabout",
+      "lanes": "2"
+    },
+    "1267886069": {
+      "highway": "secondary"
+    },
+    "1267886070": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1267886071": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1267886072": {
+      "highway": "secondary",
+      "lanes": "4"
+    },
+    "1267886096": {
+      "highway": "secondary"
+    },
+    "1268087049": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1268097000": {
+      "highway": "residential"
+    },
+    "1269082101": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1269082102": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1269082103": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1269082104": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "1269094523": {
+      "highway": "service"
+    },
+    "1269098680": {
+      "highway": "service"
+    },
+    "1269098681": {
+      "highway": "service"
+    },
+    "1269100651": {
+      "highway": "service"
+    },
+    "1269100652": {
+      "highway": "service"
+    },
+    "1269264047": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "1269264048": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "1269264049": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "1269264050": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "1270139986": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1270628963": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1270628964": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1270628966": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1270907345": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1270907347": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1270907348": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1270907349": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1270907377": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "1271081385": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "127154907": {
+      "highway": "service"
+    },
+    "1271747109": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1271747110": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1271747112": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1271747113": {
+      "highway": "tertiary"
+    },
+    "1271747115": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "1271931208": {
+      "highway": "secondary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "1272167419": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1272949179": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "127299416": {
+      "highway": "tertiary"
+    },
+    "127299420": {
+      "highway": "residential"
+    },
+    "127299423": {
+      "highway": "service"
+    },
+    "127299429": {
+      "highway": "service"
+    },
+    "127299447": {
+      "highway": "service"
+    },
+    "127299449": {
+      "highway": "service"
+    },
+    "127299457": {
+      "highway": "service"
+    },
+    "127306575": {
+      "highway": "primary"
+    },
+    "127306577": {
+      "highway": "residential"
+    },
+    "127306578": {
+      "highway": "service"
+    },
+    "1273545107": {
+      "highway": "residential"
+    },
+    "1273609649": {
+      "highway": "service"
+    },
+    "1273613419": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1273938335": {
+      "highway": "tertiary"
+    },
+    "1273985229": {
+      "highway": "service"
+    },
+    "127474802": {
+      "highway": "service"
+    },
+    "1277704599": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1277704600": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1277704601": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1277704602": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1277704603": {
+      "highway": "secondary_link"
+    },
+    "1277704604": {
+      "highway": "tertiary"
+    },
+    "1277704605": {
+      "highway": "tertiary"
+    },
+    "1277704606": {
+      "highway": "residential"
+    },
+    "1277704612": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1277704613": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1277704617": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1278390641": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1278390642": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1278390644": {
+      "highway": "secondary",
+      "junction": "roundabout",
+      "lanes": "2"
+    },
+    "1278390645": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1278390665": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1280105866": {
+      "highway": "primary_link"
+    },
+    "1280785768": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "1280786051": {
+      "highway": "residential"
+    },
+    "1280787660": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "1282089460": {
+      "highway": "path"
+    },
+    "1282089465": {
+      "highway": "tertiary"
+    },
+    "1282089467": {
+      "highway": "tertiary"
+    },
+    "1282089494": {
+      "highway": "path"
+    },
+    "1282089496": {
+      "highway": "path"
+    },
+    "1282093013": {
+      "highway": "tertiary"
+    },
+    "1282410483": {
+      "highway": "tertiary"
+    },
+    "1282572198": {
+      "highway": "tertiary"
+    },
+    "1282703812": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1282703813": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1282703814": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1282703815": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1284862303": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1284862304": {
+      "highway": "residential"
+    },
+    "1285621625": {
+      "highway": "service"
+    },
+    "1285621626": {
+      "highway": "service"
+    },
+    "1286477220": {
+      "highway": "service"
+    },
+    "1286500775": {
+      "highway": "service"
+    },
+    "1286500776": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "1286759520": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "1286760264": {
+      "highway": "service"
+    },
+    "1286940073": {
+      "highway": "tertiary"
+    },
+    "1287924216": {
+      "highway": "residential"
+    },
+    "1289153865": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1289303823": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1289303824": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1289573735": {
+      "highway": "service"
+    },
+    "1289809832": {
+      "highway": "residential"
+    },
+    "1289809833": {
+      "highway": "tertiary"
+    },
+    "1289809834": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1289810836": {
+      "highway": "service"
+    },
+    "1290991916": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1291189654": {
+      "highway": "residential"
+    },
+    "1293329969": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1293794272": {
+      "highway": "residential"
+    },
+    "1293794411": {
+      "highway": "primary_link"
+    },
+    "1293804362": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1294699042": {
+      "highway": "tertiary"
+    },
+    "1296261756": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1296334787": {
+      "highway": "tertiary"
+    },
+    "1296334788": {
+      "highway": "tertiary"
+    },
+    "1296584904": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1298727120": {
+      "highway": "service"
+    },
+    "1300134808": {
+      "highway": "residential"
+    },
+    "1300652090": {
+      "highway": "residential"
+    },
+    "1301737861": {
+      "highway": "service"
+    },
+    "1302177943": {
+      "highway": "service"
+    },
+    "1303046876": {
+      "highway": "service"
+    },
+    "1303047110": {
+      "highway": "residential"
+    },
+    "1303524671": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "1303524672": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1303524673": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1306119402": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1308839157": {
+      "highway": "residential"
+    },
+    "1310005361": {
+      "highway": "residential"
+    },
+    "1313410968": {
+      "highway": "service"
+    },
+    "1316338311": {
+      "highway": "service"
+    },
+    "1318044608": {
+      "highway": "service"
+    },
+    "1320934403": {
+      "highway": "service"
+    },
+    "1321755796": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1321755882": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1321782213": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1322906346": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "1322906347": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "1323053742": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "1323053743": {
+      "highway": "primary"
+    },
+    "1323132560": {
+      "highway": "service"
+    },
+    "1323135663": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1323135664": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1324601668": {
+      "highway": "residential"
+    },
+    "1328044064": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "1328079762": {
+      "highway": "service"
+    },
+    "1328079763": {
+      "highway": "service"
+    },
+    "1328082948": {
+      "highway": "service"
+    },
+    "1328102359": {
+      "highway": "service"
+    },
+    "1328774582": {
+      "highway": "residential"
+    },
+    "1328774583": {
+      "highway": "residential"
+    },
+    "1328976040": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1328976041": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1328977640": {
+      "highway": "primary_link"
+    },
+    "1329829265": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1329837097": {
+      "highway": "residential"
+    },
+    "1330802327": {
+      "highway": "primary_link"
+    },
+    "1330842713": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1331315434": {
+      "highway": "service"
+    },
+    "1334983084": {
+      "highway": "secondary",
+      "lanes": "4"
+    },
+    "1334983090": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "1335918897": {
+      "highway": "service"
+    },
+    "1335918899": {
+      "highway": "service"
+    },
+    "1338226733": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1338226734": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1338226735": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1338226736": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1338782255": {
+      "highway": "residential"
+    },
+    "1338782256": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1338782257": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1338782258": {
+      "highway": "residential"
+    },
+    "1339425356": {
+      "highway": "service"
+    },
+    "1341471525": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1341471526": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1341471527": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1341471528": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1341471529": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1342387592": {
+      "highway": "residential"
+    },
+    "1343272885": {
+      "highway": "service"
+    },
+    "1344042982": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1344042983": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1344677927": {
+      "highway": "primary_link",
+      "lanes": "1"
+    },
+    "1344677928": {
+      "highway": "primary_link",
+      "lanes": "1"
+    },
+    "1344929459": {
+      "highway": "residential"
+    },
+    "1347239887": {
+      "highway": "service"
+    },
+    "1347929935": {
+      "highway": "service"
+    },
+    "1347929936": {
+      "highway": "service"
+    },
+    "1351487716": {
+      "highway": "service"
+    },
+    "1352843518": {
+      "highway": "residential"
+    },
+    "1352843857": {
+      "highway": "service"
+    },
+    "1352896102": {
+      "highway": "service"
+    },
+    "1352936947": {
+      "highway": "tertiary_link",
+      "lanes": "2"
+    },
+    "1353289691": {
+      "highway": "service"
+    },
+    "1353860814": {
+      "highway": "service"
+    },
+    "135556620": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "135556624": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "135556625": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "135556635": {
+      "highway": "residential"
+    },
+    "1357708376": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1357708381": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1357708382": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1357708384": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1357708385": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1357708391": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "1357708396": {
+      "highway": "secondary",
+      "lanes": "4"
+    },
+    "1359264433": {
+      "highway": "residential"
+    },
+    "1359489242": {
+      "highway": "residential"
+    },
+    "1360934113": {
+      "highway": "residential"
+    },
+    "1361092922": {
+      "highway": "service"
+    },
+    "1361122983": {
+      "highway": "residential"
+    },
+    "1361392072": {
+      "highway": "service"
+    },
+    "1363538981": {
+      "highway": "residential"
+    },
+    "1364240832": {
+      "highway": "service"
+    },
+    "1364469312": {
+      "highway": "service"
+    },
+    "1364688450": {
+      "highway": "service"
+    },
+    "1365212617": {
+      "highway": "primary_link"
+    },
+    "136570186": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1366165431": {
+      "highway": "residential"
+    },
+    "1366724919": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "1378895901": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "1378895902": {
+      "highway": "tertiary"
+    },
+    "1378895907": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1380649058": {
+      "highway": "service"
+    },
+    "1381981751": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1381981752": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "1386163866": {
+      "highway": "primary_link"
+    },
+    "138877181": {
+      "highway": "primary"
+    },
+    "1389768275": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "139068126": {
+      "highway": "residential"
+    },
+    "139068133": {
+      "highway": "service"
+    },
+    "139068138": {
+      "highway": "residential"
+    },
+    "139068141": {
+      "highway": "residential"
+    },
+    "139068146": {
+      "highway": "residential"
+    },
+    "139068149": {
+      "highway": "residential"
+    },
+    "139082761": {
+      "highway": "residential"
+    },
+    "139082770": {
+      "highway": "residential"
+    },
+    "139083882": {
+      "highway": "residential"
+    },
+    "139084500": {
+      "highway": "service"
+    },
+    "139084501": {
+      "highway": "service"
+    },
+    "1391771179": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1391772723": {
+      "highway": "secondary",
+      "lanes": "4"
+    },
+    "139214774": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1392153948": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1393834877": {
+      "highway": "service"
+    },
+    "1395672671": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1396128020": {
+      "highway": "service"
+    },
+    "1408775378": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1412133657": {
+      "highway": "service"
+    },
+    "1412930634": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1412930635": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1412930636": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1413602163": {
+      "highway": "primary"
+    },
+    "1413604707": {
+      "highway": "residential"
+    },
+    "1413604708": {
+      "highway": "tertiary",
+      "lanes": "3"
+    },
+    "1413604709": {
+      "highway": "tertiary",
+      "lanes": "3"
+    },
+    "1413604710": {
+      "highway": "tertiary",
+      "lanes": "3"
+    },
+    "1413609457": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "1413610368": {
+      "highway": "tertiary"
+    },
+    "1413610369": {
+      "highway": "tertiary"
+    },
+    "1413620420": {
+      "highway": "residential"
+    },
+    "1414200617": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1414410215": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1414551113": {
+      "highway": "residential"
+    },
+    "1414551598": {
+      "highway": "service"
+    },
+    "1414551599": {
+      "highway": "service"
+    },
+    "1419748894": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "1419755691": {
+      "highway": "service"
+    },
+    "1421710577": {
+      "highway": "service"
+    },
+    "1422960810": {
+      "highway": "tertiary",
+      "lanes": "3"
+    },
+    "1423622447": {
+      "highway": "service"
+    },
+    "1423833307": {
+      "highway": "secondary"
+    },
+    "1423906054": {
+      "highway": "residential"
+    },
+    "1423906060": {
+      "highway": "residential"
+    },
+    "1423906061": {
+      "highway": "service"
+    },
+    "1424752054": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1424752055": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1424970047": {
+      "highway": "steps"
+    },
+    "1424970072": {
+      "highway": "steps"
+    },
+    "1425749373": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1427274685": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1427275746": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "1427275747": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "1428931361": {
+      "highway": "service"
+    },
+    "1432709989": {
+      "highway": "service"
+    },
+    "1434278842": {
+      "highway": "footway"
+    },
+    "1434906974": {
+      "highway": "residential",
+      "lanes": "4"
+    },
+    "1434906975": {
+      "highway": "residential"
+    },
+    "1434907060": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "1441650755": {
+      "highway": "service"
+    },
+    "1441768931": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1443403626": {
+      "highway": "secondary"
+    },
+    "1443551463": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1443902334": {
+      "highway": "service"
+    },
+    "1447637217": {
+      "highway": "footway"
+    },
+    "145656930": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "1462249687": {
+      "highway": "footway"
+    },
+    "1465492962": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "1469400053": {
+      "highway": "service"
+    },
+    "1469400054": {
+      "highway": "service"
+    },
+    "1470816648": {
+      "highway": "service"
+    },
+    "147394874": {
+      "highway": "residential"
+    },
+    "147394883": {
+      "highway": "residential"
+    },
+    "147394904": {
+      "highway": "service"
+    },
+    "1474602711": {
+      "highway": "secondary",
+      "lanes": "4"
+    },
+    "1474602714": {
+      "highway": "secondary",
+      "lanes": "4"
+    },
+    "1475206856": {
+      "highway": "steps"
+    },
+    "1475261861": {
+      "highway": "unclassified"
+    },
+    "1476220417": {
+      "highway": "footway"
+    },
+    "1486042710": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1486139601": {
+      "highway": "primary"
+    },
+    "1486139603": {
+      "highway": "primary"
+    },
+    "1486236793": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1488469980": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1489014646": {
+      "highway": "service"
+    },
+    "1491813585": {
+      "highway": "tertiary_link"
+    },
+    "1491813821": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1496010308": {
+      "highway": "footway"
+    },
+    "1496010309": {
+      "highway": "footway"
+    },
+    "1496010310": {
+      "highway": "footway"
+    },
+    "1496010311": {
+      "highway": "footway"
+    },
+    "1498979283": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "1504027129": {
+      "highway": "steps"
+    },
+    "1511909553": {
+      "highway": "footway"
+    },
+    "1511909555": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1511909556": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1511909557": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1511909558": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "1523207558": {
+      "highway": "primary_link"
+    },
+    "1523207560": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1523242066": {
+      "highway": "residential"
+    },
+    "1523242067": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "1524246181": {
+      "highway": "residential"
+    },
+    "1527127155": {
+      "highway": "secondary_link",
+      "lanes": "1"
+    },
+    "1528444422": {
+      "highway": "residential"
+    },
+    "1534892530": {
+      "highway": "service"
+    },
+    "1536472435": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1537228789": {
+      "highway": "path"
+    },
+    "154140517": {
+      "highway": "service"
+    },
+    "154140525": {
+      "highway": "service"
+    },
+    "154646793": {
+      "highway": "residential"
+    },
+    "154646810": {
+      "highway": "service"
+    },
+    "154646818": {
+      "highway": "residential"
+    },
+    "154646820": {
+      "highway": "residential"
+    },
+    "1546875774": {
+      "highway": "tertiary",
+      "lanes": "3"
+    },
+    "1546890108": {
+      "highway": "residential"
+    },
+    "1546890109": {
+      "highway": "service"
+    },
+    "1546918735": {
+      "highway": "service"
+    },
+    "1546925496": {
+      "highway": "service"
+    },
+    "1546925498": {
+      "highway": "service"
+    },
+    "1547487917": {
+      "highway": "service"
+    },
+    "1547531672": {
+      "highway": "primary"
+    },
+    "1547531673": {
+      "highway": "primary_link"
+    },
+    "154823448": {
+      "highway": "tertiary"
+    },
+    "154823449": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "154823450": {
+      "highway": "tertiary"
+    },
+    "154823451": {
+      "highway": "service"
+    },
+    "154823456": {
+      "highway": "service"
+    },
+    "1548654275": {
+      "highway": "tertiary"
+    },
+    "1548654276": {
+      "highway": "tertiary"
+    },
+    "1549180538": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "1549445127": {
+      "highway": "service"
+    },
+    "1549466499": {
+      "highway": "primary_link"
+    },
+    "1549466500": {
+      "highway": "primary_link"
+    },
+    "1549466502": {
+      "highway": "primary_link"
+    },
+    "1549731704": {
+      "highway": "primary_link"
+    },
+    "1549733675": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "1550642487": {
+      "highway": "tertiary_link"
+    },
+    "155103523": {
+      "highway": "service"
+    },
+    "155103535": {
+      "highway": "service"
+    },
+    "155103537": {
+      "highway": "service"
+    },
+    "158347216": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "158460322": {
+      "highway": "service"
+    },
+    "161619072": {
+      "highway": "residential"
+    },
+    "166002614": {
+      "highway": "service"
+    },
+    "166002615": {
+      "highway": "service"
+    },
+    "166002627": {
+      "highway": "service"
+    },
+    "179122338": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "195672066": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "196966090": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "197125475": {
+      "highway": "primary_link"
+    },
+    "197557661": {
+      "highway": "service"
+    },
+    "197557665": {
+      "highway": "residential"
+    },
+    "197557667": {
+      "highway": "service"
+    },
+    "197557678": {
+      "highway": "residential"
+    },
+    "197557684": {
+      "highway": "residential"
+    },
+    "197557687": {
+      "highway": "service"
+    },
+    "197557689": {
+      "highway": "residential"
+    },
+    "197557690": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "197557693": {
+      "highway": "residential"
+    },
+    "197557695": {
+      "highway": "service"
+    },
+    "197557698": {
+      "highway": "residential"
+    },
+    "197557700": {
+      "highway": "service"
+    },
+    "197557702": {
+      "highway": "residential"
+    },
+    "197557703": {
+      "highway": "service"
+    },
+    "197557708": {
+      "highway": "service"
+    },
+    "197557712": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "197557715": {
+      "highway": "residential"
+    },
+    "197690823": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "197690824": {
+      "highway": "service"
+    },
+    "197690829": {
+      "highway": "residential"
+    },
+    "197690831": {
+      "highway": "residential"
+    },
+    "197690832": {
+      "highway": "residential"
+    },
+    "197690839": {
+      "highway": "service"
+    },
+    "197690848": {
+      "highway": "residential"
+    },
+    "197690853": {
+      "highway": "service"
+    },
+    "197690854": {
+      "highway": "residential"
+    },
+    "197690856": {
+      "highway": "service"
+    },
+    "197690858": {
+      "highway": "residential"
+    },
+    "197690859": {
+      "highway": "service"
+    },
+    "197690865": {
+      "highway": "service"
+    },
+    "197690874": {
+      "highway": "residential"
+    },
+    "197690879": {
+      "highway": "residential"
+    },
+    "197690880": {
+      "highway": "residential"
+    },
+    "197690881": {
+      "highway": "service"
+    },
+    "197690886": {
+      "highway": "residential"
+    },
+    "197690891": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "197690902": {
+      "highway": "service"
+    },
+    "197690904": {
+      "highway": "service"
+    },
+    "197690909": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "197690910": {
+      "highway": "service"
+    },
+    "197690911": {
+      "highway": "residential"
+    },
+    "197690913": {
+      "highway": "service"
+    },
+    "197690914": {
+      "highway": "residential"
+    },
+    "197690918": {
+      "highway": "service"
+    },
+    "197803941": {
+      "highway": "residential"
+    },
+    "197803944": {
+      "highway": "service"
+    },
+    "197803963": {
+      "highway": "residential"
+    },
+    "197803968": {
+      "highway": "residential"
+    },
+    "197803970": {
+      "highway": "service"
+    },
+    "197803974": {
+      "highway": "residential"
+    },
+    "197803975": {
+      "highway": "residential"
+    },
+    "197803978": {
+      "highway": "service"
+    },
+    "197803980": {
+      "highway": "residential"
+    },
+    "197803987": {
+      "highway": "residential"
+    },
+    "197803991": {
+      "highway": "residential"
+    },
+    "197803997": {
+      "highway": "service"
+    },
+    "197803998": {
+      "highway": "residential"
+    },
+    "197804004": {
+      "highway": "residential"
+    },
+    "197804012": {
+      "highway": "residential"
+    },
+    "197804013": {
+      "highway": "residential"
+    },
+    "197804014": {
+      "highway": "residential"
+    },
+    "197804016": {
+      "highway": "residential"
+    },
+    "197804021": {
+      "highway": "primary"
+    },
+    "197804029": {
+      "highway": "service"
+    },
+    "197804036": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "197804046": {
+      "highway": "residential"
+    },
+    "197804049": {
+      "highway": "residential"
+    },
+    "197804057": {
+      "highway": "service"
+    },
+    "197804061": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "197804066": {
+      "highway": "service"
+    },
+    "197804068": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "197804070": {
+      "highway": "residential"
+    },
+    "197804071": {
+      "highway": "residential"
+    },
+    "197804072": {
+      "highway": "residential"
+    },
+    "197804077": {
+      "highway": "service"
+    },
+    "197804078": {
+      "highway": "tertiary"
+    },
+    "197804080": {
+      "highway": "service"
+    },
+    "197804086": {
+      "highway": "service"
+    },
+    "197804087": {
+      "highway": "residential"
+    },
+    "197804091": {
+      "highway": "service"
+    },
+    "197804093": {
+      "highway": "residential"
+    },
+    "197804097": {
+      "highway": "service"
+    },
+    "197940882": {
+      "highway": "service"
+    },
+    "197940883": {
+      "highway": "residential"
+    },
+    "197940922": {
+      "highway": "service"
+    },
+    "197940932": {
+      "highway": "service"
+    },
+    "197982830": {
+      "highway": "service"
+    },
+    "197982831": {
+      "highway": "service"
+    },
+    "197982842": {
+      "highway": "service"
+    },
+    "197982849": {
+      "highway": "service"
+    },
+    "197982850": {
+      "highway": "residential"
+    },
+    "197982856": {
+      "highway": "primary"
+    },
+    "197982858": {
+      "highway": "service"
+    },
+    "197982859": {
+      "highway": "service"
+    },
+    "197982860": {
+      "highway": "primary_link"
+    },
+    "197995293": {
+      "highway": "service"
+    },
+    "197995307": {
+      "highway": "service"
+    },
+    "197995311": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "197995312": {
+      "highway": "service"
+    },
+    "197995314": {
+      "highway": "service"
+    },
+    "197995327": {
+      "highway": "service"
+    },
+    "197995346": {
+      "highway": "service"
+    },
+    "197995351": {
+      "highway": "service"
+    },
+    "197995356": {
+      "highway": "residential"
+    },
+    "197995363": {
+      "highway": "service"
+    },
+    "197995364": {
+      "highway": "residential"
+    },
+    "197995366": {
+      "highway": "residential"
+    },
+    "197996941": {
+      "highway": "primary_link"
+    },
+    "198323749": {
+      "highway": "service"
+    },
+    "198323754": {
+      "highway": "service"
+    },
+    "198323757": {
+      "highway": "service"
+    },
+    "198323762": {
+      "highway": "service"
+    },
+    "198323769": {
+      "highway": "residential"
+    },
+    "198323772": {
+      "highway": "service"
+    },
+    "198323773": {
+      "highway": "service"
+    },
+    "198323774": {
+      "highway": "service"
+    },
+    "198323775": {
+      "highway": "service"
+    },
+    "198323782": {
+      "highway": "service"
+    },
+    "198323783": {
+      "highway": "service"
+    },
+    "198323784": {
+      "highway": "service"
+    },
+    "198323785": {
+      "highway": "service"
+    },
+    "198323786": {
+      "highway": "residential"
+    },
+    "198323787": {
+      "highway": "service"
+    },
+    "198323792": {
+      "highway": "residential"
+    },
+    "198323793": {
+      "highway": "residential"
+    },
+    "198323794": {
+      "highway": "service"
+    },
+    "198323795": {
+      "highway": "service"
+    },
+    "198323799": {
+      "highway": "service"
+    },
+    "198323802": {
+      "highway": "residential"
+    },
+    "198323803": {
+      "highway": "service"
+    },
+    "206477234": {
+      "highway": "residential"
+    },
+    "211408254": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "211408580": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "211408582": {
+      "highway": "primary",
+      "lanes": "8"
+    },
+    "211411396": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "211411397": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "211411780": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "211419161": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "211419300": {
+      "highway": "tertiary"
+    },
+    "213427296": {
+      "highway": "residential"
+    },
+    "213719137": {
+      "highway": "residential"
+    },
+    "213720087": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "213721187": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "213721195": {
+      "highway": "primary"
+    },
+    "213726068": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "213727081": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "219730466": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "219861051": {
+      "highway": "residential"
+    },
+    "219861150": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "219862412": {
+      "highway": "residential"
+    },
+    "219862606": {
+      "highway": "service"
+    },
+    "219978040": {
+      "highway": "residential"
+    },
+    "219978041": {
+      "highway": "service"
+    },
+    "220216394": {
+      "highway": "primary_link"
+    },
+    "220216395": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "220216396": {
+      "highway": "residential"
+    },
+    "220216399": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "220216401": {
+      "highway": "residential"
+    },
+    "220216404": {
+      "highway": "tertiary"
+    },
+    "220216405": {
+      "highway": "secondary"
+    },
+    "220216406": {
+      "highway": "tertiary"
+    },
+    "220216408": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "220216412": {
+      "highway": "residential"
+    },
+    "220860889": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "220860890": {
+      "highway": "tertiary"
+    },
+    "220860894": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "220862413": {
+      "highway": "residential"
+    },
+    "220971019": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "220971469": {
+      "highway": "residential"
+    },
+    "220971738": {
+      "highway": "residential"
+    },
+    "220971741": {
+      "highway": "service"
+    },
+    "220971742": {
+      "highway": "service"
+    },
+    "220972102": {
+      "highway": "residential"
+    },
+    "221150633": {
+      "highway": "residential"
+    },
+    "223362707": {
+      "highway": "service"
+    },
+    "223784360": {
+      "highway": "primary"
+    },
+    "224445970": {
+      "highway": "tertiary"
+    },
+    "224446115": {
+      "highway": "residential"
+    },
+    "224446117": {
+      "highway": "residential"
+    },
+    "224446121": {
+      "highway": "residential"
+    },
+    "224446173": {
+      "highway": "residential"
+    },
+    "225192389": {
+      "highway": "primary"
+    },
+    "225192390": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "225192428": {
+      "highway": "primary"
+    },
+    "225192874": {
+      "highway": "primary_link"
+    },
+    "226183509": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "226188528": {
+      "highway": "residential"
+    },
+    "226188529": {
+      "highway": "residential"
+    },
+    "226188530": {
+      "highway": "residential"
+    },
+    "226188999": {
+      "highway": "service"
+    },
+    "226189000": {
+      "highway": "service"
+    },
+    "226189002": {
+      "highway": "residential"
+    },
+    "226509527": {
+      "highway": "primary_link"
+    },
+    "227737845": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "228023679": {
+      "highway": "tertiary"
+    },
+    "228024247": {
+      "highway": "residential"
+    },
+    "228024331": {
+      "highway": "service"
+    },
+    "228024681": {
+      "highway": "residential"
+    },
+    "228024682": {
+      "highway": "service"
+    },
+    "228176508": {
+      "highway": "residential"
+    },
+    "232504353": {
+      "highway": "residential"
+    },
+    "232504355": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "232595316": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "232595317": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "232595730": {
+      "highway": "residential"
+    },
+    "232596227": {
+      "highway": "primary_link"
+    },
+    "235240684": {
+      "highway": "primary_link"
+    },
+    "235401054": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "235401058": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "235765782": {
+      "highway": "residential"
+    },
+    "235765783": {
+      "highway": "residential"
+    },
+    "235765957": {
+      "highway": "residential"
+    },
+    "237480053": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "239157292": {
+      "highway": "primary",
+      "junction": "roundabout"
+    },
+    "241578231": {
+      "highway": "service"
+    },
+    "241578431": {
+      "highway": "secondary"
+    },
+    "241998164": {
+      "highway": "service"
+    },
+    "241998681": {
+      "highway": "residential"
+    },
+    "241999057": {
+      "highway": "tertiary"
+    },
+    "241999132": {
+      "highway": "residential"
+    },
+    "241999133": {
+      "highway": "residential"
+    },
+    "241999167": {
+      "highway": "residential"
+    },
+    "241999168": {
+      "highway": "service"
+    },
+    "241999189": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "241999538": {
+      "highway": "residential"
+    },
+    "242003110": {
+      "highway": "service"
+    },
+    "242003623": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "242003626": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "242004778": {
+      "highway": "service"
+    },
+    "242307849": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "242307850": {
+      "highway": "service"
+    },
+    "242307851": {
+      "highway": "secondary",
+      "lanes": "4"
+    },
+    "244009299": {
+      "highway": "residential"
+    },
+    "251731298": {
+      "highway": "tertiary"
+    },
+    "251731299": {
+      "highway": "tertiary"
+    },
+    "251731300": {
+      "highway": "tertiary"
+    },
+    "251731301": {
+      "highway": "tertiary"
+    },
+    "253275186": {
+      "highway": "primary_link"
+    },
+    "255646387": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "255646388": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "255646389": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "255646390": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "255646465": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "256404544": {
+      "highway": "residential"
+    },
+    "256453281": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "263444613": {
+      "highway": "residential"
+    },
+    "263444615": {
+      "highway": "residential"
+    },
+    "263444616": {
+      "highway": "residential"
+    },
+    "263444618": {
+      "highway": "tertiary"
+    },
+    "263444619": {
+      "highway": "residential"
+    },
+    "263444631": {
+      "highway": "residential"
+    },
+    "266333455": {
+      "highway": "residential"
+    },
+    "266768982": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "276782078": {
+      "highway": "residential"
+    },
+    "276788665": {
+      "highway": "footway"
+    },
+    "277753701": {
+      "highway": "residential"
+    },
+    "277754636": {
+      "highway": "residential"
+    },
+    "277754942": {
+      "highway": "service"
+    },
+    "277755043": {
+      "highway": "service"
+    },
+    "277755716": {
+      "highway": "residential"
+    },
+    "277756214": {
+      "highway": "residential"
+    },
+    "277757271": {
+      "highway": "service"
+    },
+    "279944147": {
+      "highway": "service"
+    },
+    "279944945": {
+      "highway": "residential"
+    },
+    "279944972": {
+      "highway": "residential"
+    },
+    "279945212": {
+      "highway": "residential"
+    },
+    "279946683": {
+      "highway": "residential"
+    },
+    "279946849": {
+      "highway": "residential"
+    },
+    "281986189": {
+      "highway": "residential"
+    },
+    "281986194": {
+      "highway": "residential"
+    },
+    "286469895": {
+      "highway": "residential"
+    },
+    "286471172": {
+      "highway": "residential"
+    },
+    "286471176": {
+      "highway": "residential"
+    },
+    "289494377": {
+      "highway": "residential"
+    },
+    "289494632": {
+      "highway": "residential"
+    },
+    "289498951": {
+      "highway": "service"
+    },
+    "289862908": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "292142700": {
+      "highway": "service"
+    },
+    "296122573": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "296122574": {
+      "highway": "secondary_link",
+      "lanes": "1"
+    },
+    "296122918": {
+      "highway": "primary_link",
+      "lanes": "1"
+    },
+    "296122979": {
+      "highway": "residential"
+    },
+    "297309165": {
+      "highway": "primary"
+    },
+    "303723071": {
+      "highway": "residential"
+    },
+    "303726063": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "303726067": {
+      "highway": "residential"
+    },
+    "304359232": {
+      "highway": "residential"
+    },
+    "304360664": {
+      "highway": "residential"
+    },
+    "304360839": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "304360842": {
+      "highway": "tertiary"
+    },
+    "304967641": {
+      "highway": "service"
+    },
+    "304967643": {
+      "highway": "service"
+    },
+    "312016073": {
+      "highway": "tertiary"
+    },
+    "314694007": {
+      "highway": "service"
+    },
+    "315564842": {
+      "highway": "primary"
+    },
+    "319790115": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "32575876": {
+      "highway": "service"
+    },
+    "32576112": {
+      "highway": "tertiary"
+    },
+    "32576202": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32576303": {
+      "highway": "residential"
+    },
+    "32576377": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32576401": {
+      "highway": "residential"
+    },
+    "32576402": {
+      "highway": "residential"
+    },
+    "32576409": {
+      "highway": "residential"
+    },
+    "32576686": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32576687": {
+      "highway": "residential"
+    },
+    "32576747": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32576835": {
+      "highway": "residential"
+    },
+    "32576891": {
+      "highway": "residential"
+    },
+    "32576900": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32576950": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32577116": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32577208": {
+      "highway": "residential"
+    },
+    "32577310": {
+      "highway": "residential"
+    },
+    "32577450": {
+      "highway": "residential"
+    },
+    "32577455": {
+      "highway": "service"
+    },
+    "32577525": {
+      "highway": "residential"
+    },
+    "32577561": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "32577675": {
+      "highway": "residential"
+    },
+    "32577684": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "32577686": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "32577782": {
+      "highway": "residential"
+    },
+    "32577798": {
+      "highway": "residential"
+    },
+    "32577817": {
+      "highway": "residential"
+    },
+    "32577828": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "32578046": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32578100": {
+      "highway": "tertiary"
+    },
+    "32578332": {
+      "highway": "residential"
+    },
+    "32578391": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32578394": {
+      "highway": "residential"
+    },
+    "32578549": {
+      "highway": "residential"
+    },
+    "32578558": {
+      "highway": "residential"
+    },
+    "32578559": {
+      "highway": "residential"
+    },
+    "32578565": {
+      "highway": "residential"
+    },
+    "32578733": {
+      "highway": "tertiary"
+    },
+    "32578734": {
+      "highway": "residential"
+    },
+    "32578736": {
+      "highway": "primary",
+      "lanes": "5"
+    },
+    "32578758": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "32578880": {
+      "highway": "residential"
+    },
+    "32578909": {
+      "highway": "footway"
+    },
+    "32578991": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32579047": {
+      "highway": "residential"
+    },
+    "32579174": {
+      "highway": "residential"
+    },
+    "32579342": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "32579343": {
+      "highway": "residential"
+    },
+    "32579418": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32579472": {
+      "highway": "service"
+    },
+    "32579474": {
+      "highway": "residential"
+    },
+    "32579529": {
+      "highway": "service"
+    },
+    "32579549": {
+      "highway": "residential"
+    },
+    "32579569": {
+      "highway": "service"
+    },
+    "32579614": {
+      "highway": "tertiary"
+    },
+    "32579622": {
+      "highway": "residential"
+    },
+    "32579624": {
+      "highway": "residential"
+    },
+    "32579641": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "32579658": {
+      "highway": "residential"
+    },
+    "32579669": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "32579801": {
+      "highway": "residential"
+    },
+    "32579894": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "32579934": {
+      "highway": "residential"
+    },
+    "32579936": {
+      "highway": "residential"
+    },
+    "32579943": {
+      "highway": "residential"
+    },
+    "32580181": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32580242": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "32580387": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "32580466": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "32580608": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "32580739": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32580857": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32580926": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "32580959": {
+      "highway": "tertiary"
+    },
+    "32581306": {
+      "highway": "residential"
+    },
+    "32581307": {
+      "highway": "residential"
+    },
+    "32581426": {
+      "highway": "residential"
+    },
+    "32581480": {
+      "highway": "residential"
+    },
+    "32581483": {
+      "highway": "residential"
+    },
+    "32581500": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32581733": {
+      "highway": "residential"
+    },
+    "32581838": {
+      "highway": "residential"
+    },
+    "32581881": {
+      "highway": "tertiary"
+    },
+    "32581891": {
+      "highway": "residential"
+    },
+    "32582065": {
+      "highway": "residential"
+    },
+    "32582109": {
+      "highway": "tertiary"
+    },
+    "32582124": {
+      "highway": "residential"
+    },
+    "32582168": {
+      "highway": "service"
+    },
+    "32582173": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "32582180": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32582260": {
+      "highway": "residential"
+    },
+    "32582525": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "32582561": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "32582754": {
+      "highway": "residential"
+    },
+    "32583029": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32583115": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32583149": {
+      "highway": "residential"
+    },
+    "32583213": {
+      "highway": "service"
+    },
+    "32583251": {
+      "highway": "tertiary"
+    },
+    "32583384": {
+      "highway": "tertiary"
+    },
+    "32583408": {
+      "highway": "residential"
+    },
+    "32583433": {
+      "highway": "residential"
+    },
+    "32583468": {
+      "highway": "residential"
+    },
+    "32583476": {
+      "highway": "residential"
+    },
+    "32583490": {
+      "highway": "residential"
+    },
+    "32583663": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "32583702": {
+      "highway": "residential"
+    },
+    "32583824": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32583841": {
+      "highway": "residential"
+    },
+    "32583903": {
+      "highway": "residential"
+    },
+    "32583904": {
+      "highway": "residential"
+    },
+    "32584095": {
+      "highway": "residential"
+    },
+    "32584146": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "32584160": {
+      "highway": "residential"
+    },
+    "32584266": {
+      "highway": "service"
+    },
+    "32584318": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32584384": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32584426": {
+      "highway": "residential"
+    },
+    "32584525": {
+      "highway": "residential"
+    },
+    "32584708": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32584713": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32584853": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32584870": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32585085": {
+      "highway": "residential"
+    },
+    "32585188": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32585238": {
+      "highway": "service"
+    },
+    "32585371": {
+      "highway": "residential"
+    },
+    "32585376": {
+      "highway": "residential"
+    },
+    "32585394": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32585398": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "32585534": {
+      "highway": "residential"
+    },
+    "32585535": {
+      "highway": "residential"
+    },
+    "32585536": {
+      "highway": "tertiary"
+    },
+    "32585567": {
+      "highway": "residential"
+    },
+    "32585601": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32585697": {
+      "highway": "residential"
+    },
+    "32585809": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32585811": {
+      "highway": "residential"
+    },
+    "32585934": {
+      "highway": "tertiary"
+    },
+    "32586017": {
+      "highway": "tertiary"
+    },
+    "32586028": {
+      "highway": "residential"
+    },
+    "32586122": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32586228": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32586406": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32586407": {
+      "highway": "residential"
+    },
+    "32586475": {
+      "highway": "tertiary"
+    },
+    "32586481": {
+      "highway": "residential"
+    },
+    "32586612": {
+      "highway": "residential"
+    },
+    "32586618": {
+      "highway": "residential"
+    },
+    "32586724": {
+      "highway": "service"
+    },
+    "32586725": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "32586896": {
+      "highway": "secondary",
+      "lanes": "4"
+    },
+    "32586914": {
+      "highway": "residential"
+    },
+    "32586960": {
+      "highway": "residential"
+    },
+    "32587114": {
+      "highway": "residential"
+    },
+    "32587168": {
+      "highway": "residential"
+    },
+    "32587315": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32587405": {
+      "highway": "residential"
+    },
+    "32587570": {
+      "highway": "tertiary"
+    },
+    "32587683": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32587722": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "32587726": {
+      "highway": "residential"
+    },
+    "32587789": {
+      "highway": "residential"
+    },
+    "32587814": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "32587934": {
+      "highway": "tertiary"
+    },
+    "32587985": {
+      "highway": "residential"
+    },
+    "32588172": {
+      "highway": "residential"
+    },
+    "32588349": {
+      "highway": "residential"
+    },
+    "32588479": {
+      "highway": "tertiary_link"
+    },
+    "32588527": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "32588532": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "32588605": {
+      "highway": "residential"
+    },
+    "32588655": {
+      "highway": "residential"
+    },
+    "32588772": {
+      "highway": "residential"
+    },
+    "32588797": {
+      "highway": "residential"
+    },
+    "326849847": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "327048051": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "327097625": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "327097629": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "327097639": {
+      "highway": "residential"
+    },
+    "327097640": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "330035859": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "330035860": {
+      "highway": "primary"
+    },
+    "330071250": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "330304845": {
+      "highway": "service"
+    },
+    "33103443": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "33103446": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "33103463": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "333379575": {
+      "highway": "tertiary"
+    },
+    "339122289": {
+      "highway": "residential"
+    },
+    "339122293": {
+      "highway": "service"
+    },
+    "339122300": {
+      "highway": "service"
+    },
+    "339124959": {
+      "highway": "residential"
+    },
+    "35085677": {
+      "highway": "tertiary",
+      "lanes": "3"
+    },
+    "35085736": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "35086157": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "35112673": {
+      "highway": "service"
+    },
+    "35112686": {
+      "highway": "residential"
+    },
+    "35112762": {
+      "highway": "service"
+    },
+    "35112965": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "35113076": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "35113149": {
+      "highway": "residential"
+    },
+    "35113192": {
+      "highway": "service"
+    },
+    "35113195": {
+      "highway": "service"
+    },
+    "35113268": {
+      "highway": "residential"
+    },
+    "35113440": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "35113615": {
+      "highway": "residential"
+    },
+    "35113651": {
+      "highway": "service"
+    },
+    "35113764": {
+      "highway": "service"
+    },
+    "35113797": {
+      "highway": "residential"
+    },
+    "35113942": {
+      "highway": "residential"
+    },
+    "35113992": {
+      "highway": "residential"
+    },
+    "35114002": {
+      "highway": "residential"
+    },
+    "35114076": {
+      "highway": "residential"
+    },
+    "35114086": {
+      "highway": "service"
+    },
+    "35114235": {
+      "highway": "residential"
+    },
+    "35114292": {
+      "highway": "residential"
+    },
+    "35114375": {
+      "highway": "service"
+    },
+    "35114393": {
+      "highway": "service"
+    },
+    "35114454": {
+      "highway": "service"
+    },
+    "35114487": {
+      "highway": "service"
+    },
+    "35114493": {
+      "highway": "service"
+    },
+    "35114536": {
+      "highway": "residential"
+    },
+    "35114540": {
+      "highway": "service"
+    },
+    "35114549": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "35114605": {
+      "highway": "residential"
+    },
+    "35114608": {
+      "highway": "service"
+    },
+    "35114611": {
+      "highway": "service"
+    },
+    "35114652": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "35114725": {
+      "highway": "service"
+    },
+    "35114809": {
+      "highway": "service"
+    },
+    "35114860": {
+      "highway": "service"
+    },
+    "35114893": {
+      "highway": "residential"
+    },
+    "35114965": {
+      "highway": "tertiary",
+      "lanes": "3"
+    },
+    "35115031": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "4"
+    },
+    "35115081": {
+      "highway": "tertiary"
+    },
+    "355864936": {
+      "highway": "service"
+    },
+    "355866760": {
+      "highway": "service"
+    },
+    "355882020": {
+      "highway": "service"
+    },
+    "355882025": {
+      "highway": "service"
+    },
+    "360849852": {
+      "highway": "service"
+    },
+    "360849858": {
+      "highway": "service"
+    },
+    "360849864": {
+      "highway": "service"
+    },
+    "360849883": {
+      "highway": "residential"
+    },
+    "360910875": {
+      "highway": "service"
+    },
+    "362906639": {
+      "highway": "residential"
+    },
+    "366065242": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "367972742": {
+      "highway": "service"
+    },
+    "367972749": {
+      "highway": "service"
+    },
+    "367972751": {
+      "highway": "service"
+    },
+    "367975834": {
+      "highway": "residential"
+    },
+    "367975835": {
+      "highway": "residential"
+    },
+    "367977461": {
+      "highway": "residential"
+    },
+    "367977462": {
+      "highway": "residential"
+    },
+    "367977463": {
+      "highway": "residential"
+    },
+    "367999460": {
+      "highway": "residential"
+    },
+    "367999462": {
+      "highway": "residential"
+    },
+    "369668984": {
+      "highway": "residential"
+    },
+    "372305022": {
+      "highway": "tertiary"
+    },
+    "372305024": {
+      "highway": "service"
+    },
+    "373719803": {
+      "highway": "residential"
+    },
+    "373721575": {
+      "highway": "residential"
+    },
+    "373721576": {
+      "highway": "residential"
+    },
+    "373721577": {
+      "highway": "service"
+    },
+    "373721579": {
+      "highway": "service"
+    },
+    "373721639": {
+      "highway": "residential"
+    },
+    "373721645": {
+      "highway": "service"
+    },
+    "373723513": {
+      "highway": "residential"
+    },
+    "373723514": {
+      "highway": "service"
+    },
+    "373723515": {
+      "highway": "residential"
+    },
+    "373723519": {
+      "highway": "service"
+    },
+    "373723520": {
+      "highway": "service"
+    },
+    "373723525": {
+      "highway": "residential"
+    },
+    "373726333": {
+      "highway": "service"
+    },
+    "373726340": {
+      "highway": "service"
+    },
+    "373726351": {
+      "highway": "service"
+    },
+    "373726352": {
+      "highway": "residential"
+    },
+    "373726355": {
+      "highway": "service"
+    },
+    "373726356": {
+      "highway": "service"
+    },
+    "373726380": {
+      "highway": "service"
+    },
+    "373726385": {
+      "highway": "service"
+    },
+    "373726386": {
+      "highway": "service"
+    },
+    "373726392": {
+      "highway": "residential"
+    },
+    "373726397": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "373726400": {
+      "highway": "residential"
+    },
+    "373727570": {
+      "highway": "service"
+    },
+    "373727572": {
+      "highway": "residential"
+    },
+    "373727573": {
+      "highway": "residential"
+    },
+    "375548166": {
+      "highway": "residential"
+    },
+    "376483144": {
+      "highway": "service"
+    },
+    "376483145": {
+      "highway": "service"
+    },
+    "376483146": {
+      "highway": "service"
+    },
+    "376483147": {
+      "highway": "service"
+    },
+    "376483148": {
+      "highway": "service"
+    },
+    "377308557": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "377308561": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "377308590": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "377308619": {
+      "highway": "primary_link"
+    },
+    "377308620": {
+      "highway": "primary_link"
+    },
+    "377308622": {
+      "highway": "service"
+    },
+    "379717900": {
+      "highway": "service"
+    },
+    "379717901": {
+      "highway": "residential"
+    },
+    "379717902": {
+      "highway": "residential"
+    },
+    "379717903": {
+      "highway": "service"
+    },
+    "379717904": {
+      "highway": "service"
+    },
+    "379717917": {
+      "highway": "service"
+    },
+    "379717918": {
+      "highway": "service"
+    },
+    "379717929": {
+      "highway": "residential"
+    },
+    "379717932": {
+      "highway": "residential"
+    },
+    "385437767": {
+      "highway": "residential"
+    },
+    "385438626": {
+      "highway": "residential"
+    },
+    "387696666": {
+      "highway": "service"
+    },
+    "39622931": {
+      "highway": "residential"
+    },
+    "399199898": {
+      "highway": "residential"
+    },
+    "399200618": {
+      "highway": "residential"
+    },
+    "399201170": {
+      "highway": "residential"
+    },
+    "404516716": {
+      "highway": "primary"
+    },
+    "404517256": {
+      "highway": "service"
+    },
+    "408202951": {
+      "highway": "primary"
+    },
+    "408212794": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "408212916": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "408235684": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "408240893": {
+      "highway": "primary"
+    },
+    "408246385": {
+      "highway": "tertiary"
+    },
+    "408251572": {
+      "highway": "residential"
+    },
+    "409047868": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "409053190": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "409053191": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "409055737": {
+      "highway": "tertiary"
+    },
+    "409057040": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "409059035": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "409059036": {
+      "highway": "primary_link",
+      "lanes": "2"
+    },
+    "409070758": {
+      "highway": "residential"
+    },
+    "409276051": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "410149784": {
+      "highway": "residential"
+    },
+    "410150095": {
+      "highway": "residential"
+    },
+    "410150107": {
+      "highway": "residential"
+    },
+    "410150261": {
+      "highway": "residential"
+    },
+    "418900318": {
+      "highway": "residential"
+    },
+    "418925064": {
+      "highway": "residential"
+    },
+    "420287631": {
+      "highway": "service"
+    },
+    "420287634": {
+      "highway": "service"
+    },
+    "420287639": {
+      "highway": "service"
+    },
+    "420287657": {
+      "highway": "residential"
+    },
+    "420287671": {
+      "highway": "residential"
+    },
+    "420287688": {
+      "highway": "service"
+    },
+    "420287706": {
+      "highway": "service"
+    },
+    "420287710": {
+      "highway": "service"
+    },
+    "420287720": {
+      "highway": "service"
+    },
+    "420287741": {
+      "highway": "residential"
+    },
+    "420287744": {
+      "highway": "service"
+    },
+    "420287773": {
+      "highway": "residential"
+    },
+    "420287784": {
+      "highway": "service"
+    },
+    "420287786": {
+      "highway": "service"
+    },
+    "421970918": {
+      "highway": "residential"
+    },
+    "421970919": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "421970920": {
+      "highway": "residential"
+    },
+    "421970921": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "421970926": {
+      "highway": "residential"
+    },
+    "421970931": {
+      "highway": "service"
+    },
+    "421970932": {
+      "highway": "residential"
+    },
+    "421970937": {
+      "highway": "residential"
+    },
+    "421970945": {
+      "highway": "residential"
+    },
+    "421970946": {
+      "highway": "residential"
+    },
+    "421970947": {
+      "highway": "residential"
+    },
+    "421970982": {
+      "highway": "residential"
+    },
+    "421970985": {
+      "highway": "residential"
+    },
+    "421970987": {
+      "highway": "residential"
+    },
+    "421970993": {
+      "highway": "residential"
+    },
+    "421970996": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "421970997": {
+      "highway": "residential"
+    },
+    "456579956": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "456579960": {
+      "highway": "residential"
+    },
+    "456579961": {
+      "highway": "residential"
+    },
+    "456799179": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "456799181": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "456799182": {
+      "highway": "residential"
+    },
+    "456799183": {
+      "highway": "residential"
+    },
+    "456799184": {
+      "highway": "residential"
+    },
+    "456799186": {
+      "highway": "residential"
+    },
+    "456799187": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "456799188": {
+      "highway": "residential"
+    },
+    "456799767": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "457362871": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "457362872": {
+      "highway": "residential"
+    },
+    "457362874": {
+      "highway": "residential"
+    },
+    "457362875": {
+      "highway": "residential"
+    },
+    "457552328": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "457601625": {
+      "highway": "residential"
+    },
+    "457601626": {
+      "highway": "residential"
+    },
+    "457601635": {
+      "highway": "residential"
+    },
+    "457800085": {
+      "highway": "residential"
+    },
+    "457800089": {
+      "highway": "residential"
+    },
+    "457800092": {
+      "highway": "residential"
+    },
+    "457800093": {
+      "highway": "residential"
+    },
+    "457800098": {
+      "highway": "residential"
+    },
+    "458073798": {
+      "highway": "residential"
+    },
+    "458073799": {
+      "highway": "residential"
+    },
+    "458857420": {
+      "highway": "service"
+    },
+    "458857421": {
+      "highway": "residential"
+    },
+    "458857426": {
+      "highway": "residential"
+    },
+    "458865799": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "458865810": {
+      "highway": "residential"
+    },
+    "458865811": {
+      "highway": "service"
+    },
+    "458865828": {
+      "highway": "residential"
+    },
+    "458865829": {
+      "highway": "residential"
+    },
+    "458865830": {
+      "highway": "residential"
+    },
+    "458865831": {
+      "highway": "residential"
+    },
+    "458865832": {
+      "highway": "residential"
+    },
+    "458865833": {
+      "highway": "residential"
+    },
+    "458865834": {
+      "highway": "service"
+    },
+    "459137909": {
+      "highway": "service"
+    },
+    "459137910": {
+      "highway": "residential"
+    },
+    "459137911": {
+      "highway": "service"
+    },
+    "459222337": {
+      "highway": "residential"
+    },
+    "460200205": {
+      "highway": "service"
+    },
+    "460200206": {
+      "highway": "service"
+    },
+    "460200209": {
+      "highway": "service"
+    },
+    "460757144": {
+      "highway": "service"
+    },
+    "462954284": {
+      "highway": "residential"
+    },
+    "463881170": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "463881171": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "464198859": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "464462967": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "464462968": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "464464123": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "465919828": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "466329536": {
+      "highway": "service"
+    },
+    "466332876": {
+      "highway": "service"
+    },
+    "467585264": {
+      "highway": "service"
+    },
+    "468241298": {
+      "highway": "path"
+    },
+    "468241299": {
+      "highway": "path"
+    },
+    "468241300": {
+      "highway": "path"
+    },
+    "468249333": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "468274376": {
+      "highway": "residential"
+    },
+    "468401891": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "468434632": {
+      "highway": "residential"
+    },
+    "468434634": {
+      "highway": "residential"
+    },
+    "468434638": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "468434639": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "468724777": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "468724778": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "468724779": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "468724780": {
+      "highway": "residential"
+    },
+    "468724783": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "468724785": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "468724786": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "468755231": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "469592979": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "469592981": {
+      "highway": "residential"
+    },
+    "469597206": {
+      "highway": "service"
+    },
+    "470506017": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "470506018": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "470511619": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "471662344": {
+      "highway": "residential"
+    },
+    "472061129": {
+      "highway": "residential"
+    },
+    "472061166": {
+      "highway": "residential"
+    },
+    "472469742": {
+      "highway": "residential"
+    },
+    "481703940": {
+      "highway": "residential"
+    },
+    "495450437": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "495697567": {
+      "highway": "residential"
+    },
+    "495698495": {
+      "highway": "service"
+    },
+    "495849086": {
+      "highway": "primary"
+    },
+    "495849087": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "495852561": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "496063701": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "496068790": {
+      "highway": "residential"
+    },
+    "496187506": {
+      "highway": "tertiary"
+    },
+    "496187507": {
+      "highway": "tertiary"
+    },
+    "496187508": {
+      "highway": "tertiary"
+    },
+    "496187509": {
+      "highway": "tertiary"
+    },
+    "496187511": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "496279185": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "497397743": {
+      "highway": "residential"
+    },
+    "497628302": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "499039464": {
+      "highway": "residential"
+    },
+    "499039465": {
+      "highway": "residential"
+    },
+    "499039466": {
+      "highway": "service"
+    },
+    "499047938": {
+      "highway": "service"
+    },
+    "499047940": {
+      "highway": "service"
+    },
+    "500897933": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "501153736": {
+      "highway": "service"
+    },
+    "501749599": {
+      "highway": "residential"
+    },
+    "501749602": {
+      "highway": "residential"
+    },
+    "501749604": {
+      "highway": "service"
+    },
+    "501749605": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "501749606": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "501749607": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "502243208": {
+      "highway": "residential"
+    },
+    "502243210": {
+      "highway": "service"
+    },
+    "502243228": {
+      "highway": "service"
+    },
+    "502243230": {
+      "highway": "service"
+    },
+    "502243235": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "502252349": {
+      "highway": "residential"
+    },
+    "502252350": {
+      "highway": "service"
+    },
+    "502252364": {
+      "highway": "residential"
+    },
+    "502252366": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "502252369": {
+      "highway": "residential"
+    },
+    "502252370": {
+      "highway": "service"
+    },
+    "502252373": {
+      "highway": "service"
+    },
+    "502338681": {
+      "highway": "residential"
+    },
+    "502338683": {
+      "highway": "residential"
+    },
+    "502338684": {
+      "highway": "residential"
+    },
+    "502338685": {
+      "highway": "service"
+    },
+    "502343295": {
+      "highway": "residential"
+    },
+    "502434926": {
+      "highway": "service"
+    },
+    "502434927": {
+      "highway": "residential"
+    },
+    "502434933": {
+      "highway": "residential"
+    },
+    "502434935": {
+      "highway": "residential"
+    },
+    "502434936": {
+      "highway": "residential"
+    },
+    "502434937": {
+      "highway": "service"
+    },
+    "502434938": {
+      "highway": "residential"
+    },
+    "502434939": {
+      "highway": "residential"
+    },
+    "502526225": {
+      "highway": "service"
+    },
+    "502526226": {
+      "highway": "service"
+    },
+    "502532594": {
+      "highway": "residential"
+    },
+    "502532595": {
+      "highway": "residential"
+    },
+    "502532597": {
+      "highway": "service"
+    },
+    "502532598": {
+      "highway": "service"
+    },
+    "502538487": {
+      "highway": "residential"
+    },
+    "502538491": {
+      "highway": "service"
+    },
+    "502538492": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "502729137": {
+      "highway": "service"
+    },
+    "502729138": {
+      "highway": "service"
+    },
+    "502729139": {
+      "highway": "residential"
+    },
+    "502729140": {
+      "highway": "residential"
+    },
+    "502729144": {
+      "highway": "service"
+    },
+    "502729145": {
+      "highway": "service"
+    },
+    "502729146": {
+      "highway": "service"
+    },
+    "502729168": {
+      "highway": "residential"
+    },
+    "502729171": {
+      "highway": "residential"
+    },
+    "502729180": {
+      "highway": "service"
+    },
+    "502729181": {
+      "highway": "service"
+    },
+    "502903939": {
+      "highway": "residential"
+    },
+    "502903940": {
+      "highway": "residential"
+    },
+    "502903945": {
+      "highway": "residential"
+    },
+    "502903946": {
+      "highway": "residential"
+    },
+    "502903949": {
+      "highway": "residential"
+    },
+    "502903954": {
+      "highway": "residential"
+    },
+    "502903958": {
+      "highway": "residential"
+    },
+    "502903960": {
+      "highway": "residential"
+    },
+    "502903962": {
+      "highway": "residential"
+    },
+    "502903964": {
+      "highway": "residential"
+    },
+    "502903966": {
+      "highway": "residential"
+    },
+    "502903970": {
+      "highway": "residential"
+    },
+    "502903980": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "502903993": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "502918103": {
+      "highway": "service"
+    },
+    "502918106": {
+      "highway": "residential"
+    },
+    "502918108": {
+      "highway": "residential"
+    },
+    "502918110": {
+      "highway": "service"
+    },
+    "502918123": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "502918127": {
+      "highway": "service"
+    },
+    "503015568": {
+      "highway": "service"
+    },
+    "503015587": {
+      "highway": "service"
+    },
+    "503015591": {
+      "highway": "service"
+    },
+    "503015593": {
+      "highway": "service"
+    },
+    "503015598": {
+      "highway": "service"
+    },
+    "503314830": {
+      "highway": "residential"
+    },
+    "503314835": {
+      "highway": "service"
+    },
+    "503314836": {
+      "highway": "service"
+    },
+    "504918001": {
+      "highway": "residential"
+    },
+    "504918003": {
+      "highway": "service"
+    },
+    "504918011": {
+      "highway": "service"
+    },
+    "504918019": {
+      "highway": "service"
+    },
+    "504918034": {
+      "highway": "service"
+    },
+    "504918037": {
+      "highway": "service"
+    },
+    "504918039": {
+      "highway": "service"
+    },
+    "504918040": {
+      "highway": "service"
+    },
+    "504918041": {
+      "highway": "service"
+    },
+    "504918048": {
+      "highway": "service"
+    },
+    "504918050": {
+      "highway": "service"
+    },
+    "504918051": {
+      "highway": "service"
+    },
+    "504918053": {
+      "highway": "service"
+    },
+    "504918054": {
+      "highway": "service"
+    },
+    "505460580": {
+      "highway": "service"
+    },
+    "505460581": {
+      "highway": "residential"
+    },
+    "505761397": {
+      "highway": "residential"
+    },
+    "505761399": {
+      "highway": "residential"
+    },
+    "505761401": {
+      "highway": "residential"
+    },
+    "505777282": {
+      "highway": "service"
+    },
+    "505777287": {
+      "highway": "residential"
+    },
+    "508064717": {
+      "highway": "residential"
+    },
+    "508078676": {
+      "highway": "residential"
+    },
+    "508344644": {
+      "highway": "residential"
+    },
+    "508344650": {
+      "highway": "residential"
+    },
+    "508351457": {
+      "highway": "residential"
+    },
+    "508351460": {
+      "highway": "residential"
+    },
+    "508637216": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "508741187": {
+      "highway": "service"
+    },
+    "508747826": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "508747828": {
+      "highway": "service"
+    },
+    "509015313": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "509015314": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "509015315": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "509172768": {
+      "highway": "residential"
+    },
+    "509172772": {
+      "highway": "residential"
+    },
+    "509172780": {
+      "highway": "residential"
+    },
+    "509172786": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "509358871": {
+      "highway": "service"
+    },
+    "509358874": {
+      "highway": "residential"
+    },
+    "509358877": {
+      "highway": "service"
+    },
+    "509640839": {
+      "highway": "residential"
+    },
+    "511205581": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "511205582": {
+      "highway": "residential"
+    },
+    "511205592": {
+      "highway": "footway"
+    },
+    "511306269": {
+      "highway": "service"
+    },
+    "511306275": {
+      "highway": "service"
+    },
+    "511306276": {
+      "highway": "service"
+    },
+    "511306282": {
+      "highway": "service"
+    },
+    "511306287": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "511306294": {
+      "highway": "residential"
+    },
+    "511306320": {
+      "highway": "residential"
+    },
+    "511306321": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "511517519": {
+      "highway": "residential"
+    },
+    "511517520": {
+      "highway": "service"
+    },
+    "511517523": {
+      "highway": "service"
+    },
+    "511517525": {
+      "highway": "residential"
+    },
+    "511517531": {
+      "highway": "service"
+    },
+    "511517532": {
+      "highway": "service"
+    },
+    "511517541": {
+      "highway": "residential"
+    },
+    "511517542": {
+      "highway": "service"
+    },
+    "511517543": {
+      "highway": "residential"
+    },
+    "511936252": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "511969280": {
+      "highway": "residential"
+    },
+    "516774794": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "516774798": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "516774799": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "516774800": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "516774802": {
+      "highway": "service"
+    },
+    "516774803": {
+      "highway": "secondary_link",
+      "lanes": "2"
+    },
+    "516774814": {
+      "highway": "residential"
+    },
+    "516774818": {
+      "highway": "residential"
+    },
+    "517710989": {
+      "highway": "residential"
+    },
+    "517711011": {
+      "highway": "residential"
+    },
+    "517711020": {
+      "highway": "service"
+    },
+    "517711021": {
+      "highway": "service"
+    },
+    "518517136": {
+      "highway": "service"
+    },
+    "518517137": {
+      "highway": "service"
+    },
+    "518517138": {
+      "highway": "service"
+    },
+    "518517139": {
+      "highway": "service"
+    },
+    "518517142": {
+      "highway": "residential"
+    },
+    "518517191": {
+      "highway": "residential"
+    },
+    "518517194": {
+      "highway": "residential"
+    },
+    "518517199": {
+      "highway": "residential"
+    },
+    "518517208": {
+      "highway": "service"
+    },
+    "518517213": {
+      "highway": "service"
+    },
+    "518517369": {
+      "highway": "residential"
+    },
+    "518517387": {
+      "highway": "service"
+    },
+    "518517388": {
+      "highway": "residential"
+    },
+    "518720177": {
+      "highway": "tertiary"
+    },
+    "518720182": {
+      "highway": "service"
+    },
+    "518720184": {
+      "highway": "residential"
+    },
+    "518720192": {
+      "highway": "residential"
+    },
+    "518720194": {
+      "highway": "service"
+    },
+    "518720195": {
+      "highway": "service"
+    },
+    "518720196": {
+      "highway": "service"
+    },
+    "518720197": {
+      "highway": "residential"
+    },
+    "518720199": {
+      "highway": "service"
+    },
+    "518720200": {
+      "highway": "service"
+    },
+    "518720201": {
+      "highway": "service"
+    },
+    "518720202": {
+      "highway": "service"
+    },
+    "518720203": {
+      "highway": "service"
+    },
+    "518720204": {
+      "highway": "service"
+    },
+    "518720213": {
+      "highway": "service"
+    },
+    "518720214": {
+      "highway": "service"
+    },
+    "518720215": {
+      "highway": "service"
+    },
+    "518775824": {
+      "highway": "residential"
+    },
+    "518855259": {
+      "highway": "residential"
+    },
+    "518855272": {
+      "highway": "residential"
+    },
+    "518855276": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "518855284": {
+      "highway": "service"
+    },
+    "518855289": {
+      "highway": "residential"
+    },
+    "518855302": {
+      "highway": "residential"
+    },
+    "519267934": {
+      "highway": "service"
+    },
+    "519267938": {
+      "highway": "service"
+    },
+    "519267951": {
+      "highway": "service"
+    },
+    "519267953": {
+      "highway": "service"
+    },
+    "519267963": {
+      "highway": "service"
+    },
+    "519267965": {
+      "highway": "service"
+    },
+    "519267986": {
+      "highway": "service"
+    },
+    "519267990": {
+      "highway": "service"
+    },
+    "519267991": {
+      "highway": "service"
+    },
+    "519267992": {
+      "highway": "service"
+    },
+    "519267995": {
+      "highway": "service"
+    },
+    "519267997": {
+      "highway": "service"
+    },
+    "519268006": {
+      "highway": "service"
+    },
+    "519268007": {
+      "highway": "service"
+    },
+    "519268070": {
+      "highway": "service"
+    },
+    "519268090": {
+      "highway": "service"
+    },
+    "520598208": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "520598251": {
+      "highway": "service"
+    },
+    "520598253": {
+      "highway": "service"
+    },
+    "520598285": {
+      "highway": "residential"
+    },
+    "520598291": {
+      "highway": "residential"
+    },
+    "520598293": {
+      "highway": "residential"
+    },
+    "520598297": {
+      "highway": "residential"
+    },
+    "520598300": {
+      "highway": "residential"
+    },
+    "520723252": {
+      "highway": "residential"
+    },
+    "520723253": {
+      "highway": "residential"
+    },
+    "520723254": {
+      "highway": "residential"
+    },
+    "520723255": {
+      "highway": "residential"
+    },
+    "520723256": {
+      "highway": "service"
+    },
+    "520723257": {
+      "highway": "service"
+    },
+    "520723260": {
+      "highway": "residential"
+    },
+    "520723263": {
+      "highway": "residential"
+    },
+    "520723281": {
+      "highway": "service"
+    },
+    "520723282": {
+      "highway": "service"
+    },
+    "520723286": {
+      "highway": "residential"
+    },
+    "520723287": {
+      "highway": "residential"
+    },
+    "520723298": {
+      "highway": "service"
+    },
+    "520723299": {
+      "highway": "service"
+    },
+    "520723304": {
+      "highway": "service"
+    },
+    "520723305": {
+      "highway": "service"
+    },
+    "520723306": {
+      "highway": "service"
+    },
+    "520723309": {
+      "highway": "service"
+    },
+    "520723310": {
+      "highway": "service"
+    },
+    "520723311": {
+      "highway": "service"
+    },
+    "520723335": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "520932894": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "520932996": {
+      "highway": "residential"
+    },
+    "520933005": {
+      "highway": "service"
+    },
+    "520933024": {
+      "highway": "residential"
+    },
+    "520933026": {
+      "highway": "residential"
+    },
+    "522949938": {
+      "highway": "service"
+    },
+    "522949942": {
+      "highway": "service"
+    },
+    "522949969": {
+      "highway": "service"
+    },
+    "522949971": {
+      "highway": "service"
+    },
+    "522949990": {
+      "highway": "service"
+    },
+    "522949994": {
+      "highway": "service"
+    },
+    "522949995": {
+      "highway": "service"
+    },
+    "522949998": {
+      "highway": "service"
+    },
+    "522950002": {
+      "highway": "service"
+    },
+    "522950039": {
+      "highway": "residential"
+    },
+    "522950040": {
+      "highway": "residential"
+    },
+    "522950042": {
+      "highway": "residential"
+    },
+    "522950044": {
+      "highway": "service"
+    },
+    "522950048": {
+      "highway": "residential"
+    },
+    "523162178": {
+      "highway": "service"
+    },
+    "523162180": {
+      "highway": "service"
+    },
+    "523162184": {
+      "highway": "service"
+    },
+    "523162186": {
+      "highway": "service"
+    },
+    "523162187": {
+      "highway": "service"
+    },
+    "523162197": {
+      "highway": "service"
+    },
+    "523162198": {
+      "highway": "service"
+    },
+    "523162208": {
+      "highway": "residential"
+    },
+    "523650563": {
+      "highway": "residential"
+    },
+    "523650564": {
+      "highway": "residential"
+    },
+    "523650567": {
+      "highway": "service"
+    },
+    "523650568": {
+      "highway": "service"
+    },
+    "523650576": {
+      "highway": "service"
+    },
+    "523650578": {
+      "highway": "service"
+    },
+    "523650579": {
+      "highway": "service"
+    },
+    "523650616": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "523650617": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "523650619": {
+      "highway": "service"
+    },
+    "525107067": {
+      "highway": "service"
+    },
+    "525107068": {
+      "highway": "service"
+    },
+    "525107069": {
+      "highway": "service"
+    },
+    "525107070": {
+      "highway": "service"
+    },
+    "525107071": {
+      "highway": "service"
+    },
+    "525107083": {
+      "highway": "service"
+    },
+    "525107087": {
+      "highway": "service"
+    },
+    "525107088": {
+      "highway": "service"
+    },
+    "525107090": {
+      "highway": "service"
+    },
+    "525107095": {
+      "highway": "residential"
+    },
+    "525107112": {
+      "highway": "service"
+    },
+    "525185378": {
+      "highway": "service"
+    },
+    "525185380": {
+      "highway": "service"
+    },
+    "525185399": {
+      "highway": "service"
+    },
+    "525185400": {
+      "highway": "residential"
+    },
+    "525185401": {
+      "highway": "service"
+    },
+    "525185404": {
+      "highway": "residential"
+    },
+    "525185406": {
+      "highway": "residential"
+    },
+    "538678836": {
+      "highway": "service"
+    },
+    "54224019": {
+      "highway": "service"
+    },
+    "54224024": {
+      "highway": "residential"
+    },
+    "547931028": {
+      "highway": "service"
+    },
+    "547931037": {
+      "highway": "service"
+    },
+    "553780786": {
+      "highway": "service"
+    },
+    "554308009": {
+      "highway": "service"
+    },
+    "554308010": {
+      "highway": "service"
+    },
+    "554308025": {
+      "highway": "service"
+    },
+    "554308037": {
+      "highway": "service"
+    },
+    "55437666": {
+      "highway": "service"
+    },
+    "554674478": {
+      "highway": "service"
+    },
+    "555383164": {
+      "highway": "service"
+    },
+    "555383168": {
+      "highway": "service"
+    },
+    "555383171": {
+      "highway": "residential"
+    },
+    "555383173": {
+      "highway": "residential"
+    },
+    "555383174": {
+      "highway": "residential"
+    },
+    "555383175": {
+      "highway": "residential"
+    },
+    "555383176": {
+      "highway": "residential"
+    },
+    "55553242": {
+      "highway": "residential"
+    },
+    "55879947": {
+      "highway": "residential"
+    },
+    "55880457": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "55883818": {
+      "highway": "residential"
+    },
+    "55946607": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "564075888": {
+      "highway": "primary"
+    },
+    "56725524": {
+      "highway": "residential"
+    },
+    "567465747": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "567465748": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "567465749": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "567467685": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "567467687": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "567467689": {
+      "highway": "primary_link"
+    },
+    "567467691": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "567475835": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "567485853": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "567485854": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "567493097": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "567493100": {
+      "highway": "service"
+    },
+    "567493102": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "567493111": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "567499453": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "56772916": {
+      "highway": "primary_link"
+    },
+    "568238640": {
+      "highway": "secondary",
+      "junction": "roundabout"
+    },
+    "568244808": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "568254252": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "568271156": {
+      "highway": "primary"
+    },
+    "57039411": {
+      "highway": "residential"
+    },
+    "57039413": {
+      "highway": "residential"
+    },
+    "57039414": {
+      "highway": "tertiary"
+    },
+    "570600150": {
+      "highway": "service"
+    },
+    "570600152": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "570600153": {
+      "highway": "service"
+    },
+    "570600154": {
+      "highway": "service"
+    },
+    "570600155": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "570600157": {
+      "highway": "service"
+    },
+    "572778113": {
+      "highway": "service"
+    },
+    "572778121": {
+      "highway": "service"
+    },
+    "572778122": {
+      "highway": "service"
+    },
+    "572778141": {
+      "highway": "service"
+    },
+    "572778151": {
+      "highway": "service"
+    },
+    "575066972": {
+      "highway": "service"
+    },
+    "575066978": {
+      "highway": "residential"
+    },
+    "575066979": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "575066980": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "575066985": {
+      "highway": "service"
+    },
+    "575066986": {
+      "highway": "residential"
+    },
+    "575066995": {
+      "highway": "residential"
+    },
+    "575066998": {
+      "highway": "residential"
+    },
+    "575067004": {
+      "highway": "residential"
+    },
+    "57889612": {
+      "highway": "service"
+    },
+    "579883923": {
+      "highway": "residential"
+    },
+    "579883924": {
+      "highway": "residential"
+    },
+    "579883927": {
+      "highway": "service"
+    },
+    "58198213": {
+      "highway": "residential"
+    },
+    "58368125": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "58368126": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "58368130": {
+      "highway": "secondary",
+      "junction": "roundabout",
+      "lanes": "2"
+    },
+    "58368132": {
+      "highway": "primary_link"
+    },
+    "58369423": {
+      "highway": "primary",
+      "junction": "roundabout",
+      "lanes": "3"
+    },
+    "58369424": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "585932708": {
+      "highway": "tertiary"
+    },
+    "58651356": {
+      "highway": "tertiary"
+    },
+    "58651357": {
+      "highway": "tertiary"
+    },
+    "58651360": {
+      "highway": "tertiary"
+    },
+    "58711777": {
+      "highway": "residential"
+    },
+    "58711778": {
+      "highway": "service"
+    },
+    "58711785": {
+      "highway": "tertiary"
+    },
+    "59191626": {
+      "highway": "service"
+    },
+    "592980296": {
+      "highway": "service"
+    },
+    "593694878": {
+      "highway": "residential"
+    },
+    "594474339": {
+      "highway": "service"
+    },
+    "594474340": {
+      "highway": "service"
+    },
+    "594474341": {
+      "highway": "service"
+    },
+    "59768770": {
+      "highway": "path"
+    },
+    "59768772": {
+      "highway": "path"
+    },
+    "59768773": {
+      "highway": "service"
+    },
+    "59768774": {
+      "highway": "path"
+    },
+    "59768776": {
+      "highway": "path"
+    },
+    "59768780": {
+      "highway": "path"
+    },
+    "59768781": {
+      "highway": "path"
+    },
+    "59768784": {
+      "highway": "path"
+    },
+    "597712878": {
+      "highway": "service"
+    },
+    "59783926": {
+      "highway": "service"
+    },
+    "59783928": {
+      "highway": "residential"
+    },
+    "599642509": {
+      "highway": "tertiary"
+    },
+    "599642510": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "601994122": {
+      "highway": "secondary",
+      "lanes": "7"
+    },
+    "602308860": {
+      "highway": "tertiary"
+    },
+    "602308861": {
+      "highway": "service"
+    },
+    "602315569": {
+      "highway": "residential"
+    },
+    "602315573": {
+      "highway": "service"
+    },
+    "602329380": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "602376230": {
+      "highway": "residential"
+    },
+    "602887593": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "602887667": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "603177954": {
+      "highway": "residential"
+    },
+    "603185393": {
+      "highway": "service"
+    },
+    "603941232": {
+      "highway": "residential"
+    },
+    "604099889": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "604177369": {
+      "highway": "path"
+    },
+    "604177378": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "60431692": {
+      "highway": "service"
+    },
+    "604425026": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "604425027": {
+      "highway": "residential"
+    },
+    "604425028": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "604425029": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "604425030": {
+      "highway": "residential"
+    },
+    "604425031": {
+      "highway": "service"
+    },
+    "604425033": {
+      "highway": "service"
+    },
+    "604524293": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "604906467": {
+      "highway": "service"
+    },
+    "604906474": {
+      "highway": "service"
+    },
+    "604906476": {
+      "highway": "service"
+    },
+    "60678929": {
+      "highway": "residential"
+    },
+    "607226296": {
+      "highway": "service"
+    },
+    "607226297": {
+      "highway": "service"
+    },
+    "607238992": {
+      "highway": "service"
+    },
+    "607252886": {
+      "highway": "residential"
+    },
+    "607270082": {
+      "highway": "residential"
+    },
+    "607290832": {
+      "highway": "residential"
+    },
+    "607290837": {
+      "highway": "residential"
+    },
+    "607294705": {
+      "highway": "service"
+    },
+    "607528594": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "607528597": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "607528599": {
+      "highway": "secondary_link",
+      "lanes": "1"
+    },
+    "607528602": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "607528605": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "607528607": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "607534208": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "607535540": {
+      "highway": "service"
+    },
+    "607582833": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "607612862": {
+      "highway": "service"
+    },
+    "607612864": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "607621339": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "607621345": {
+      "highway": "service"
+    },
+    "607621346": {
+      "highway": "residential"
+    },
+    "607621350": {
+      "highway": "residential"
+    },
+    "607647769": {
+      "highway": "residential"
+    },
+    "607647774": {
+      "highway": "service"
+    },
+    "607647778": {
+      "highway": "service"
+    },
+    "607914722": {
+      "highway": "residential"
+    },
+    "608189959": {
+      "highway": "service"
+    },
+    "608191471": {
+      "highway": "residential"
+    },
+    "608244570": {
+      "highway": "service"
+    },
+    "608244572": {
+      "highway": "service"
+    },
+    "608254674": {
+      "highway": "service"
+    },
+    "608254675": {
+      "highway": "service"
+    },
+    "608494893": {
+      "highway": "service"
+    },
+    "608498238": {
+      "highway": "residential"
+    },
+    "608515628": {
+      "highway": "residential"
+    },
+    "608521777": {
+      "highway": "service"
+    },
+    "608521778": {
+      "highway": "service"
+    },
+    "608552740": {
+      "highway": "service"
+    },
+    "608552748": {
+      "highway": "residential"
+    },
+    "608553073": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "608560665": {
+      "highway": "service"
+    },
+    "608560669": {
+      "highway": "service"
+    },
+    "608564468": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "608567871": {
+      "highway": "residential"
+    },
+    "608569632": {
+      "highway": "residential"
+    },
+    "608676409": {
+      "highway": "service"
+    },
+    "608676410": {
+      "highway": "service"
+    },
+    "608676411": {
+      "highway": "service"
+    },
+    "608676413": {
+      "highway": "residential"
+    },
+    "608676422": {
+      "highway": "residential"
+    },
+    "608676424": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "608676429": {
+      "highway": "residential"
+    },
+    "608787986": {
+      "highway": "residential"
+    },
+    "608787989": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "608876696": {
+      "highway": "service"
+    },
+    "608876697": {
+      "highway": "service"
+    },
+    "608876698": {
+      "highway": "service"
+    },
+    "608876709": {
+      "highway": "service"
+    },
+    "608876717": {
+      "highway": "service"
+    },
+    "608876728": {
+      "highway": "service"
+    },
+    "609065248": {
+      "highway": "service"
+    },
+    "609065251": {
+      "highway": "service"
+    },
+    "609065438": {
+      "highway": "residential"
+    },
+    "609077443": {
+      "highway": "service"
+    },
+    "609081641": {
+      "highway": "service"
+    },
+    "609086984": {
+      "highway": "service"
+    },
+    "609100227": {
+      "highway": "residential"
+    },
+    "609100231": {
+      "highway": "residential"
+    },
+    "609100232": {
+      "highway": "residential"
+    },
+    "609102700": {
+      "highway": "service"
+    },
+    "609393104": {
+      "highway": "service"
+    },
+    "609393106": {
+      "highway": "residential"
+    },
+    "609398398": {
+      "highway": "residential"
+    },
+    "609424620": {
+      "highway": "service"
+    },
+    "609424621": {
+      "highway": "residential"
+    },
+    "609428941": {
+      "highway": "service"
+    },
+    "609428942": {
+      "highway": "service"
+    },
+    "609436240": {
+      "highway": "residential"
+    },
+    "609436241": {
+      "highway": "residential"
+    },
+    "609442582": {
+      "highway": "service"
+    },
+    "609442583": {
+      "highway": "service"
+    },
+    "609442585": {
+      "highway": "service"
+    },
+    "609442915": {
+      "highway": "service"
+    },
+    "610064442": {
+      "highway": "service"
+    },
+    "610084189": {
+      "highway": "service"
+    },
+    "610084192": {
+      "highway": "service"
+    },
+    "610084193": {
+      "highway": "service"
+    },
+    "610084196": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "610084200": {
+      "highway": "service"
+    },
+    "610105955": {
+      "highway": "residential"
+    },
+    "610109432": {
+      "highway": "residential"
+    },
+    "610120206": {
+      "highway": "residential"
+    },
+    "610134590": {
+      "highway": "service"
+    },
+    "610150193": {
+      "highway": "tertiary"
+    },
+    "611082254": {
+      "highway": "service"
+    },
+    "611103531": {
+      "highway": "service"
+    },
+    "611103549": {
+      "highway": "service"
+    },
+    "611103551": {
+      "highway": "service"
+    },
+    "611103557": {
+      "highway": "service"
+    },
+    "611103559": {
+      "highway": "service"
+    },
+    "611337559": {
+      "highway": "service"
+    },
+    "611337562": {
+      "highway": "service"
+    },
+    "611346696": {
+      "highway": "service"
+    },
+    "611350587": {
+      "highway": "residential"
+    },
+    "611395557": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "612796728": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "612796729": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "612801663": {
+      "highway": "service"
+    },
+    "612856680": {
+      "highway": "service"
+    },
+    "612856685": {
+      "highway": "service"
+    },
+    "612897347": {
+      "highway": "service"
+    },
+    "612897376": {
+      "highway": "service"
+    },
+    "612897378": {
+      "highway": "service"
+    },
+    "612897395": {
+      "highway": "service"
+    },
+    "612897405": {
+      "highway": "service"
+    },
+    "612897407": {
+      "highway": "service"
+    },
+    "612920594": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "612920595": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "613168784": {
+      "highway": "service"
+    },
+    "613168789": {
+      "highway": "service"
+    },
+    "613168790": {
+      "highway": "service"
+    },
+    "613168791": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "613173276": {
+      "highway": "service"
+    },
+    "613173279": {
+      "highway": "service"
+    },
+    "613190172": {
+      "highway": "service"
+    },
+    "613190173": {
+      "highway": "residential"
+    },
+    "613190175": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "614361976": {
+      "highway": "residential"
+    },
+    "614378901": {
+      "highway": "service"
+    },
+    "614397387": {
+      "highway": "service"
+    },
+    "614397389": {
+      "highway": "service"
+    },
+    "614397390": {
+      "highway": "service"
+    },
+    "614397391": {
+      "highway": "service"
+    },
+    "614397407": {
+      "highway": "service"
+    },
+    "614614988": {
+      "highway": "residential"
+    },
+    "614614990": {
+      "highway": "primary_link",
+      "lanes": "1"
+    },
+    "614626188": {
+      "highway": "residential"
+    },
+    "614626197": {
+      "highway": "primary_link",
+      "lanes": "1"
+    },
+    "614626207": {
+      "highway": "service"
+    },
+    "614626209": {
+      "highway": "service"
+    },
+    "615787306": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "620522133": {
+      "highway": "residential"
+    },
+    "620522926": {
+      "highway": "tertiary"
+    },
+    "628721073": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "630490482": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "637934067": {
+      "highway": "residential"
+    },
+    "637934068": {
+      "highway": "residential"
+    },
+    "637934071": {
+      "highway": "service"
+    },
+    "637934072": {
+      "highway": "service"
+    },
+    "637934073": {
+      "highway": "residential"
+    },
+    "637934074": {
+      "highway": "residential"
+    },
+    "637934077": {
+      "highway": "residential"
+    },
+    "637934078": {
+      "highway": "residential"
+    },
+    "638240120": {
+      "highway": "residential"
+    },
+    "638240134": {
+      "highway": "residential"
+    },
+    "639074061": {
+      "highway": "service"
+    },
+    "639074063": {
+      "highway": "service"
+    },
+    "639074064": {
+      "highway": "service"
+    },
+    "639074115": {
+      "highway": "residential"
+    },
+    "639074116": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "639074117": {
+      "highway": "service"
+    },
+    "639074118": {
+      "highway": "residential"
+    },
+    "639074119": {
+      "highway": "service"
+    },
+    "639106984": {
+      "highway": "service"
+    },
+    "639107015": {
+      "highway": "service"
+    },
+    "639429153": {
+      "highway": "residential"
+    },
+    "639433232": {
+      "highway": "service"
+    },
+    "639433235": {
+      "highway": "service"
+    },
+    "640870783": {
+      "highway": "residential"
+    },
+    "640870797": {
+      "highway": "residential"
+    },
+    "641904077": {
+      "highway": "service"
+    },
+    "642606132": {
+      "highway": "service"
+    },
+    "642606137": {
+      "highway": "service"
+    },
+    "642606138": {
+      "highway": "service"
+    },
+    "642606139": {
+      "highway": "service"
+    },
+    "642606143": {
+      "highway": "service"
+    },
+    "648662984": {
+      "highway": "service"
+    },
+    "649443417": {
+      "highway": "residential"
+    },
+    "651638267": {
+      "highway": "service"
+    },
+    "651638269": {
+      "highway": "service"
+    },
+    "651638270": {
+      "highway": "service"
+    },
+    "651638275": {
+      "highway": "service"
+    },
+    "651638298": {
+      "highway": "service"
+    },
+    "653565493": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "654858470": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "654861068": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "655131058": {
+      "highway": "service"
+    },
+    "655131059": {
+      "highway": "service"
+    },
+    "655131060": {
+      "highway": "service"
+    },
+    "655131061": {
+      "highway": "service"
+    },
+    "655131062": {
+      "highway": "service"
+    },
+    "655131065": {
+      "highway": "service"
+    },
+    "655131067": {
+      "highway": "service"
+    },
+    "655131068": {
+      "highway": "service"
+    },
+    "656428930": {
+      "highway": "residential"
+    },
+    "658958992": {
+      "highway": "service"
+    },
+    "658958993": {
+      "highway": "service"
+    },
+    "658959000": {
+      "highway": "service"
+    },
+    "658959002": {
+      "highway": "service"
+    },
+    "658959003": {
+      "highway": "residential"
+    },
+    "658959004": {
+      "highway": "service"
+    },
+    "658959013": {
+      "highway": "service"
+    },
+    "658959014": {
+      "highway": "service"
+    },
+    "658959015": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "659632001": {
+      "highway": "service"
+    },
+    "659632002": {
+      "highway": "service"
+    },
+    "659632014": {
+      "highway": "residential"
+    },
+    "659632015": {
+      "highway": "service"
+    },
+    "659636051": {
+      "highway": "residential"
+    },
+    "659636052": {
+      "highway": "residential"
+    },
+    "659636069": {
+      "highway": "residential"
+    },
+    "665768467": {
+      "highway": "service"
+    },
+    "665768468": {
+      "highway": "service"
+    },
+    "666568967": {
+      "highway": "residential"
+    },
+    "666568968": {
+      "highway": "residential"
+    },
+    "666568969": {
+      "highway": "residential"
+    },
+    "666568981": {
+      "highway": "service"
+    },
+    "666568982": {
+      "highway": "service"
+    },
+    "666568991": {
+      "highway": "service"
+    },
+    "666568993": {
+      "highway": "service"
+    },
+    "666568995": {
+      "highway": "residential"
+    },
+    "666569002": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "666569007": {
+      "highway": "service"
+    },
+    "666569013": {
+      "highway": "residential"
+    },
+    "666569015": {
+      "highway": "residential"
+    },
+    "666833974": {
+      "highway": "service"
+    },
+    "666833975": {
+      "highway": "service"
+    },
+    "666833984": {
+      "highway": "service"
+    },
+    "666833986": {
+      "highway": "service"
+    },
+    "666833987": {
+      "highway": "service"
+    },
+    "666833988": {
+      "highway": "pedestrian"
+    },
+    "666833996": {
+      "highway": "service"
+    },
+    "666834003": {
+      "highway": "service"
+    },
+    "666834004": {
+      "highway": "service"
+    },
+    "666834005": {
+      "highway": "service"
+    },
+    "667240349": {
+      "highway": "service"
+    },
+    "667240357": {
+      "highway": "service"
+    },
+    "667240358": {
+      "highway": "residential"
+    },
+    "667626403": {
+      "highway": "residential"
+    },
+    "667626407": {
+      "highway": "residential"
+    },
+    "667626409": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "667626418": {
+      "highway": "residential"
+    },
+    "667626419": {
+      "highway": "residential"
+    },
+    "667626428": {
+      "highway": "residential"
+    },
+    "667626429": {
+      "highway": "residential"
+    },
+    "667626441": {
+      "highway": "residential"
+    },
+    "667626442": {
+      "highway": "residential"
+    },
+    "667626444": {
+      "highway": "residential"
+    },
+    "667626445": {
+      "highway": "residential"
+    },
+    "667626449": {
+      "highway": "residential"
+    },
+    "667626451": {
+      "highway": "residential"
+    },
+    "667626452": {
+      "highway": "residential"
+    },
+    "667626453": {
+      "highway": "service"
+    },
+    "667626456": {
+      "highway": "service"
+    },
+    "667626459": {
+      "highway": "residential"
+    },
+    "667626460": {
+      "highway": "service"
+    },
+    "667626461": {
+      "highway": "service"
+    },
+    "667626462": {
+      "highway": "service"
+    },
+    "667626463": {
+      "highway": "residential"
+    },
+    "667626465": {
+      "highway": "residential"
+    },
+    "667694238": {
+      "highway": "residential"
+    },
+    "667694241": {
+      "highway": "residential"
+    },
+    "667694258": {
+      "highway": "residential"
+    },
+    "667694269": {
+      "highway": "residential"
+    },
+    "667694272": {
+      "highway": "residential"
+    },
+    "667705302": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "667796937": {
+      "highway": "service"
+    },
+    "667796938": {
+      "highway": "residential"
+    },
+    "667796939": {
+      "highway": "residential"
+    },
+    "667796952": {
+      "highway": "service"
+    },
+    "667796959": {
+      "highway": "residential"
+    },
+    "667796960": {
+      "highway": "service"
+    },
+    "668267725": {
+      "highway": "residential"
+    },
+    "668267726": {
+      "highway": "residential"
+    },
+    "668267753": {
+      "highway": "residential"
+    },
+    "668267758": {
+      "highway": "residential"
+    },
+    "668267761": {
+      "highway": "residential"
+    },
+    "668267779": {
+      "highway": "service"
+    },
+    "668267780": {
+      "highway": "residential"
+    },
+    "668267788": {
+      "highway": "service"
+    },
+    "668267795": {
+      "highway": "residential"
+    },
+    "668284479": {
+      "highway": "residential"
+    },
+    "668284487": {
+      "highway": "service"
+    },
+    "668284489": {
+      "highway": "service"
+    },
+    "668284504": {
+      "highway": "service"
+    },
+    "668284512": {
+      "highway": "service"
+    },
+    "668284513": {
+      "highway": "residential"
+    },
+    "668284515": {
+      "highway": "residential"
+    },
+    "668284520": {
+      "highway": "residential"
+    },
+    "668284521": {
+      "highway": "residential"
+    },
+    "668284525": {
+      "highway": "service"
+    },
+    "668482243": {
+      "highway": "service"
+    },
+    "668901270": {
+      "highway": "residential"
+    },
+    "669452889": {
+      "highway": "service"
+    },
+    "669452890": {
+      "highway": "service"
+    },
+    "669452898": {
+      "highway": "service"
+    },
+    "669452933": {
+      "highway": "service"
+    },
+    "669633632": {
+      "highway": "service"
+    },
+    "669633633": {
+      "highway": "service"
+    },
+    "675640314": {
+      "highway": "service"
+    },
+    "675753578": {
+      "highway": "service"
+    },
+    "675753610": {
+      "highway": "service"
+    },
+    "675758905": {
+      "highway": "service"
+    },
+    "675758906": {
+      "highway": "service"
+    },
+    "675758907": {
+      "highway": "service"
+    },
+    "675758909": {
+      "highway": "service"
+    },
+    "675933730": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "675939318": {
+      "highway": "residential"
+    },
+    "675939321": {
+      "highway": "service"
+    },
+    "675939353": {
+      "highway": "service"
+    },
+    "675939374": {
+      "highway": "service"
+    },
+    "675939387": {
+      "highway": "service"
+    },
+    "675939388": {
+      "highway": "service"
+    },
+    "675939390": {
+      "highway": "service"
+    },
+    "675939393": {
+      "highway": "service"
+    },
+    "675939394": {
+      "highway": "service"
+    },
+    "675939397": {
+      "highway": "service"
+    },
+    "675939400": {
+      "highway": "service"
+    },
+    "675939411": {
+      "highway": "service"
+    },
+    "675945673": {
+      "highway": "service"
+    },
+    "675945679": {
+      "highway": "service"
+    },
+    "675945681": {
+      "highway": "service"
+    },
+    "676049797": {
+      "highway": "service"
+    },
+    "676049819": {
+      "highway": "service"
+    },
+    "676049820": {
+      "highway": "service"
+    },
+    "676049822": {
+      "highway": "service"
+    },
+    "676049824": {
+      "highway": "service"
+    },
+    "676049825": {
+      "highway": "service"
+    },
+    "676059111": {
+      "highway": "service"
+    },
+    "676059113": {
+      "highway": "service"
+    },
+    "676185498": {
+      "highway": "service"
+    },
+    "676185512": {
+      "highway": "service"
+    },
+    "676185514": {
+      "highway": "service"
+    },
+    "676185589": {
+      "highway": "service"
+    },
+    "676474299": {
+      "highway": "residential"
+    },
+    "676474303": {
+      "highway": "service"
+    },
+    "676474304": {
+      "highway": "service"
+    },
+    "676474310": {
+      "highway": "residential"
+    },
+    "676474355": {
+      "highway": "service"
+    },
+    "676474366": {
+      "highway": "residential"
+    },
+    "676474379": {
+      "highway": "service"
+    },
+    "676474381": {
+      "highway": "service"
+    },
+    "676474383": {
+      "highway": "service"
+    },
+    "676474384": {
+      "highway": "service"
+    },
+    "676474388": {
+      "highway": "service"
+    },
+    "676474389": {
+      "highway": "service"
+    },
+    "676484405": {
+      "highway": "residential"
+    },
+    "676847355": {
+      "highway": "service"
+    },
+    "676847356": {
+      "highway": "service"
+    },
+    "676847358": {
+      "highway": "residential"
+    },
+    "676847359": {
+      "highway": "service"
+    },
+    "677795196": {
+      "highway": "primary_link",
+      "lanes": "2"
+    },
+    "678167651": {
+      "highway": "residential"
+    },
+    "678167659": {
+      "highway": "service"
+    },
+    "678167661": {
+      "highway": "residential"
+    },
+    "678167669": {
+      "highway": "service"
+    },
+    "678167692": {
+      "highway": "service"
+    },
+    "678167693": {
+      "highway": "service"
+    },
+    "678340351": {
+      "highway": "residential"
+    },
+    "678340353": {
+      "highway": "residential"
+    },
+    "678340355": {
+      "highway": "residential"
+    },
+    "678340384": {
+      "highway": "service"
+    },
+    "678340389": {
+      "highway": "service"
+    },
+    "678340392": {
+      "highway": "service"
+    },
+    "678340394": {
+      "highway": "service"
+    },
+    "678340411": {
+      "highway": "residential"
+    },
+    "678342492": {
+      "highway": "residential"
+    },
+    "678342493": {
+      "highway": "service"
+    },
+    "678342494": {
+      "highway": "service"
+    },
+    "678342495": {
+      "highway": "service"
+    },
+    "678342499": {
+      "highway": "service"
+    },
+    "678342502": {
+      "highway": "service"
+    },
+    "678342510": {
+      "highway": "residential"
+    },
+    "678342514": {
+      "highway": "service"
+    },
+    "678651295": {
+      "highway": "service"
+    },
+    "678651301": {
+      "highway": "service"
+    },
+    "678651355": {
+      "highway": "service"
+    },
+    "678651356": {
+      "highway": "service"
+    },
+    "678651357": {
+      "highway": "service"
+    },
+    "678651358": {
+      "highway": "service"
+    },
+    "678875194": {
+      "highway": "service"
+    },
+    "678875197": {
+      "highway": "service"
+    },
+    "678875198": {
+      "highway": "service"
+    },
+    "678875251": {
+      "highway": "service"
+    },
+    "683907199": {
+      "highway": "tertiary"
+    },
+    "683907201": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "685200964": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "690620543": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "690621550": {
+      "highway": "residential"
+    },
+    "690637878": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "690637879": {
+      "highway": "primary"
+    },
+    "691126113": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "691378796": {
+      "highway": "tertiary"
+    },
+    "691650597": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "692061115": {
+      "highway": "residential"
+    },
+    "692063975": {
+      "highway": "tertiary"
+    },
+    "692088372": {
+      "highway": "service"
+    },
+    "692088375": {
+      "highway": "service"
+    },
+    "692088388": {
+      "highway": "service"
+    },
+    "693355403": {
+      "highway": "residential"
+    },
+    "693365279": {
+      "highway": "residential"
+    },
+    "693365613": {
+      "highway": "residential"
+    },
+    "693365614": {
+      "highway": "residential"
+    },
+    "693365616": {
+      "highway": "service"
+    },
+    "693366153": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "693372082": {
+      "highway": "service"
+    },
+    "693384386": {
+      "highway": "residential"
+    },
+    "693384387": {
+      "highway": "residential"
+    },
+    "694005807": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "694010621": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "694161872": {
+      "highway": "service",
+      "lanes": "1"
+    },
+    "694168024": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "694201292": {
+      "highway": "residential"
+    },
+    "694243102": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "694411378": {
+      "highway": "residential"
+    },
+    "694421534": {
+      "highway": "residential"
+    },
+    "694430127": {
+      "highway": "service"
+    },
+    "694430128": {
+      "highway": "service"
+    },
+    "694625406": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "694637565": {
+      "highway": "residential"
+    },
+    "694639045": {
+      "highway": "residential"
+    },
+    "694643379": {
+      "highway": "residential"
+    },
+    "694643381": {
+      "highway": "service"
+    },
+    "694654434": {
+      "highway": "residential"
+    },
+    "694654437": {
+      "highway": "residential"
+    },
+    "694654440": {
+      "highway": "service"
+    },
+    "694654441": {
+      "highway": "service"
+    },
+    "694684277": {
+      "highway": "service"
+    },
+    "694903677": {
+      "highway": "service"
+    },
+    "694979748": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "694979749": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "694979750": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "695762122": {
+      "highway": "residential"
+    },
+    "695762124": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "696065638": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "696065640": {
+      "highway": "tertiary"
+    },
+    "696065641": {
+      "highway": "tertiary"
+    },
+    "696065642": {
+      "highway": "tertiary"
+    },
+    "696408569": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "696410579": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "696413311": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "696413313": {
+      "highway": "service"
+    },
+    "696413314": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "696793705": {
+      "highway": "tertiary",
+      "lanes": "3"
+    },
+    "696794337": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "696794338": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "696841164": {
+      "highway": "residential"
+    },
+    "696844294": {
+      "highway": "service"
+    },
+    "700026883": {
+      "highway": "secondary"
+    },
+    "701767500": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "701767501": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "701768273": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "701771069": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "702396714": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "702396715": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "702396717": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "702396718": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "703300029": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "703300030": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "703300032": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "704425427": {
+      "highway": "service"
+    },
+    "704425429": {
+      "highway": "service"
+    },
+    "704730991": {
+      "highway": "service"
+    },
+    "705656951": {
+      "highway": "residential"
+    },
+    "705727317": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "705727318": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "705727319": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "705727328": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "705750528": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "706282552": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "706282553": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "706282554": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "706282555": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "706282556": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "706282557": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "706394536": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "708719768": {
+      "highway": "primary_link"
+    },
+    "708720347": {
+      "highway": "primary_link"
+    },
+    "708720405": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "71373483": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "713973702": {
+      "highway": "secondary_link",
+      "lanes": "1"
+    },
+    "713974335": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "713974336": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "713990144": {
+      "highway": "footway"
+    },
+    "713990145": {
+      "highway": "footway"
+    },
+    "714014807": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "714014808": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "714014809": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "714014819": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "714014820": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "714022587": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "714022588": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "714097519": {
+      "highway": "residential"
+    },
+    "714692919": {
+      "highway": "residential"
+    },
+    "714692921": {
+      "highway": "residential"
+    },
+    "715446297": {
+      "highway": "footway"
+    },
+    "715452183": {
+      "highway": "service"
+    },
+    "715452184": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "715454926": {
+      "highway": "residential"
+    },
+    "715458463": {
+      "highway": "footway"
+    },
+    "715458464": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "715509686": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "715509689": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "715509690": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "715509691": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "715509692": {
+      "highway": "primary",
+      "lanes": "4"
+    },
+    "715509693": {
+      "highway": "primary_link",
+      "lanes": "1"
+    },
+    "715514412": {
+      "highway": "secondary",
+      "lanes": "3"
+    },
+    "715514413": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "715514414": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715529662": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "715547275": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "715547278": {
+      "highway": "footway"
+    },
+    "715547279": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "715549812": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "715550150": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715550151": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715550152": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715550153": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715552653": {
+      "highway": "footway"
+    },
+    "715566518": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715566519": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715566828": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "715566829": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "715566830": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "715568157": {
+      "highway": "footway"
+    },
+    "715574659": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "715574674": {
+      "highway": "residential"
+    },
+    "715575794": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715575795": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715575796": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715575798": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715575799": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715585422": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "715586713": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "715588576": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715592546": {
+      "highway": "residential"
+    },
+    "715669018": {
+      "highway": "residential"
+    },
+    "715821869": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "715821870": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "715821871": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715826791": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "715826798": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "715877063": {
+      "highway": "residential"
+    },
+    "715877231": {
+      "highway": "residential"
+    },
+    "715877232": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "715877234": {
+      "highway": "residential"
+    },
+    "715877238": {
+      "highway": "residential"
+    },
+    "715882473": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "715882474": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "715902328": {
+      "highway": "footway"
+    },
+    "715905646": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "715905649": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "715905650": {
+      "highway": "footway"
+    },
+    "715908465": {
+      "highway": "footway"
+    },
+    "715918346": {
+      "highway": "footway"
+    },
+    "716044136": {
+      "highway": "residential"
+    },
+    "716044137": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "716044138": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "716139031": {
+      "highway": "service"
+    },
+    "716139086": {
+      "highway": "service"
+    },
+    "716139097": {
+      "highway": "residential"
+    },
+    "716139104": {
+      "highway": "service"
+    },
+    "716756913": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "716761682": {
+      "highway": "footway"
+    },
+    "716761684": {
+      "highway": "footway"
+    },
+    "716761845": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "716771731": {
+      "highway": "primary_link",
+      "lanes": "1"
+    },
+    "716826417": {
+      "highway": "residential"
+    },
+    "716826418": {
+      "highway": "residential"
+    },
+    "716891750": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "716893317": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "716894430": {
+      "highway": "service"
+    },
+    "716899565": {
+      "highway": "service"
+    },
+    "716899566": {
+      "highway": "residential"
+    },
+    "716899568": {
+      "highway": "service"
+    },
+    "716908726": {
+      "highway": "footway"
+    },
+    "716910940": {
+      "highway": "footway"
+    },
+    "716910941": {
+      "highway": "footway"
+    },
+    "716910942": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "716910943": {
+      "highway": "residential",
+      "lanes": "2"
+    },
+    "716988791": {
+      "highway": "footway"
+    },
+    "716988793": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "716988794": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "716988795": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "717244131": {
+      "highway": "footway"
+    },
+    "717264239": {
+      "highway": "footway"
+    },
+    "717266397": {
+      "highway": "service"
+    },
+    "717308044": {
+      "highway": "residential"
+    },
+    "717308051": {
+      "highway": "residential"
+    },
+    "717310035": {
+      "highway": "residential"
+    },
+    "717319724": {
+      "highway": "residential",
+      "lanes": "1"
+    },
+    "717319725": {
+      "highway": "residential"
+    },
+    "717379343": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "717589595": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "717589596": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "717611718": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "717714087": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "717714099": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "717714100": {
+      "highway": "footway"
+    },
+    "717715790": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "717715791": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "717721498": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "717725620": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "717763229": {
+      "highway": "footway"
+    },
+    "717778150": {
+      "highway": "service"
+    },
+    "718258264": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "718437826": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "718919023": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "718919024": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "718919025": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "718919026": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "718919027": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "718919028": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "718984688": {
+      "highway": "service"
+    },
+    "719012359": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "719039657": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "719039658": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "719039660": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "719039661": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "719050761": {
+      "highway": "secondary"
+    },
+    "719465514": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "719476599": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "719970763": {
+      "highway": "tertiary"
+    },
+    "721207527": {
+      "highway": "service"
+    },
+    "721207528": {
+      "highway": "service"
+    },
+    "721207532": {
+      "highway": "service"
+    },
+    "721207533": {
+      "highway": "service"
+    },
+    "721207534": {
+      "highway": "service"
+    },
+    "721722137": {
+      "highway": "primary",
+      "lanes": "1"
+    },
+    "722062005": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "722062006": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "723578247": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "723589390": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "723834477": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "723866468": {
+      "highway": "primary_link",
+      "lanes": "1"
+    },
+    "724060151": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "724100600": {
+      "highway": "secondary_link",
+      "lanes": "1"
+    },
+    "724170948": {
+      "highway": "secondary"
+    },
+    "724170949": {
+      "highway": "residential"
+    },
+    "724410511": {
+      "highway": "footway"
+    },
+    "724495504": {
+      "highway": "tertiary"
+    },
+    "725158530": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "725158531": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "725173184": {
+      "highway": "service"
+    },
+    "725686334": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "726762756": {
+      "highway": "service"
+    },
+    "72726015": {
+      "highway": "service"
+    },
+    "740157465": {
+      "highway": "service"
+    },
+    "749698126": {
+      "highway": "residential"
+    },
+    "749707958": {
+      "highway": "secondary",
+      "lanes": "2"
+    },
+    "762819235": {
+      "highway": "residential"
+    },
+    "763277163": {
+      "highway": "service"
+    },
+    "763277164": {
+      "highway": "service"
+    },
+    "763277166": {
+      "highway": "service"
+    },
+    "764876945": {
+      "highway": "residential"
+    },
+    "770560478": {
+      "highway": "primary_link"
+    },
+    "772704003": {
+      "highway": "residential"
+    },
+    "787446049": {
+      "highway": "service"
+    },
+    "795548495": {
+      "highway": "residential"
+    },
+    "802766869": {
+      "highway": "residential"
+    },
+    "806265451": {
+      "highway": "tertiary"
+    },
+    "810375566": {
+      "highway": "primary"
+    },
+    "810375567": {
+      "highway": "primary"
+    },
+    "810375569": {
+      "highway": "primary"
+    },
+    "810375570": {
+      "highway": "primary"
+    },
+    "810375571": {
+      "highway": "primary"
+    },
+    "810655772": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "816855548": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "816855549": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "817085858": {
+      "highway": "primary"
+    },
+    "817142532": {
+      "highway": "primary"
+    },
+    "817147068": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "817147069": {
+      "highway": "secondary"
+    },
+    "817147070": {
+      "highway": "secondary",
+      "lanes": "1"
+    },
+    "817274415": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "817499370": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "817500067": {
+      "highway": "secondary"
+    },
+    "817504915": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "817504917": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "817511779": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "817511780": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "817906359": {
+      "highway": "residential"
+    },
+    "817909958": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "817909959": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "817961850": {
+      "highway": "tertiary"
+    },
+    "817961851": {
+      "highway": "tertiary"
+    },
+    "817961852": {
+      "highway": "tertiary"
+    },
+    "818991380": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "818991381": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "818991383": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "821331721": {
+      "highway": "service"
+    },
+    "821728923": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "821728924": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "821728925": {
+      "highway": "residential"
+    },
+    "822389804": {
+      "highway": "primary",
+      "lanes": "2"
+    },
+    "83010306": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "832615617": {
+      "highway": "residential"
+    },
+    "833944600": {
+      "highway": "service"
+    },
+    "834163064": {
+      "highway": "residential"
+    },
+    "838182441": {
+      "highway": "service"
+    },
+    "838183653": {
+      "highway": "service"
+    },
+    "838183655": {
+      "highway": "service"
+    },
+    "838183657": {
+      "highway": "residential"
+    },
+    "838185711": {
+      "highway": "residential"
+    },
+    "838185712": {
+      "highway": "residential"
+    },
+    "838186306": {
+      "highway": "residential"
+    },
+    "838186307": {
+      "highway": "residential"
+    },
+    "838186309": {
+      "highway": "residential"
+    },
+    "838186311": {
+      "highway": "residential"
+    },
+    "838186312": {
+      "highway": "residential"
+    },
+    "853382383": {
+      "highway": "residential"
+    },
+    "853382385": {
+      "highway": "service"
+    },
+    "856455196": {
+      "highway": "footway"
+    },
+    "856455197": {
+      "highway": "footway"
+    },
+    "856455198": {
+      "highway": "footway"
+    },
+    "856455199": {
+      "highway": "residential"
+    },
+    "856455200": {
+      "highway": "residential"
+    },
+    "864549473": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "864549476": {
+      "highway": "primary",
+      "lanes": "3"
+    },
+    "871085477": {
+      "highway": "tertiary"
+    },
+    "871085478": {
+      "highway": "tertiary"
+    },
+    "871085479": {
+      "highway": "tertiary",
+      "lanes": "1"
+    },
+    "897909559": {
+      "highway": "service"
+    },
+    "897909560": {
+      "highway": "service"
+    },
+    "898326772": {
+      "highway": "residential"
+    },
+    "898327400": {
+      "highway": "residential"
+    },
+    "898432799": {
+      "highway": "service"
+    },
+    "899722794": {
+      "highway": "service"
+    },
+    "899751400": {
+      "highway": "service"
+    },
+    "899834224": {
+      "highway": "service"
+    },
+    "899834225": {
+      "highway": "service"
+    },
+    "900625164": {
+      "highway": "service"
+    },
+    "900637929": {
+      "highway": "service"
+    },
+    "900640550": {
+      "highway": "service"
+    },
+    "900644873": {
+      "highway": "residential"
+    },
+    "910397305": {
+      "highway": "residential"
+    },
+    "910440533": {
+      "highway": "residential"
+    },
+    "911153534": {
+      "highway": "tertiary",
+      "lanes": "2"
+    },
+    "911153536": {
+      "highway": "residential"
+    },
+    "921614721": {
+      "highway": "residential"
+    },
+    "922443760": {
+      "highway": "residential"
+    },
+    "922443762": {
+      "highway": "residential"
+    },
+    "923234985": {
+      "highway": "service"
+    },
+    "923234986": {
+      "highway": "residential"
+    },
+    "941238523": {
+      "highway": "residential"
+    },
+    "941238526": {
+      "highway": "service"
+    },
+    "952554247": {
+      "highway": "service"
+    },
+    "954273644": {
+      "highway": "residential"
+    },
+    "955814387": {
+      "highway": "primary_link"
+    },
+    "962543203": {
+      "highway": "service"
+    },
+    "966519664": {
+      "highway": "service"
+    },
+    "966519665": {
+      "highway": "service"
+    },
+    "966519671": {
+      "highway": "service"
+    },
+    "999299844": {
+      "highway": "service"
+    }
+  }
+}
