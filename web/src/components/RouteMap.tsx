@@ -20,17 +20,18 @@ import { FOLLOW_MAP_SCALE, routeLinePaint } from '../utils/routeLinePaint'
 import 'leaflet/dist/leaflet.css'
 
 const originIcon = L.divIcon({
-  className: 'od-marker od-marker--origin',
-  html: '<span aria-hidden="true">A</span>',
-  iconSize: [28, 28],
-  iconAnchor: [14, 14],
+  className: 'od-gmaps-wrap',
+  html: '<span class="od-gmaps-start" aria-hidden="true"></span>',
+  iconSize: [12, 12],
+  iconAnchor: [6, 6],
 })
 
 const destinationIcon = L.divIcon({
-  className: 'od-marker od-marker--destination',
-  html: '<span aria-hidden="true">B</span>',
-  iconSize: [28, 28],
-  iconAnchor: [14, 14],
+  className: 'od-gmaps-wrap',
+  html:
+    '<svg class="od-gmaps-pin" viewBox="0 0 24 36" width="14" height="21" aria-hidden="true"><path fill="#EA4335" stroke="#fff" stroke-width="1.7" d="M12 1.6C6.8 1.6 2.6 5.8 2.6 11c0 7.1 9.4 23 9.4 23s9.4-15.9 9.4-23C21.4 5.8 17.2 1.6 12 1.6z"/><circle cx="12" cy="11" r="3.4" fill="#fff"/></svg>',
+  iconSize: [14, 21],
+  iconAnchor: [7, 20],
 })
 
 const progressIcon = L.divIcon({
@@ -375,10 +376,23 @@ export function RouteMap({
           <i className="swatch swatch--other" /> Other alternatives
         </span>
         <span>
-          <b className="od-dot od-dot--a">A</b> Origin
+          <i className="od-gmaps-start od-gmaps-start--legend" /> Origin
         </span>
         <span>
-          <b className="od-dot od-dot--b">B</b> Destination
+          <svg
+            className="od-gmaps-pin od-gmaps-pin--legend"
+            viewBox="0 0 24 36"
+            aria-hidden="true"
+          >
+            <path
+              fill="#EA4335"
+              stroke="#fff"
+              strokeWidth="1.7"
+              d="M12 1.6C6.8 1.6 2.6 5.8 2.6 11c0 7.1 9.4 23 9.4 23s9.4-15.9 9.4-23C21.4 5.8 17.2 1.6 12 1.6z"
+            />
+            <circle cx="12" cy="11" r="3.4" fill="#fff" />
+          </svg>{' '}
+          Destination
         </span>
       </div>
     </div>

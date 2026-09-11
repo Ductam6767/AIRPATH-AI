@@ -237,24 +237,61 @@ a:focus-visible {
   background: #94a3b8;
 }
 
-.od-dot {
-  display: inline-grid;
+.leaflet-div-icon.od-gmaps-wrap,
+.leaflet-div-icon.od-marker {
+  background: transparent;
+  border: none;
+}
+
+.od-gmaps-start {
+  display: grid;
   place-items: center;
-  width: 14px;
-  height: 14px;
-  margin-right: 0.25rem;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  font-size: 0.58rem;
-  color: #fff;
-  vertical-align: middle;
+  background: #fff;
+  border: 2px solid #1a73e8;
+  box-shadow: 0 1px 3px rgba(18, 24, 38, 0.28);
 }
 
-.od-dot--a {
-  background: var(--navy);
+.od-gmaps-start::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #1a73e8;
 }
 
-.od-dot--b {
-  background: var(--sky);
+.od-gmaps-start--legend {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 0.28rem;
+  vertical-align: -1px;
+}
+
+.od-gmaps-pin {
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 1px 2px rgba(18, 24, 38, 0.28));
+}
+
+.od-gmaps-pin--legend {
+  display: inline-block;
+  width: 9px;
+  height: 13px;
+  margin-right: 0.22rem;
+  vertical-align: -3px;
+}
+
+.map-shell--follow .od-gmaps-start {
+  transform: scale(calc(1 / 1.58));
+  transform-origin: center;
+}
+
+.map-shell--follow .od-gmaps-pin {
+  transform: scale(calc(1 / 1.58));
+  transform-origin: 50% 100%;
 }
 
 .od-marker {
@@ -267,14 +304,6 @@ a:focus-visible {
   color: #fff;
   border: 2px solid #fff;
   box-shadow: 0 2px 8px rgba(18, 24, 38, 0.25);
-}
-
-.od-marker--origin {
-  background: var(--navy);
-}
-
-.od-marker--destination {
-  background: var(--sky);
 }
 
 .od-marker--progress {
