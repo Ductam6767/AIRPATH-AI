@@ -1,7 +1,7 @@
 import type { TurnDirection } from './types'
 
 /** Arm the turn signal only when the next left/right is this close. */
-export const TURN_SIGNAL_ARM_M = 100
+export const TURN_SIGNAL_ARM_M = 62.5
 
 /** Still “active” in the last metres before the corner. */
 export const TURN_SIGNAL_CLOSE_M = 40

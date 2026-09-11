@@ -45,24 +45,24 @@ describe('BlinkerArrow', () => {
 })
 
 describe('NavigationInstruction blinker', () => {
-  it('shows a blinking left arrow only when the turn is within 100 m', () => {
+  it('shows a blinking left arrow only when the turn is within 62.5 m', () => {
     const { rerender } = render(
-      <NavigationInstruction
-        route={mockRoutesWithAlts.alternatives[0]!}
-        snapshot={snapshot(leftTurn, 180)}
-      />,
-    )
-    expect(screen.queryByTestId('blinker-left')).not.toBeInTheDocument()
-    expect(screen.getByText('Left')).toBeInTheDocument()
-    expect(screen.getByText('in 180 m')).toBeInTheDocument()
-
-    rerender(
       <NavigationInstruction
         route={mockRoutesWithAlts.alternatives[0]!}
         snapshot={snapshot(leftTurn, 80)}
       />,
     )
-    expect(screen.getByTestId('blinker-left')).toBeInTheDocument()
+    expect(screen.queryByTestId('blinker-left')).not.toBeInTheDocument()
+    expect(screen.getByText('Left')).toBeInTheDocument()
     expect(screen.getByText('in 80 m')).toBeInTheDocument()
+
+    rerender(
+      <NavigationInstruction
+        route={mockRoutesWithAlts.alternatives[0]!}
+        snapshot={snapshot(leftTurn, 50)}
+      />,
+    )
+    expect(screen.getByTestId('blinker-left')).toBeInTheDocument()
+    expect(screen.getByText('in 50 m')).toBeInTheDocument()
   })
 })

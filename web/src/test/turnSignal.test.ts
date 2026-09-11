@@ -7,17 +7,17 @@ import {
 } from '../maneuver/turnSignal'
 
 describe('turn signal arming', () => {
-  it('stays off until the next left/right is within 100 m', () => {
-    expect(armedTurnDirection('left', 101)).toBeNull()
+  it('stays off until the next left/right is within 62.5 m', () => {
+    expect(armedTurnDirection('left', 62.6)).toBeNull()
     expect(armedTurnDirection('right', TURN_SIGNAL_ARM_M)).toBe('right')
     expect(armedTurnDirection('left', 40)).toBe('left')
     expect(armedTurnDirection('straight', 20)).toBeNull()
     expect(armedTurnDirection('arrive', 5)).toBeNull()
   })
 
-  it('only sends left/right on the assist payload inside 100 m', () => {
+  it('only sends left/right on the assist payload inside 62.5 m', () => {
     expect(assistPayloadTurn('left', 250)).toBe('straight')
-    expect(assistPayloadTurn('right', 100)).toBe('right')
+    expect(assistPayloadTurn('right', 62.5)).toBe('right')
     expect(assistPayloadTurn('arrive', 10)).toBe('straight')
   })
 
@@ -36,7 +36,7 @@ describe('turn signal arming', () => {
       signalState({
         active: true,
         next: { turn: 'left' },
-        distanceToNextM: 80,
+        distanceToNextM: 50,
       }),
     ).toBe('left')
     expect(
